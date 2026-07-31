@@ -26,9 +26,20 @@ interface BuildOptions {
   input: string;
   output: string;
   template: TemplateName;
+  themePath: string | undefined;
   all: boolean;
   share: boolean;
 }
+
+/** 用户偏好主题配置。 */
+interface ThemePreference {
+  name?: string;
+  colors?: Partial<Record<ThemeColorKey, string>>;
+  cssVariables?: Record<string, string>;
+}
+
+/** 可直接通过 colors 快速覆写的语义色。 */
+type ThemeColorKey = "paper" | "ink" | "muted" | "faint" | "soft" | "accent" | "accent2" | "danger";
 
 /** 内页页眉页脚配置。 */
 interface PageChrome {
@@ -110,6 +121,7 @@ async function main(): Promise<void> {
   const inputPath = path.resolve(projectRoot, options.input);
   const source = await readFile(inputPath, "utf8");
   const parsed = parseMarkdownDocument(source);
+  const themeOverride = await loadThemeOverride(options.themePath);
   const toc = buildToc(parsed.body);
   const articlePlan = planArticlePages(markdown.render(parsed.body), toc);
   const pageChrome = createPageChrome(parsed.meta);
@@ -119,14 +131,14 @@ async function main(): Promise<void> {
   if (options.all) {
     for (const templateName of templateNames) {
       const outputPath = path.resolve(projectRoot, `output/example-${templateName}.pdf`);
-      await buildPdf({ meta: parsed.meta, bodyHtml, toc, outputPath, templateName, share: options.share });
+      await buildPdf({ meta: parsed.meta, bodyHtml, toc, outputPath, templateName, share: options.share, themeOverride });
     }
 
     return;
   }
 
   const outputPath = path.resolve(projectRoot, options.output);
-  await buildPdf({ meta: parsed.meta, bodyHtml, toc, outputPath, templateName: options.template, share: options.share });
+  await buildPdf({ meta: parsed.meta, bodyHtml, toc, outputPath, templateName: options.template, share: options.share, themeOverride });
 }
 
 function parseArgs(args: string[]): BuildOptions {
@@ -156,6 +168,7 @@ function parseArgs(args: string[]): BuildOptions {
     input: values.get("input") ?? "content/example.md",
     output: values.get("output") ?? `output/example-${template}.pdf`,
     template,
+    themePath: values.get("theme"),
     all: flags.has("--all"),
     share: !flags.has("--no-share")
   };
@@ -168,10 +181,11 @@ async function buildPdf(input: {
   outputPath: string;
   templateName: TemplateName;
   share: boolean;
+  themeOverride: string;
 }): Promise<void> {
   const htmlPath = input.outputPath.replace(/\.pdf$/i, ".html");
   const sharePath = input.outputPath.replace(/\.pdf$/i, ".share.png");
-  const html = await renderTemplate(input.meta, input.bodyHtml, input.toc, input.templateName);
+  const html = await renderTemplate(input.meta, input.bodyHtml, input.toc, input.templateName, input.themeOverride);
 
   await mkdir(path.dirname(input.outputPath), { recursive: true });
   await writeFile(htmlPath, html, "utf8");
@@ -555,7 +569,8 @@ async function renderTemplate(
   meta: DocumentMeta,
   body: string,
   toc: TocItem[],
-  templateName: TemplateName
+  templateName: TemplateName,
+  themeOverride: string
 ): Promise<string> {
   const templatePath = path.join(projectRoot, "templates/base/template.html");
   const commonStylesPath = path.join(projectRoot, "templates/base/common.css");
@@ -574,9 +589,77 @@ async function renderTemplate(
     .replaceAll("{{shareHeader}}", escapeHtml(meta.shareHeader))
     .replaceAll("{{shareFooter}}", escapeHtml(meta.shareFooter))
     .replaceAll("{{template}}", templateName)
-    .replace("{{styles}}", `${commonStyles}\n${themeStyles}`)
+    .replace("{{styles}}", `${commonStyles}\n${themeStyles}\n${themeOverride}`)
     .replace("{{toc}}", renderToc(toc))
     .replace("{{body}}", body);
+}
+
+async function loadThemeOverride(themePath?: string): Promise<string> {
+  if (!themePath) {
+    return "";
+  }
+
+  const resolvedPath = path.resolve(projectRoot, themePath);
+  const raw = await readFile(resolvedPath, "utf8");
+  const preference = parseThemePreference(raw, resolvedPath);
+  const variables = createThemeVariables(preference);
+
+  if (variables.length === 0) {
+    return "";
+  }
+
+  return [`/* User theme preference: ${escapeCssComment(preference.name ?? path.basename(themePath))} */`, ":root {", ...variables, "}"].join("\n");
+}
+
+function parseThemePreference(raw: string, sourcePath: string): ThemePreference {
+  try {
+    return JSON.parse(raw) as ThemePreference;
+  } catch (error) {
+    throw new Error(`Failed to parse theme preference "${sourcePath}": ${(error as Error).message}`);
+  }
+}
+
+function createThemeVariables(preference: ThemePreference): string[] {
+  const colorVariables = Object.entries(preference.colors ?? {}).map(([key, value]) =>
+    createThemeVariable(toThemeColorVariable(key), value)
+  );
+  const customVariables = Object.entries(preference.cssVariables ?? {}).map(([key, value]) =>
+    createThemeVariable(key, value)
+  );
+
+  return [...colorVariables, ...customVariables];
+}
+
+function toThemeColorVariable(key: string): string {
+  const variables: Record<ThemeColorKey, string> = {
+    paper: "--paper",
+    ink: "--ink",
+    muted: "--muted",
+    faint: "--faint",
+    soft: "--soft",
+    accent: "--accent",
+    accent2: "--accent-2",
+    danger: "--danger"
+  };
+  const variable = variables[key as ThemeColorKey];
+
+  if (!variable) {
+    throw new Error(`Unknown theme color "${key}". Available: ${Object.keys(variables).join(", ")}`);
+  }
+
+  return variable;
+}
+
+function createThemeVariable(name: string, value: string): string {
+  if (!/^--[a-z0-9-]+$/i.test(name)) {
+    throw new Error(`Invalid CSS variable name "${name}". Use names like "--accent".`);
+  }
+
+  if (/[;{}<>]/.test(value)) {
+    throw new Error(`Invalid CSS variable value for "${name}".`);
+  }
+
+  return `  ${name}: ${value.trim()};`;
 }
 
 function renderToc(items: TocItem[]): string {
@@ -666,6 +749,10 @@ function stripHtml(value: string): string {
     .replace(/<[^>]+>/g, "")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function escapeCssComment(value: string): string {
+  return value.replaceAll("/*", "").replaceAll("*/", "").trim();
 }
 
 await main();
