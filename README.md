@@ -79,7 +79,9 @@ Knowledge PDF Kit 对 Agent 的要求很低：能编辑 Markdown、运行 shell 
 | <img src="https://img.shields.io/badge/Gemini%20CLI-ready-4285f4.svg?logo=googlegemini&logoColor=white" alt="Gemini CLI" /> | 完整支持 | 长上下文内容规划、批量教程整理。 |
 | <img src="https://img.shields.io/badge/OpenCode-ready-0f766e.svg" alt="OpenCode" /> | 完整支持 | CLI 工作流生成 PDF 和分享长图。 |
 
-## 模板预览
+## 模板封面预览
+
+下面只展示 8 套模板的封面图，方便快速判断风格方向。
 
 | Warm Handbook | WeChat Magazine |
 | --- | --- |
