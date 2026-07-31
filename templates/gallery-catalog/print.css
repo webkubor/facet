@@ -1,0 +1,212 @@
+:root {
+  --paper: #f6f0ec;
+  --ink: #302c2f;
+  --muted: #7a7073;
+  --faint: #ddd0cc;
+  --soft: #ebe1dc;
+  --accent: #8a7f8f;
+  --accent-2: #7f927f;
+  --danger: #9a6b63;
+  --radius: 4px;
+  --display-font: "Songti SC", "STSong", "PingFang SC", serif;
+  --body-font: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --cover-pad-top: 18mm;
+  --cover-pad-right: 18mm;
+  --cover-pad-bottom: 18mm;
+  --cover-pad-left: 18mm;
+}
+
+.cover-page,
+.toc-page,
+.lesson-page,
+.end-page {
+  background:
+    radial-gradient(circle at 18% 24%, rgba(138, 127, 143, 0.14), transparent 18%),
+    radial-gradient(circle at 82% 70%, rgba(127, 146, 127, 0.14), transparent 20%),
+    #f6f0ec;
+}
+
+.cover-page {
+  position: relative;
+  overflow: hidden;
+}
+
+.cover-page::before {
+  content: "";
+  position: absolute;
+  top: 18mm;
+  right: 18mm;
+  width: 56mm;
+  height: 78mm;
+  background:
+    linear-gradient(135deg, rgba(138, 127, 143, 0.42), transparent 50%),
+    linear-gradient(180deg, #fdfaf7, #e9dfd9);
+  box-shadow: 0 18px 30px rgba(48, 44, 47, 0.12);
+}
+
+.cover-page::after {
+  content: "VISUAL CATALOG";
+  position: absolute;
+  right: 23mm;
+  bottom: 54mm;
+  color: rgba(48, 44, 47, 0.28);
+  font-size: 12px;
+  font-weight: 780;
+  letter-spacing: 0;
+  transform: rotate(-90deg);
+  transform-origin: right bottom;
+}
+
+.cover-kicker {
+  color: var(--accent);
+  font-size: 13px;
+  text-transform: none;
+}
+
+.cover-series {
+  margin-top: 11mm;
+  color: var(--accent-2);
+}
+
+.cover-page h1 {
+  max-width: 98mm;
+  margin-top: 24mm;
+  font-size: 42px;
+  font-weight: 760;
+  line-height: 1.14;
+}
+
+.cover-page h1::after,
+.toc-hero h2::after,
+.overview-intro h1::after,
+.end-page h2::after {
+  content: "";
+  display: block;
+  width: 46mm;
+  height: 8px;
+  margin-top: -2px;
+  background: rgba(127, 146, 127, 0.34);
+}
+
+.cover-subtitle {
+  max-width: 86mm;
+  color: #514a4d;
+}
+
+.cover-highlights span {
+  border: 0;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8px 18px rgba(48, 44, 47, 0.08);
+  color: var(--accent);
+}
+
+.cover-note {
+  max-width: 78mm;
+  border: 0;
+  border-radius: 2px;
+  background: #e8ddd5;
+  box-shadow: 0 14px 24px rgba(48, 44, 47, 0.12);
+}
+
+.cover-note strong {
+  color: var(--accent-2);
+}
+
+.cover-roadmap {
+  max-width: 94mm;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.cover-roadmap div,
+.toc-list li,
+.toc-guide section,
+.flow-band,
+.flow-card,
+.flow-steps section,
+.end-grid section,
+.end-checklist {
+  border: 0;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.58);
+  box-shadow: 0 10px 22px rgba(48, 44, 47, 0.08);
+}
+
+.cover-roadmap span,
+.toc-number,
+.flow-steps span,
+.flow-card span,
+.end-grid span {
+  background: var(--accent);
+}
+
+.section-label,
+.toc-guide span {
+  color: var(--accent);
+}
+
+.page-header,
+.page-footer,
+.cover-meta {
+  border-color: rgba(48, 44, 47, 0.16);
+}
+
+.toc-hero {
+  padding: 16px 18px;
+  background: rgba(255, 255, 255, 0.48);
+  box-shadow: 0 10px 22px rgba(48, 44, 47, 0.08);
+}
+
+.toc-hero h2,
+.overview-intro h1,
+.lesson-page h1,
+.lesson-page h2,
+.end-page h2 {
+  font-family: var(--display-font);
+  font-weight: 760;
+}
+
+.overview-intro h1,
+.lesson-page h1 {
+  border-bottom-color: rgba(48, 44, 47, 0.14);
+}
+
+.lesson-page h2 {
+  border-top: 0;
+}
+
+.lesson-page h2::before {
+  content: "Frame";
+  display: inline-block;
+  margin-right: 8px;
+  color: var(--accent-2);
+  font-family: var(--body-font);
+  font-size: 11px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.lesson-page h3 {
+  color: var(--accent-2);
+}
+
+.lesson-page blockquote {
+  border: 0;
+  border-radius: 3px;
+  background: rgba(230, 221, 214, 0.86);
+  color: #494145;
+  box-shadow: 0 8px 18px rgba(48, 44, 47, 0.08);
+}
+
+.lesson-page th {
+  background: #ddd4de;
+  color: #5f5668;
+}
+
+.lesson-page pre {
+  background: #302c2f;
+}
+
+[data-output="share"] {
+  background: #2d292c;
+}

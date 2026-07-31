@@ -1,0 +1,204 @@
+:root {
+  --paper: #f2eee6;
+  --ink: #242722;
+  --muted: #737067;
+  --faint: #d8d0c2;
+  --soft: #e7e2d7;
+  --accent: #737d62;
+  --accent-2: #b77d65;
+  --danger: #995848;
+  --radius: 8px;
+  --display-font: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --body-font: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --page-pad-top: 16mm;
+  --page-pad-right: 16mm;
+  --page-pad-bottom: 17mm;
+  --page-pad-left: 16mm;
+}
+
+.cover-page,
+.toc-page,
+.lesson-page,
+.end-page {
+  background:
+    linear-gradient(90deg, transparent 0 68%, rgba(115, 125, 98, 0.12) 68% 100%),
+    radial-gradient(circle at 14% 84%, rgba(183, 125, 101, 0.13), transparent 18%),
+    #f2eee6;
+}
+
+.cover-page {
+  position: relative;
+  overflow: hidden;
+}
+
+.cover-page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 58mm;
+  height: 100%;
+  background: #737d62;
+}
+
+.cover-page::after {
+  content: "01";
+  position: absolute;
+  right: 18mm;
+  bottom: 18mm;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 72px;
+  font-weight: 850;
+  line-height: 1;
+}
+
+.cover-kicker {
+  width: fit-content;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(115, 125, 98, 0.14);
+  color: var(--accent);
+}
+
+.cover-series {
+  margin-top: 12mm;
+  color: var(--accent-2);
+}
+
+.cover-page h1 {
+  max-width: 100mm;
+  margin-top: 19mm;
+  font-size: 41px;
+  font-weight: 870;
+  line-height: 1.12;
+}
+
+.cover-subtitle {
+  max-width: 94mm;
+  color: #3f423b;
+  font-size: 17px;
+}
+
+.cover-highlights span {
+  border-color: rgba(115, 125, 98, 0.26);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.48);
+  color: var(--accent);
+}
+
+.cover-note {
+  max-width: 86mm;
+  border: 1px solid rgba(115, 125, 98, 0.22);
+  border-radius: 8px;
+  background: rgba(231, 226, 215, 0.76);
+}
+
+.cover-note strong {
+  color: var(--accent-2);
+}
+
+.cover-roadmap {
+  max-width: 102mm;
+}
+
+.cover-roadmap div,
+.toc-list li,
+.toc-guide section,
+.flow-band,
+.flow-card,
+.flow-steps section,
+.end-grid section,
+.end-checklist {
+  border: 1px solid rgba(115, 125, 98, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.46);
+}
+
+.cover-roadmap span,
+.toc-number,
+.flow-steps span,
+.flow-card span,
+.end-grid span {
+  background: var(--accent);
+}
+
+.cover-meta {
+  position: relative;
+  z-index: 1;
+}
+
+.page-header,
+.page-footer,
+.cover-meta {
+  border-color: rgba(36, 39, 34, 0.16);
+}
+
+.section-label,
+.toc-guide span {
+  color: var(--accent-2);
+}
+
+.toc-hero {
+  padding: 18px 20px;
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, var(--accent) 0 7px, transparent 7px),
+    rgba(255, 255, 255, 0.5);
+}
+
+.toc-hero h2,
+.overview-intro h1,
+.lesson-page h1,
+.lesson-page h2,
+.end-page h2 {
+  font-family: var(--display-font);
+  font-weight: 850;
+}
+
+.overview-intro h1,
+.lesson-page h1 {
+  border-bottom-color: var(--accent);
+}
+
+.lesson-page h2 {
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(115, 125, 98, 0.12);
+}
+
+.lesson-page h3 {
+  color: var(--accent);
+}
+
+.lesson-page blockquote {
+  border: 0;
+  border-left: 6px solid var(--accent-2);
+  border-radius: 8px;
+  background: rgba(238, 227, 217, 0.78);
+  color: #3f3d36;
+}
+
+.lesson-page table {
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.48);
+}
+
+.lesson-page th {
+  background: #d9dfd1;
+  color: #525d46;
+}
+
+.lesson-page pre {
+  background: #242722;
+}
+
+.end-grid section:nth-child(2),
+.toc-guide section:nth-child(2) {
+  border-color: rgba(183, 125, 101, 0.34);
+}
+
+[data-output="share"] {
+  background: #242722;
+}
