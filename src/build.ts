@@ -72,14 +72,20 @@ type TemplateName =
   | "wechat-magazine"
   | "creator-notebook"
   | "course-workbook"
-  | "editorial-poster";
+  | "editorial-poster"
+  | "research-dossier"
+  | "gallery-catalog"
+  | "strategy-brief";
 
 const templateNames: TemplateName[] = [
   "warm-handbook",
   "wechat-magazine",
   "creator-notebook",
   "course-workbook",
-  "editorial-poster"
+  "editorial-poster",
+  "research-dossier",
+  "gallery-catalog",
+  "strategy-brief"
 ];
 
 const currentFile = fileURLToPath(import.meta.url);

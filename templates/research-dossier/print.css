@@ -1,0 +1,203 @@
+:root {
+  --paper: #f4f1ea;
+  --ink: #24303a;
+  --muted: #6f7780;
+  --faint: #d8d4ca;
+  --soft: #e9eceb;
+  --accent: #627481;
+  --accent-2: #b88b72;
+  --danger: #9a5948;
+  --radius: 6px;
+  --display-font: "Source Han Serif SC", "Songti SC", "STSong", serif;
+  --body-font: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --page-pad-top: 17mm;
+  --page-pad-right: 16mm;
+  --page-pad-bottom: 18mm;
+  --page-pad-left: 16mm;
+  --cover-pad-top: 22mm;
+  --cover-pad-right: 22mm;
+  --cover-pad-bottom: 20mm;
+  --cover-pad-left: 22mm;
+}
+
+.cover-page,
+.toc-page,
+.lesson-page,
+.end-page {
+  background:
+    linear-gradient(90deg, rgba(98, 116, 129, 0.1) 0 34%, transparent 34% 100%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.6), transparent 44%),
+    #f4f1ea;
+}
+
+.cover-page {
+  position: relative;
+  overflow: hidden;
+}
+
+.cover-page::before {
+  content: "RESEARCH DOSSIER";
+  position: absolute;
+  top: 24mm;
+  right: 20mm;
+  color: rgba(36, 48, 58, 0.18);
+  font-size: 12px;
+  font-weight: 820;
+  letter-spacing: 0;
+  writing-mode: vertical-rl;
+}
+
+.cover-page::after {
+  content: "";
+  position: absolute;
+  right: 16mm;
+  bottom: 42mm;
+  width: 82mm;
+  height: 80mm;
+  border: 1px solid rgba(36, 48, 58, 0.18);
+  background:
+    linear-gradient(90deg, rgba(98, 116, 129, 0.28) 0 22%, transparent 22%),
+    linear-gradient(#d8d4ca 1px, transparent 1px),
+    rgba(255, 255, 255, 0.35);
+  background-size: auto, 100% 13mm, auto;
+  box-shadow: 0 18px 30px rgba(36, 48, 58, 0.1);
+  opacity: 0.5;
+}
+
+.cover-kicker {
+  width: fit-content;
+  padding: 4px 0 8px;
+  border-bottom: 2px solid var(--accent);
+  color: var(--ink);
+  font-size: 12px;
+  letter-spacing: 0;
+}
+
+.cover-series {
+  margin-top: 13mm;
+  color: var(--accent);
+}
+
+.cover-page h1 {
+  max-width: 122mm;
+  margin-top: 18mm;
+  color: var(--ink);
+  font-size: 44px;
+  font-weight: 780;
+  line-height: 1.16;
+}
+
+.cover-subtitle {
+  max-width: 108mm;
+  color: #46535d;
+}
+
+.cover-highlights span {
+  border-color: rgba(98, 116, 129, 0.28);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.48);
+  color: var(--accent);
+}
+
+.cover-note {
+  max-width: 82mm;
+  border-left: 5px solid var(--accent-2);
+  border-radius: 4px;
+  background: rgba(233, 236, 235, 0.72);
+}
+
+.cover-note strong {
+  color: var(--accent);
+}
+
+.cover-roadmap {
+  max-width: 112mm;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.cover-roadmap div,
+.toc-list li,
+.toc-guide section,
+.flow-band,
+.flow-card,
+.flow-steps section,
+.end-grid section,
+.end-checklist {
+  border: 1px solid rgba(36, 48, 58, 0.14);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.68);
+}
+
+.cover-roadmap span,
+.toc-number,
+.flow-steps span,
+.flow-card span,
+.end-grid span {
+  background: var(--accent);
+}
+
+.page-header,
+.page-footer,
+.cover-meta {
+  border-color: rgba(36, 48, 58, 0.18);
+}
+
+.section-label,
+.toc-guide span {
+  color: var(--accent-2);
+}
+
+.toc-hero {
+  max-width: 132mm;
+  padding: 12px 0 14px;
+  border-top: 1px solid rgba(36, 48, 58, 0.2);
+  border-bottom: 1px solid rgba(36, 48, 58, 0.2);
+}
+
+.toc-hero h2,
+.overview-intro h1,
+.lesson-page h1,
+.lesson-page h2,
+.end-page h2 {
+  font-family: var(--display-font);
+  font-weight: 760;
+}
+
+.lesson-page h1 {
+  border-bottom-color: rgba(36, 48, 58, 0.18);
+}
+
+.lesson-page h2 {
+  border-top: 0;
+  padding-left: 12px;
+  border-left: 5px solid var(--accent);
+}
+
+.lesson-page h3 {
+  color: var(--accent-2);
+}
+
+.lesson-page blockquote {
+  border: 1px solid rgba(184, 139, 114, 0.34);
+  border-left: 5px solid var(--accent-2);
+  border-radius: 4px;
+  background: rgba(245, 237, 229, 0.78);
+  color: #3f4549;
+}
+
+.lesson-page table {
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.lesson-page th {
+  background: #d9dedf;
+  color: #3d535f;
+}
+
+.lesson-page pre {
+  background: #24303a;
+}
+
+[data-output="share"] {
+  background: #20272d;
+}

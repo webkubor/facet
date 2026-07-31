@@ -29,7 +29,7 @@ Knowledge PDF Kit 面向小红书、公众号、社群课程和知识付费资�
 
 ## 标签
 
-`markdown-to-pdf` `html-to-pdf` `knowledge-pdf` `tutorial-pdf` `wechat` `xiaohongshu` `long-image` `editorial-design` `playwright` `typescript` `agent-ready`
+`markdown-to-pdf` `html-to-pdf` `knowledge-pdf` `tutorial-pdf` `wechat` `xiaohongshu` `long-image` `morandi` `editorial-design` `playwright` `typescript` `agent-ready`
 
 ## 30 秒上手
 
@@ -65,7 +65,7 @@ pnpm build -- --input content/example.md --template warm-handbook --no-share
 - 自动生成长图分享产物 `*.share.png`，适合小红书、公众号素材分发。
 - 支持自定义 PDF 内页页眉页脚，以及长图外层标题和尾注。
 - 输出 `page-plan.json`，可检查每页承载哪些知识点。
-- 内置五套知识教程模板，风格可换，分页逻辑复用。
+- 内置八套知识教程模板，覆盖不同领域、不同方向、不同视觉气质。
 
 ## 支持的 Agent
 
@@ -89,9 +89,13 @@ Knowledge PDF Kit 对 Agent 的要求很低：能编辑 Markdown、运行 shell 
 | --- | --- |
 | ![Creator Notebook](docs/designs/creator-notebook.png) | ![Course Workbook](docs/designs/course-workbook.png) |
 
-| Editorial Poster |
-| --- |
-| ![Editorial Poster](docs/designs/editorial-poster.png) |
+| Editorial Poster | Research Dossier |
+| --- | --- |
+| ![Editorial Poster](docs/designs/editorial-poster.png) | ![Research Dossier](docs/designs/research-dossier.png) |
+
+| Gallery Catalog | Strategy Brief |
+| --- | --- |
+| ![Gallery Catalog](docs/designs/gallery-catalog.png) | ![Strategy Brief](docs/designs/strategy-brief.png) |
 
 ## 可用模板
 
@@ -100,6 +104,9 @@ Knowledge PDF Kit 对 Agent 的要求很低：能编辑 Markdown、运行 shell 
 - `creator-notebook`：小红书收藏笔记风，适合提示词、AI 学习、内容创作流程。
 - `course-workbook`：轻课程工作簿风，适合付费社群、系统课、行动清单和练习型内容。
 - `editorial-poster`：纸质编辑海报风，适合开源项目介绍、知识产品宣传和强调视觉呈现的教程。
+- `research-dossier`：莫兰迪冷灰蓝研究档案风，适合调研报告、白皮书、行业分析和方法论资料。
+- `gallery-catalog`：莫兰迪画册目录风，适合设计案例、作品集说明、品牌内容和审美型知识材料。
+- `strategy-brief`：莫兰迪商业策略简报风，适合咨询报告、业务复盘、增长策略和团队共识文档。
 
 ## Content Flow
 
