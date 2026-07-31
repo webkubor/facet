@@ -67,13 +67,19 @@ interface ArticlePlan {
   pages: PlannedPage[];
 }
 
-type TemplateName = "warm-handbook" | "wechat-magazine" | "creator-notebook" | "course-workbook";
+type TemplateName =
+  | "warm-handbook"
+  | "wechat-magazine"
+  | "creator-notebook"
+  | "course-workbook"
+  | "editorial-poster";
 
 const templateNames: TemplateName[] = [
   "warm-handbook",
   "wechat-magazine",
   "creator-notebook",
-  "course-workbook"
+  "course-workbook",
+  "editorial-poster"
 ];
 
 const currentFile = fileURLToPath(import.meta.url);

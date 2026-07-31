@@ -1,0 +1,406 @@
+:root {
+  --paper: #f5efe4;
+  --ink: #111111;
+  --muted: #6f6a60;
+  --faint: #ded2bf;
+  --soft: #eee5d5;
+  --accent: #596d4f;
+  --accent-2: #d08a58;
+  --danger: #a04431;
+  --radius: 7px;
+  --display-font: "Songti SC", "STSong", "PingFang SC", serif;
+  --body-font: "PingFang SC", "Microsoft YaHei", "Inter", sans-serif;
+  --cover-pad-top: 18mm;
+  --cover-pad-right: 18mm;
+  --cover-pad-bottom: 18mm;
+  --cover-pad-left: 18mm;
+  --page-pad-top: 16mm;
+  --page-pad-right: 16mm;
+  --page-pad-bottom: 17mm;
+  --page-pad-left: 16mm;
+}
+
+.cover-page,
+.toc-page,
+.lesson-page,
+.end-page {
+  background:
+    radial-gradient(circle at 18% 92%, rgba(91, 109, 79, 0.15), transparent 14%),
+    radial-gradient(circle at 78% 18%, rgba(208, 138, 88, 0.14), transparent 16%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.58), transparent 36%),
+    #f5efe4;
+}
+
+.cover-page {
+  position: relative;
+  overflow: hidden;
+}
+
+.cover-page::before {
+  content: "让 AI 内容，也拥有设计感。";
+  position: absolute;
+  top: 18mm;
+  right: 16mm;
+  width: 48mm;
+  color: var(--ink);
+  font-family: "Kaiti SC", "STKaiti", serif;
+  font-size: 18px;
+  line-height: 1.55;
+  transform: rotate(-5deg);
+  z-index: 2;
+}
+
+.cover-page::after {
+  content: "";
+  position: absolute;
+  right: -3mm;
+  bottom: 34mm;
+  width: 82mm;
+  height: 118mm;
+  border-left: 9px solid #405640;
+  border-radius: 3px;
+  background:
+    linear-gradient(#ebe0d0 1px, transparent 1px),
+    linear-gradient(180deg, #fffdf7, #f9f3e9);
+  background-size: 100% 14mm, auto;
+  box-shadow: 0 16px 28px rgba(36, 30, 22, 0.22);
+  transform: rotate(3deg);
+  z-index: 0;
+}
+
+.cover-kicker {
+  position: relative;
+  width: fit-content;
+  padding-bottom: 5px;
+  border-bottom: 2px solid #222222;
+  color: var(--ink);
+  font-size: 13px;
+  text-transform: none;
+  z-index: 1;
+}
+
+.cover-series {
+  position: relative;
+  margin-top: 9mm;
+  color: var(--accent);
+  font-size: 14px;
+  z-index: 1;
+}
+
+.cover-page h1 {
+  position: relative;
+  max-width: 104mm;
+  margin-top: 22mm;
+  color: var(--ink);
+  font-family: var(--body-font);
+  font-size: 50px;
+  font-weight: 920;
+  line-height: 1.16;
+  letter-spacing: 0;
+  z-index: 1;
+}
+
+.cover-page h1::after,
+.toc-hero h2::after,
+.overview-intro h1::after,
+.end-page h2::after {
+  content: "";
+  display: block;
+  width: 54mm;
+  height: 10px;
+  margin-top: -4px;
+  background: rgba(89, 109, 79, 0.34);
+  transform: rotate(-2deg);
+}
+
+.cover-subtitle {
+  position: relative;
+  max-width: 88mm;
+  margin-top: 12px;
+  color: var(--ink);
+  font-size: 20px;
+  font-weight: 640;
+  z-index: 1;
+}
+
+.cover-highlights {
+  position: relative;
+  max-width: 92mm;
+  margin-top: 12mm;
+  z-index: 1;
+}
+
+.cover-highlights span {
+  border: 1px solid rgba(89, 109, 79, 0.28);
+  border-radius: 4px;
+  background: rgba(255, 253, 247, 0.78);
+  box-shadow: 0 8px 18px rgba(42, 35, 26, 0.08);
+  color: var(--accent);
+}
+
+.cover-note {
+  position: relative;
+  max-width: 76mm;
+  margin-top: 12mm;
+  border: 0;
+  border-radius: 5px;
+  background: #efe0c6;
+  box-shadow: 0 10px 20px rgba(42, 35, 26, 0.13);
+  transform: rotate(-2deg);
+  z-index: 1;
+}
+
+.cover-note strong {
+  color: var(--accent);
+}
+
+.cover-note::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  right: 16px;
+  width: 26mm;
+  height: 10mm;
+  background: rgba(89, 109, 79, 0.34);
+  transform: rotate(4deg);
+}
+
+.cover-roadmap {
+  position: relative;
+  max-width: 92mm;
+  margin-top: 11mm;
+  grid-template-columns: repeat(2, 1fr);
+  z-index: 1;
+}
+
+.cover-roadmap div {
+  min-height: 25mm;
+  border: 1px solid rgba(222, 210, 191, 0.82);
+  border-radius: 4px;
+  background: rgba(255, 253, 247, 0.82);
+  box-shadow: 0 9px 18px rgba(42, 35, 26, 0.09);
+}
+
+.cover-roadmap span {
+  background: var(--accent);
+}
+
+.cover-roadmap strong {
+  font-size: 12px;
+}
+
+.cover-meta {
+  position: relative;
+  border-top-color: rgba(34, 34, 34, 0.2);
+  z-index: 1;
+}
+
+.section-label {
+  color: var(--accent);
+  font-family: var(--body-font);
+}
+
+.page-header,
+.page-footer {
+  border-color: rgba(34, 34, 34, 0.2);
+  color: #57524b;
+  font-size: 11px;
+}
+
+.toc-page {
+  position: relative;
+}
+
+.toc-page::before {
+  content: "";
+  position: absolute;
+  top: 15mm;
+  right: 14mm;
+  width: 42mm;
+  height: 8mm;
+  background: rgba(89, 109, 79, 0.32);
+  transform: rotate(4deg);
+}
+
+.toc-hero {
+  position: relative;
+  margin-bottom: 10mm;
+  padding: 16px 18px;
+  border: 1px solid rgba(34, 34, 34, 0.18);
+  border-radius: 3px;
+  background: rgba(255, 253, 247, 0.78);
+  box-shadow: 0 12px 24px rgba(42, 35, 26, 0.1);
+}
+
+.toc-hero h2 {
+  font-family: var(--body-font);
+  font-size: 36px;
+  font-weight: 900;
+}
+
+.toc-list li,
+.toc-guide section,
+.flow-band,
+.flow-card,
+.flow-steps section,
+.end-grid section,
+.end-checklist {
+  border: 1px solid rgba(34, 34, 34, 0.13);
+  border-radius: 4px;
+  background: rgba(255, 253, 247, 0.76);
+  box-shadow: 0 9px 18px rgba(42, 35, 26, 0.08);
+}
+
+.toc-number,
+.flow-steps span,
+.flow-card span,
+.end-grid span {
+  background: var(--accent);
+}
+
+.toc-guide {
+  margin-top: 10mm;
+  padding-top: 10mm;
+}
+
+.toc-guide span {
+  color: var(--accent);
+}
+
+.lesson-page {
+  position: relative;
+}
+
+.lesson-page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 8mm;
+  height: 100%;
+  background: #405640;
+}
+
+.lesson-content {
+  position: relative;
+  z-index: 1;
+}
+
+.overview-intro h1,
+.lesson-page h1,
+.lesson-page h2,
+.end-page h2 {
+  color: var(--ink);
+  font-family: var(--body-font);
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.lesson-page h1 {
+  border-bottom-color: rgba(34, 34, 34, 0.18);
+}
+
+.lesson-page h2 {
+  margin-top: 24px;
+  border-top: 0;
+  font-size: 26px;
+}
+
+.lesson-page h2::before {
+  content: "NOTE";
+  display: inline-block;
+  margin-right: 9px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fffdf7;
+  font-family: var(--body-font);
+  font-size: 10px;
+  font-weight: 850;
+  vertical-align: 4px;
+}
+
+.lesson-page h3 {
+  width: fit-content;
+  padding-bottom: 3px;
+  border-bottom: 3px solid rgba(89, 109, 79, 0.34);
+  color: var(--accent);
+  font-family: var(--body-font);
+}
+
+.lesson-page blockquote {
+  border: 0;
+  border-left: 6px solid var(--accent);
+  border-radius: 4px;
+  background: #e5ecd9;
+  box-shadow: 0 8px 18px rgba(42, 35, 26, 0.08);
+  color: #263521;
+  font-weight: 680;
+}
+
+.lesson-page table {
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: 5px;
+  background: rgba(255, 253, 247, 0.8);
+  box-shadow: 0 8px 18px rgba(42, 35, 26, 0.08);
+}
+
+.lesson-page th,
+.lesson-page td {
+  border-color: #e2d6c3;
+}
+
+.lesson-page th {
+  background: var(--accent);
+  color: #fffdf7;
+}
+
+.lesson-page pre {
+  border: 1px solid rgba(34, 34, 34, 0.12);
+  background: #27251f;
+  box-shadow: 0 10px 20px rgba(42, 35, 26, 0.1);
+}
+
+.end-page {
+  position: relative;
+}
+
+.end-page::before {
+  content: "";
+  position: absolute;
+  right: 18mm;
+  top: 17mm;
+  width: 34mm;
+  height: 9mm;
+  background: rgba(89, 109, 79, 0.32);
+  transform: rotate(7deg);
+}
+
+.end-checklist {
+  position: relative;
+}
+
+.end-checklist::after {
+  content: "收藏后照着做";
+  position: absolute;
+  right: 14px;
+  bottom: -19px;
+  color: var(--accent);
+  font-family: "Kaiti SC", "STKaiti", serif;
+  font-size: 15px;
+  transform: rotate(-5deg);
+}
+
+[data-output="share"] {
+  background: #171b14;
+}
+
+[data-output="share"] .share-banner {
+  color: #f5efe4;
+}
+
+[data-output="share"] .share-banner span {
+  color: #cabfac;
+}

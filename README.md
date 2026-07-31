@@ -29,7 +29,7 @@ Knowledge PDF Kit 面向小红书、公众号、社群课程和知识付费资�
 
 ## 标签
 
-`markdown-to-pdf` `html-to-pdf` `knowledge-pdf` `tutorial-pdf` `wechat` `xiaohongshu` `long-image` `playwright` `typescript` `agent-ready`
+`markdown-to-pdf` `html-to-pdf` `knowledge-pdf` `tutorial-pdf` `wechat` `xiaohongshu` `long-image` `editorial-design` `playwright` `typescript` `agent-ready`
 
 ## 30 秒上手
 
@@ -65,7 +65,7 @@ pnpm build -- --input content/example.md --template warm-handbook --no-share
 - 自动生成长图分享产物 `*.share.png`，适合小红书、公众号素材分发。
 - 支持自定义 PDF 内页页眉页脚，以及长图外层标题和尾注。
 - 输出 `page-plan.json`，可检查每页承载哪些知识点。
-- 内置四套知识教程模板，风格可换，分页逻辑复用。
+- 内置五套知识教程模板，风格可换，分页逻辑复用。
 
 ## 支持的 Agent
 
@@ -89,12 +89,17 @@ Knowledge PDF Kit 对 Agent 的要求很低：能编辑 Markdown、运行 shell 
 | --- | --- |
 | ![Creator Notebook](docs/designs/creator-notebook.png) | ![Course Workbook](docs/designs/course-workbook.png) |
 
+| Editorial Poster |
+| --- |
+| ![Editorial Poster](docs/designs/editorial-poster.png) |
+
 ## 可用模板
 
 - `warm-handbook`：温暖手册风，适合入门教程、AI 知识普及、轻松但结构清晰的内容。
 - `wechat-magazine`：公众号知识库风，适合系列文章、方法论拆解、品牌化知识内容。
 - `creator-notebook`：小红书收藏笔记风，适合提示词、AI 学习、内容创作流程。
 - `course-workbook`：轻课程工作簿风，适合付费社群、系统课、行动清单和练习型内容。
+- `editorial-poster`：纸质编辑海报风，适合开源项目介绍、知识产品宣传和强调视觉呈现的教程。
 
 ## Content Flow
 
