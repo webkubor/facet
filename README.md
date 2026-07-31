@@ -58,12 +58,19 @@ pnpm build -- --input content/example.md --template wechat-magazine --output out
 pnpm build -- --input content/example.md --template warm-handbook --no-share
 ```
 
+套用用户颜色偏好：
+
+```bash
+pnpm build -- --input content/example.md --template research-dossier --theme themes/morandi-sage.json
+```
+
 ## 核心能力
 
 - Markdown -> HTML/CSS -> Playwright PDF，全链路本地生成。
 - 先规划内容 flow，再渲染视觉模板，避免短内容单独占满一整页。
 - 自动生成长图分享产物 `*.share.png`，适合小红书、公众号素材分发。
 - 支持自定义 PDF 内页页眉页脚，以及长图外层标题和尾注。
+- 支持在生成前注入用户颜色偏好，动态覆写模板 CSS 变量。
 - 输出 `page-plan.json`，可检查每页承载哪些知识点。
 - 内置八套知识教程模板，覆盖不同领域、不同方向、不同视觉气质。
 
@@ -127,6 +134,33 @@ output/<input-name>-page-plan.json
 ```
 
 这份计划用于检查每页的角色、知识点和估算密度。视觉模板只能改变样式，不能跳过这条 flow。
+
+## 用户偏好主题
+
+模板提供基础视觉样式，`--theme` 用来在生成 PDF 前动态覆写 CSS 变量。这样可以先收集用户喜欢的颜色、品牌色或审美方向，再把这些偏好注入到任意模板里，而不破坏 content flow。
+
+示例：
+
+```json
+{
+  "name": "Morandi Sage",
+  "colors": {
+    "paper": "#f4f1ea",
+    "ink": "#28312b",
+    "muted": "#6f756d",
+    "faint": "#d9d3c7",
+    "soft": "#e9e2d7",
+    "accent": "#6f7d62",
+    "accent2": "#b58a72",
+    "danger": "#9a5d50"
+  },
+  "cssVariables": {
+    "--radius": "8px"
+  }
+}
+```
+
+`colors` 是常用语义色，适合从用户偏好里自动生成；`cssVariables` 适合进阶覆写，例如圆角、页距或模板内已经定义好的变量。
 
 ## 内容配置
 

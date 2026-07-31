@@ -1,0 +1,16 @@
+{
+  "name": "Morandi Sage",
+  "colors": {
+    "paper": "#f4f1ea",
+    "ink": "#28312b",
+    "muted": "#6f756d",
+    "faint": "#d9d3c7",
+    "soft": "#e9e2d7",
+    "accent": "#6f7d62",
+    "accent2": "#b58a72",
+    "danger": "#9a5d50"
+  },
+  "cssVariables": {
+    "--radius": "8px"
+  }
+}
