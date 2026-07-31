@@ -1,8 +1,35 @@
-# Knowledge PDF Kit
+<p align="center">
+  <img src="docs/brand/icon.svg" width="96" height="96" alt="Knowledge PDF Kit icon" />
+</p>
 
-把 Markdown 知识教程生成漂亮、稳定、可分享的 PDF 和长图。
+<h1 align="center">Knowledge PDF Kit</h1>
+
+<p align="center">
+  把 Markdown 知识教程生成漂亮、稳定、可分享的 PDF 和长图。
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-0f766e.svg" /></a>
+  <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-111827.svg" />
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-strict-3178c6.svg?logo=typescript&logoColor=white" />
+  <img alt="Playwright" src="https://img.shields.io/badge/Playwright-PDF-2eAD33.svg?logo=playwright&logoColor=white" />
+  <img alt="pnpm" src="https://img.shields.io/badge/pnpm-11-f69220.svg?logo=pnpm&logoColor=white" />
+  <img alt="Output" src="https://img.shields.io/badge/output-PDF%20%2B%20long%20image-f59e0b.svg" />
+</p>
+
+<p align="center">
+  <img alt="Codex" src="https://img.shields.io/badge/Codex-ready-111827.svg?logo=openai&logoColor=white" />
+  <img alt="Claude Code" src="https://img.shields.io/badge/Claude%20Code-ready-d97706.svg" />
+  <img alt="Cursor" src="https://img.shields.io/badge/Cursor-ready-000000.svg" />
+  <img alt="Gemini CLI" src="https://img.shields.io/badge/Gemini%20CLI-ready-4285f4.svg?logo=googlegemini&logoColor=white" />
+  <img alt="OpenCode" src="https://img.shields.io/badge/OpenCode-ready-0f766e.svg" />
+</p>
 
 Knowledge PDF Kit 面向小红书、公众号、社群课程和知识付费资料。它不是简单把网页打印成 PDF，而是先做模板无关的 `content flow`，再套用视觉主题，保证每一页的知识密度、页眉页脚、背景铺满和分享图效果都可控。
+
+## 标签
+
+`markdown-to-pdf` `html-to-pdf` `knowledge-pdf` `tutorial-pdf` `wechat` `xiaohongshu` `long-image` `playwright` `typescript` `agent-ready`
 
 ## 30 秒上手
 
@@ -39,6 +66,18 @@ pnpm build -- --input content/example.md --template warm-handbook --no-share
 - 支持自定义 PDF 内页页眉页脚，以及长图外层标题和尾注。
 - 输出 `page-plan.json`，可检查每页承载哪些知识点。
 - 内置四套知识教程模板，风格可换，分页逻辑复用。
+
+## 支持的 Agent
+
+Knowledge PDF Kit 对 Agent 的要求很低：能编辑 Markdown、运行 shell 命令、查看生成图即可。仓库里的 content flow、page plan 和模板目录都是为了让 Agent 稳定复用。
+
+| Agent | 支持状态 | 推荐用法 |
+| --- | --- | --- |
+| <img src="https://img.shields.io/badge/Codex-ready-111827.svg?logo=openai&logoColor=white" alt="Codex" /> | 完整支持 | 生成教程内容、调整模板、渲染并检查 PDF。 |
+| <img src="https://img.shields.io/badge/Claude%20Code-ready-d97706.svg" alt="Claude Code" /> | 完整支持 | 编写长文教程、维护 README、批量调整样式。 |
+| <img src="https://img.shields.io/badge/Cursor-ready-000000.svg" alt="Cursor" /> | 完整支持 | 本地编辑 Markdown 和 CSS，快速预览输出。 |
+| <img src="https://img.shields.io/badge/Gemini%20CLI-ready-4285f4.svg?logo=googlegemini&logoColor=white" alt="Gemini CLI" /> | 完整支持 | 长上下文内容规划、批量教程整理。 |
+| <img src="https://img.shields.io/badge/OpenCode-ready-0f766e.svg" alt="OpenCode" /> | 完整支持 | CLI 工作流生成 PDF 和分享长图。 |
 
 ## 模板预览
 

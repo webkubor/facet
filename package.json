@@ -1,9 +1,30 @@
 {
   "name": "knowledge-pdf-kit",
   "version": "0.1.0",
+  "description": "Generate polished knowledge tutorial PDFs and shareable long images from Markdown with reusable content flow templates.",
   "private": false,
   "license": "MIT",
   "type": "module",
+  "keywords": [
+    "markdown-to-pdf",
+    "html-to-pdf",
+    "knowledge-pdf",
+    "tutorial-pdf",
+    "long-image",
+    "xiaohongshu",
+    "wechat",
+    "playwright",
+    "typescript",
+    "agent-ready"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/webkubor/knowledge-pdf-kit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/webkubor/knowledge-pdf-kit/issues"
+  },
+  "homepage": "https://github.com/webkubor/knowledge-pdf-kit#readme",
   "scripts": {
     "build": "tsx src/build.ts",
     "build:example": "tsx src/build.ts --input content/example.md --template warm-handbook --output output/example-warm-handbook.pdf",

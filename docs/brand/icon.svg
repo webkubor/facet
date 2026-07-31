@@ -1,0 +1,14 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Knowledge PDF Kit icon</title>
+  <desc id="desc">A layered document icon for Knowledge PDF Kit.</desc>
+  <rect width="256" height="256" rx="56" fill="#111827"/>
+  <path d="M72 46H158L196 84V210H72V46Z" fill="#FFFDF7"/>
+  <path d="M158 46V84H196" fill="#E9E2D6"/>
+  <path d="M92 112H172" stroke="#0F766E" stroke-width="10" stroke-linecap="round"/>
+  <path d="M92 140H164" stroke="#F59E0B" stroke-width="10" stroke-linecap="round"/>
+  <path d="M92 168H142" stroke="#4A8FFF" stroke-width="10" stroke-linecap="round"/>
+  <rect x="52" y="70" width="84" height="36" rx="18" fill="#0F766E"/>
+  <path d="M72 93V81H78.7C82.5 81 85.1 83.4 85.1 87C85.1 90.6 82.5 93 78.7 93H72ZM76.4 89.4H78.4C79.8 89.4 80.7 88.5 80.7 87C80.7 85.5 79.8 84.6 78.4 84.6H76.4V89.4Z" fill="white"/>
+  <path d="M87.5 93V81H97V84.5H91.9V86.2H96.5V89.5H91.9V93H87.5Z" fill="white"/>
+  <path d="M99.6 93V81H104V85.2L107.7 81H112.8L108.1 86.2L113 93H107.8L105 89L104 90.1V93H99.6Z" fill="white"/>
+</svg>
