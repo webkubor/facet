@@ -1,0 +1,161 @@
+:root {
+  --paper: #fffaf1;
+  --ink: #333333;
+  --muted: #7b6f64;
+  --faint: #eadfcd;
+  --soft: #fff3cf;
+  --accent: #ff6653;
+  --accent-2: #ffd56b;
+  --danger: #d94830;
+  --radius: 14px;
+  --display-font: "PingFang SC", "Microsoft YaHei", "Inter", sans-serif;
+}
+
+.cover-page {
+  background:
+    linear-gradient(90deg, var(--accent) 0 8px, transparent 8px),
+    radial-gradient(circle at 78% 26%, rgba(255, 213, 107, 0.58), transparent 15%),
+    radial-gradient(circle at 70% 62%, rgba(255, 102, 83, 0.13), transparent 19%),
+    linear-gradient(160deg, #fffdf6 0%, #fff6e4 58%, #fffaf1 100%);
+}
+
+.cover-kicker {
+  width: fit-content;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.cover-page h1 {
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 8px;
+}
+
+.cover-series {
+  color: #9a5b18;
+}
+
+.cover-highlights span {
+  border-color: #f3c98c;
+  background: #fff8e8;
+  color: #6f4e16;
+}
+
+.cover-note {
+  border-color: #f3c98c;
+  background: #fff0bd;
+  transform: rotate(-1deg);
+}
+
+.cover-note::after {
+  content: "好懂 / 好用 / 好分享";
+  display: block;
+  margin-top: 9px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 780;
+}
+
+.cover-roadmap div {
+  border-color: #f3c98c;
+  background: rgba(255, 248, 232, 0.86);
+}
+
+.toc-list a,
+.lesson-page blockquote {
+  border-radius: 12px;
+}
+
+.toc-page {
+  padding-left: 5mm;
+  padding-top: 2mm;
+  background:
+    linear-gradient(90deg, var(--accent) 0 4px, transparent 4px),
+    linear-gradient(#f3eadf 1px, transparent 1px),
+    #fffaf1;
+  background-size: auto, 100% 13mm, auto;
+}
+
+.page-header {
+  border-bottom-color: #e9d8bc;
+}
+
+.toc-hero {
+  padding: 18px 20px;
+  border: 1px solid #f3c98c;
+  border-radius: 16px;
+  background: #fff8e8;
+}
+
+.toc-list li {
+  border-color: #efd8b3;
+  background: rgba(255, 248, 232, 0.92);
+}
+
+.toc-number {
+  background: var(--accent);
+}
+
+.toc-guide section {
+  border-color: #f3c98c;
+  background: #fff8e8;
+}
+
+.lesson-page {
+  background:
+    linear-gradient(#f3eadf 1px, transparent 1px),
+    #fffaf1;
+  background-size: 100% 13mm;
+}
+
+.end-page {
+  background:
+    linear-gradient(#f3eadf 1px, transparent 1px),
+    radial-gradient(circle at 78% 18%, rgba(255, 213, 107, 0.44), transparent 14%),
+    #fffaf1;
+  background-size: 100% 13mm, auto, auto;
+}
+
+.end-grid section,
+.end-checklist {
+  border-color: #f3c98c;
+  background: rgba(255, 248, 232, 0.9);
+}
+
+.lesson-page > .page-header {
+  background: rgba(255, 250, 241, 0.86);
+}
+
+.lesson-page h2 {
+  border-top: 0;
+  color: #2f2b28;
+}
+
+.lesson-page h2::before {
+  content: "章节书签";
+  display: inline-block;
+  margin-right: 9px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #ffffff;
+  font-size: 11px;
+}
+
+.lesson-page h3 {
+  color: #b42318;
+}
+
+.lesson-page blockquote {
+  border: 1px solid #f2c98f;
+  border-left: 6px solid var(--accent);
+  background: #fff5d8;
+}
+
+.lesson-page th {
+  background: #ffe9a8;
+  color: #6f4e16;
+}

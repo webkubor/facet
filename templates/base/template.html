@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{title}}</title>
+    <style>
+      {{styles}}
+    </style>
+  </head>
+  <body class="template-{{template}}">
+    <div class="share-banner share-banner-top">
+      <strong>{{shareHeader}}</strong>
+      <span>{{subtitle}}</span>
+    </div>
+    <main class="document-shell">
+      <section class="cover-page">
+        <div class="cover-kicker">Knowledge PDF Kit</div>
+        <p class="cover-series">小红书 / 公众号知识教程</p>
+        <h1>{{title}}</h1>
+        <p class="cover-subtitle">{{subtitle}}</p>
+        <div class="cover-highlights" aria-label="学习收益">
+          <span>建立理解</span>
+          <span>套用方法</span>
+          <span>完成练习</span>
+        </div>
+        <div class="cover-note">
+          <strong>适合收藏反复看</strong>
+          <span>把复杂知识拆成可理解、可练习、可转发的学习路径。</span>
+        </div>
+        <div class="cover-roadmap" aria-label="内容结构">
+          <div>
+            <span>01</span>
+            <strong>概念讲清</strong>
+            <p>先用类比建立直觉</p>
+          </div>
+          <div>
+            <span>02</span>
+            <strong>方法拆解</strong>
+            <p>把步骤变成清单</p>
+          </div>
+          <div>
+            <span>03</span>
+            <strong>案例练习</strong>
+            <p>马上套进真实场景</p>
+          </div>
+          <div>
+            <span>04</span>
+            <strong>总结行动</strong>
+            <p>留下可复用模板</p>
+          </div>
+        </div>
+        <div class="cover-meta">
+          <span>{{date}}</span>
+          <span>{{author}}</span>
+        </div>
+      </section>
+
+      <section class="toc-page">
+        <header class="page-header">
+          <span>Knowledge PDF Kit</span>
+          <span>{{date}}</span>
+        </header>
+        <div class="toc-hero">
+          <p class="section-label">Contents</p>
+          <h2>目录</h2>
+          <p>按阅读节奏拆成概念、方法、练习和回顾，方便读者快速定位重点。</p>
+        </div>
+        {{toc}}
+        <div class="toc-guide" aria-label="阅读指南">
+          <section>
+            <span>How to read</span>
+            <strong>建议读法</strong>
+            <p>先看概念建立直觉，再用公式和案例完成一次真实练习。</p>
+          </section>
+          <section>
+            <span>Takeaway</span>
+            <strong>读完能带走什么</strong>
+            <p>一套可复用的方法、一张行动清单、一个可继续迭代的模板。</p>
+          </section>
+          <section>
+            <span>Share</span>
+            <strong>适合分享给谁</strong>
+            <p>正在学习 AI、写作、内容创作或知识管理的朋友。</p>
+          </section>
+        </div>
+      </section>
+
+      <article class="content-pages">
+        {{body}}
+      </article>
+
+      <section class="end-page">
+        <header class="page-header">
+          <span>Final Review</span>
+          <span>{{date}}</span>
+        </header>
+        <p class="section-label">Review</p>
+        <h2>重点回顾 & 行动清单</h2>
+        <p class="end-lede">读完不是结束，把这页当成下一次行动前的检查表。</p>
+        <div class="end-grid">
+          <section>
+            <span>01</span>
+            <strong>核心理解</strong>
+            <p>AI 是能力放大器。输入越清楚，输出越稳定，越容易复用。</p>
+          </section>
+          <section>
+            <span>02</span>
+            <strong>可用公式</strong>
+            <p>角色、任务、背景、格式，是大多数提示词可以先套用的基本骨架。</p>
+          </section>
+          <section>
+            <span>03</span>
+            <strong>练习方式</strong>
+            <p>从一个真实主题开始，生成多个版本，再按读者和平台筛选。</p>
+          </section>
+        </div>
+        <div class="end-checklist">
+          <h3>下一步就做这 3 件事</h3>
+          <ol>
+            <li>选一个你最近要写或要整理的主题。</li>
+            <li>用四要素公式写一版提示词，并让 AI 输出三个版本。</li>
+            <li>保存最有效的一版，放进自己的提示词素材库。</li>
+          </ol>
+        </div>
+        <div class="end-cta">
+          <strong>觉得有用，就收藏起来。</strong>
+          <span>下次遇到模糊任务时，先回到这张清单。</span>
+        </div>
+      </section>
+    </main>
+    <div class="share-banner share-banner-bottom">
+      <strong>{{shareFooter}}</strong>
+      <span>{{author}} · {{date}}</span>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,151 @@
+:root {
+  --paper: #fbf8f1;
+  --ink: #1a1a1a;
+  --muted: #756f67;
+  --faint: #e3d8c8;
+  --soft: #f6efe3;
+  --accent: #5b6f61;
+  --accent-2: #c75b4a;
+  --danger: #b4533f;
+  --radius: 10px;
+  --display-font: "Songti SC", "STSong", "PingFang SC", serif;
+  --body-font: "PingFang SC", "Microsoft YaHei", "Inter", sans-serif;
+}
+
+.cover-page {
+  background:
+    radial-gradient(circle at 78% 62%, rgba(199, 91, 74, 0.16), transparent 18%),
+    radial-gradient(circle at 76% 22%, rgba(91, 111, 97, 0.16), transparent 15%),
+    linear-gradient(160deg, #fffdfa 0%, #fbf8f1 70%, #f4ead8 100%);
+}
+
+.cover-kicker {
+  color: var(--accent);
+}
+
+.cover-page h1 {
+  max-width: 136mm;
+  font-size: 42px;
+  font-weight: 780;
+}
+
+.cover-subtitle {
+  color: #433f39;
+}
+
+.cover-highlights span {
+  border-color: #d8cbbb;
+  background: rgba(255, 253, 250, 0.72);
+  color: #4f5f54;
+}
+
+.cover-note {
+  border-color: #d8cbbb;
+  background: #f6efe3;
+}
+
+.cover-note strong {
+  color: var(--accent-2);
+}
+
+.cover-roadmap div {
+  border-color: #d8cbbb;
+  background: rgba(255, 253, 250, 0.78);
+}
+
+.cover-roadmap span {
+  background: var(--accent-2);
+}
+
+.cover-meta {
+  border-top-color: #d8cbbb;
+}
+
+.toc-page,
+.lesson-page,
+.end-page {
+  background:
+    linear-gradient(90deg, transparent 0 72%, rgba(246, 239, 227, 0.92) 72% 100%),
+    var(--paper);
+}
+
+.toc-hero {
+  padding-bottom: 14px;
+  border-bottom: 1px solid #d8cbbb;
+}
+
+.toc-list li {
+  border-color: #d8cbbb;
+  background: rgba(255, 253, 250, 0.78);
+}
+
+.toc-number {
+  background: var(--accent);
+}
+
+.toc-guide section {
+  border-color: #d8cbbb;
+  background: #fffdfa;
+}
+
+.toc-guide span {
+  color: var(--accent-2);
+}
+
+.end-grid section,
+.end-checklist {
+  border-color: #d8cbbb;
+  background: #fffdfa;
+}
+
+.end-grid span {
+  background: var(--accent-2);
+}
+
+.lesson-page > .page-header {
+  border-bottom-color: #d8cbbb;
+}
+
+.lesson-page h1,
+.lesson-page h2 {
+  font-weight: 760;
+}
+
+.lesson-page h2 {
+  border-top-color: #d8cbbb;
+}
+
+.lesson-page h2::before {
+  content: "课程节点";
+  display: inline-block;
+  margin-right: 9px;
+  padding: 2px 7px;
+  border-radius: 3px;
+  background: var(--accent);
+  color: #ffffff;
+  font-family: var(--body-font);
+  font-size: 11px;
+}
+
+.lesson-page h3 {
+  color: var(--accent);
+}
+
+.lesson-page blockquote {
+  border: 1px solid #e6d3ad;
+  border-left: 5px solid var(--accent-2);
+  background: #fff4dc;
+}
+
+.lesson-page table {
+  background: #fffdfa;
+}
+
+.lesson-page th {
+  background: #eee5d6;
+  color: #4f5f54;
+}
+
+.lesson-page pre {
+  background: #25211d;
+}

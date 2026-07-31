@@ -1,0 +1,136 @@
+:root {
+  --paper: #ffffff;
+  --ink: #0b1f3a;
+  --muted: #5f6b7a;
+  --faint: #e2e8f0;
+  --soft: #f5f7fa;
+  --accent: #0fa169;
+  --accent-2: #0b1f3a;
+  --danger: #b45309;
+  --radius: 8px;
+  --display-font: "PingFang SC", "Microsoft YaHei", "Inter", sans-serif;
+}
+
+.cover-page {
+  background:
+    linear-gradient(135deg, transparent 0 54%, #0b1f3a 54% 75%, #0fa169 75% 100%),
+    #ffffff;
+}
+
+.cover-kicker {
+  color: var(--ink);
+}
+
+.cover-page h1 {
+  max-width: 122mm;
+  color: var(--ink);
+}
+
+.cover-subtitle {
+  color: var(--accent);
+  font-weight: 760;
+}
+
+.cover-highlights span {
+  border-color: #d9e4ea;
+  background: #f7faf9;
+  color: var(--ink);
+}
+
+.cover-note {
+  border-left: 7px solid var(--accent);
+  background: #eef7f3;
+}
+
+.cover-roadmap div {
+  border-color: #d9e4ea;
+  background: #ffffff;
+}
+
+.cover-meta {
+  border-top-color: rgba(255, 255, 255, 0.5);
+}
+
+.section-label {
+  color: var(--accent);
+}
+
+.toc-page {
+  background:
+    linear-gradient(180deg, #f6fbf9 0 52mm, transparent 52mm),
+    #ffffff;
+}
+
+.toc-hero {
+  max-width: 122mm;
+  padding: 18px 20px;
+  border: 1px solid #d9e4ea;
+  border-left: 7px solid var(--accent);
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.toc-list {
+  grid-template-columns: 1fr 1fr;
+}
+
+.toc-list li {
+  border-color: #d9e4ea;
+  background: #ffffff;
+}
+
+.toc-level-3 {
+  margin-left: 0;
+}
+
+.toc-list a {
+  font-weight: 650;
+}
+
+.toc-guide section {
+  border-color: #d9e4ea;
+  background: #f7faf9;
+}
+
+.lesson-page h1 {
+  border-bottom-color: var(--accent);
+}
+
+.end-page {
+  background:
+    linear-gradient(180deg, #f6fbf9 0 58mm, transparent 58mm),
+    #ffffff;
+}
+
+.end-grid section,
+.end-checklist {
+  border-color: #d9e4ea;
+  background: #f7faf9;
+}
+
+.lesson-page h2 {
+  border-top: 0;
+  padding-left: 12px;
+  border-left: 6px solid var(--accent);
+}
+
+.lesson-page h3 {
+  color: var(--accent);
+}
+
+.lesson-page blockquote {
+  border: 0;
+  border-left: 6px solid var(--accent);
+  background: #eef7f3;
+  color: #163b31;
+  font-weight: 620;
+}
+
+.lesson-page th {
+  background: #e2f3ec;
+  color: #087a50;
+}
+
+.lesson-page pre {
+  background: #0b1f3a;
+}

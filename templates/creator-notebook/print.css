@@ -1,0 +1,183 @@
+:root {
+  --paper: #fffdf7;
+  --ink: #111111;
+  --muted: #6b7280;
+  --faint: #e9e2d6;
+  --soft: #f7f0ff;
+  --accent: #4a8fff;
+  --accent-2: #ff4d4f;
+  --danger: #ff4d4f;
+  --radius: 13px;
+  --display-font: "PingFang SC", "Microsoft YaHei", "Inter", sans-serif;
+}
+
+.cover-page {
+  background:
+    linear-gradient(#f3eadf 1px, transparent 1px),
+    linear-gradient(90deg, #f3eadf 1px, transparent 1px),
+    radial-gradient(circle at 80% 22%, rgba(255, 77, 79, 0.18), transparent 13%),
+    radial-gradient(circle at 72% 58%, rgba(74, 143, 255, 0.18), transparent 18%),
+    #fffdf7;
+  background-size: 18px 18px;
+}
+
+.cover-kicker {
+  width: fit-content;
+  padding: 7px 11px;
+  border-radius: 4px;
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.cover-page h1 {
+  font-size: 48px;
+  font-weight: 900;
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 4px;
+  text-underline-offset: 8px;
+}
+
+.cover-subtitle {
+  color: #333333;
+  font-size: 19px;
+  font-weight: 760;
+}
+
+.cover-highlights span {
+  border: 2px solid #111111;
+  border-radius: 7px;
+  background: #ffffff;
+}
+
+.cover-note {
+  border: 2px solid #111111;
+  background: #fff4df;
+  box-shadow: 7px 7px 0 #4a8fff;
+  transform: rotate(1deg);
+}
+
+.cover-note::after {
+  content: "清晰结构 / 视觉化讲解 / 实用案例 / 总结回顾";
+  display: block;
+  margin-top: 9px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 780;
+}
+
+.cover-roadmap div {
+  border: 2px solid #111111;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.cover-roadmap div:nth-child(even) {
+  transform: rotate(1deg);
+}
+
+.cover-roadmap div:nth-child(odd) {
+  transform: rotate(-1deg);
+}
+
+.toc-page,
+.lesson-page,
+.end-page {
+  background:
+    linear-gradient(#ece6dc 1px, transparent 1px),
+    linear-gradient(90deg, #ece6dc 1px, transparent 1px),
+    #fffdf7;
+  background-size: 18px 18px;
+}
+
+.toc-hero {
+  position: relative;
+  padding: 16px 18px;
+  border: 2px solid #111111;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.toc-hero::after {
+  content: "记得收藏";
+  position: absolute;
+  right: 16px;
+  top: -13px;
+  padding: 5px 9px;
+  border-radius: 4px;
+  background: #ffd166;
+  color: #111111;
+  font-size: 11px;
+  font-weight: 760;
+  transform: rotate(2deg);
+}
+
+.toc-list li {
+  border: 2px solid #111111;
+  background: #ffffff;
+}
+
+.toc-level-3 {
+  border-style: dashed;
+}
+
+.toc-number {
+  background: var(--accent);
+  border-radius: 6px;
+}
+
+.toc-guide section {
+  border: 2px solid #111111;
+  background: #ffffff;
+}
+
+.toc-guide section:nth-child(2) {
+  box-shadow: 5px 5px 0 #ffd166;
+}
+
+.end-grid section,
+.end-checklist {
+  border: 2px solid #111111;
+  background: #ffffff;
+}
+
+.end-checklist {
+  box-shadow: 7px 7px 0 #ffd166;
+}
+
+.lesson-page h2 {
+  border-top: 0;
+}
+
+.lesson-page h2::after {
+  content: "";
+  display: block;
+  width: 72px;
+  height: 4px;
+  margin-top: 6px;
+  background: var(--accent);
+}
+
+.lesson-page h3 {
+  width: fit-content;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #eaf2ff;
+  color: #1d4ed8;
+}
+
+.lesson-page blockquote {
+  border: 1px solid #ffd6a8;
+  border-left: 6px solid var(--accent-2);
+  background: #fff4df;
+}
+
+.lesson-page th {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.lesson-page :not(pre) > code {
+  background: #eef4ff;
+  color: #1d4ed8;
+}

@@ -1,0 +1,7 @@
+node_modules/
+output/*.pdf
+output/*.html
+output/*.png
+output/*.json
+tmp/
+.DS_Store

@@ -1,0 +1,25 @@
+{
+  "name": "knowledge-pdf-kit",
+  "version": "0.1.0",
+  "private": false,
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "tsx src/build.ts",
+    "build:example": "tsx src/build.ts --input content/example.md --template warm-handbook --output output/example-warm-handbook.pdf",
+    "build:all": "tsx src/build.ts --input content/example.md --all",
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "highlight.js": "^11.11.1",
+    "markdown-it": "^14.1.0",
+    "playwright": "^1.54.2"
+  },
+  "devDependencies": {
+    "@types/markdown-it": "^14.1.2",
+    "@types/node": "^24.1.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  },
+  "packageManager": "pnpm@11.1.2"
+}
