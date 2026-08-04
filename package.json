@@ -34,6 +34,7 @@
     "build": "tsx src/build.ts",
     "build:example": "tsx src/build.ts --input content/example.md --template warm-handbook --output output/example-warm-handbook.pdf",
     "build:all": "tsx src/build.ts --input content/example.md --all",
+    "setup:browsers": "playwright install chromium",
     "check": "tsc --noEmit"
   },
   "dependencies": {

@@ -35,6 +35,7 @@ Knowledge PDF Kit 面向小红书、公众号、社群课程和知识付费资�
 
 ```bash
 pnpm install
+pnpm setup:browsers
 pnpm build:all
 ```
 
