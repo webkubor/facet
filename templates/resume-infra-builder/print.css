@@ -62,6 +62,3 @@
   background: linear-gradient(90deg, var(--accent-2) 0 34px, var(--faint) 34px 100%) left bottom / 100% 1.5px no-repeat;
 }
 
-.resume-section-body strong {
-  color: var(--accent);
-}

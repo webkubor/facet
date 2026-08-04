@@ -7,12 +7,21 @@ import path from "node:path";
 import { parseArgs } from "./args.js";
 import { buildPdf } from "./build-one.js";
 import { loadDotEnv } from "./env.js";
+import { measureResumeLayout } from "./browser-output.js";
 import { planArticlePages, writePagePlan } from "./content-flow.js";
 import { buildToc, parseMarkdownDocument, renderMarkdown } from "./markdown.js";
 import { createPageChrome, renderArticlePlan } from "./page-renderer.js";
 import { projectRoot } from "./paths.js";
-import { renderResumeDocument, writeResumePagePlan } from "./resume-flow.js";
+import {
+  packResumeSections,
+  parseResumeParts,
+  renderResumeDocumentFromGroups,
+  renderResumeMeasureDocument,
+  writeResumePagePlan
+} from "./resume-flow.js";
+import { renderTemplate } from "./template-renderer.js";
 import { loadThemeOverride } from "./theme.js";
+import type { TemplateName } from "./types.js";
 import { isResumeTemplate, resumeTemplateNames, tutorialTemplateNames } from "./types.js";
 
 async function main(): Promise<void> {
@@ -33,21 +42,35 @@ async function main(): Promise<void> {
   }
 
   if (isResume) {
-    const bodyHtml = renderResumeDocument(renderedMarkdown, toc, parsed.meta, pageChrome);
-    await writeResumePagePlan(inputPath, renderedMarkdown, toc);
+    const parts = parseResumeParts(renderedMarkdown, toc);
+
+    // 分页由真实模板的量测结果驱动：不同模板的字体/间距不同，分组按模板各算各的。
+    const buildResumeFor = async (resumeTemplateName: TemplateName, outputPath: string, writePlan: boolean): Promise<void> => {
+      const measureBody = renderResumeMeasureDocument(parts, parsed.meta, pageChrome);
+      const measureHtml = await renderTemplate(parsed.meta, measureBody, toc, resumeTemplateName, themeOverride);
+      const measure = await measureResumeLayout(measureHtml);
+      const groups = packResumeSections(parts, measure);
+      const bodyHtml = renderResumeDocumentFromGroups(parts, groups, parsed.meta, pageChrome);
+
+      if (writePlan) {
+        await writeResumePagePlan(inputPath, groups, measure);
+      }
+
+      await buildPdf({ meta: parsed.meta, bodyHtml, toc, outputPath, templateName: resumeTemplateName, share: options.share, themeOverride });
+    };
 
     if (options.all) {
       const inputName = path.basename(inputPath, path.extname(inputPath));
-      for (const resumeTemplateName of resumeTemplateNames) {
+      for (const [index, resumeTemplateName] of resumeTemplateNames.entries()) {
         const outputPath = path.resolve(projectRoot, `output/${inputName}-${resumeTemplateName}.pdf`);
-        await buildPdf({ meta: parsed.meta, bodyHtml, toc, outputPath, templateName: resumeTemplateName, share: options.share, themeOverride });
+        await buildResumeFor(resumeTemplateName, outputPath, index === 0);
       }
 
       return;
     }
 
     const outputPath = path.resolve(projectRoot, options.outputProvided ? options.output : createDefaultOutput(inputPath, templateName));
-    await buildPdf({ meta: parsed.meta, bodyHtml, toc, outputPath, templateName, share: options.share, themeOverride });
+    await buildResumeFor(templateName, outputPath, true);
     return;
   }
 

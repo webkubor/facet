@@ -8,47 +8,105 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { projectRoot } from "./paths.js";
 
-interface ResumePlan {
+export interface ResumeParts {
   introHtml: string;
   sections: HtmlSection[];
-  groups: HtmlSection[][];
 }
 
-/** 渲染简历页面。 */
-export function renderResumeDocument(html: string, toc: TocItem[], meta: DocumentMeta, pageChrome: PageChrome): string {
-  const plan = planResumeDocument(html, toc);
-  const firstGroup = plan.groups[0] ?? [];
-  const restGroups = plan.groups.slice(1);
+export interface ResumeMeasure {
+  page1Budget: number;
+  bodyBudget: number;
+  gap: number;
+  cardHeights: number[];
+}
+
+/** 打印度量与屏幕度量存在 1-2px 漂移，装箱时预留安全余量。 */
+const PACK_SAFETY_PX = 8;
+const MEASURE_DUMMY_TITLE = "量测占位标题量测占位标题量测占位标题量测占位标题量测占位标题量测占位标题量测占位标题";
+
+/** 解析简历导语与章节。 */
+export function parseResumeParts(html: string, toc: TocItem[]): ResumeParts {
+  return {
+    introHtml: stripFirstHeading(getIntroHtml(html)),
+    sections: parseResumeSections(addHeadingIds(html, toc))
+  };
+}
+
+/** 生成量测文档：首页留空槽位测预算，正文页测预算与每张卡片实际像素高。 */
+export function renderResumeMeasureDocument(parts: ResumeParts, meta: DocumentMeta, pageChrome: PageChrome): string {
+  const cards = parts.sections.map((section) => renderResumeSection(section)).join("\n");
 
   return [
-    renderResumeFirstPage(meta, plan.introHtml, plan.sections, firstGroup, pageChrome),
+    `<style>[data-measure="slot"] { flex: 1 1 auto; }</style>`,
+    renderResumeFirstPage(meta, parts.introHtml, parts.sections, [], pageChrome, true),
+    renderMeasureBodyPage(`<div class="resume-sections" data-measure="slot"></div>`),
+    renderMeasureBodyPage(`<div class="resume-sections" data-measure="cards">${cards}</div>`)
+  ].join("\n");
+}
+
+/** 按真实像素预算贪心装箱分页。 */
+export function packResumeSections(parts: ResumeParts, measure: ResumeMeasure): HtmlSection[][] {
+  const groups: HtmlSection[][] = [];
+  let current: HtmlSection[] = [];
+  let used = 0;
+  let budget = Math.max(measure.page1Budget - PACK_SAFETY_PX, 0);
+
+  parts.sections.forEach((section, index) => {
+    section.heightPx = measure.cardHeights[index] ?? 0;
+    const need = current.length > 0 ? section.heightPx + measure.gap : section.heightPx;
+
+    if (current.length > 0 && used + need > budget) {
+      groups.push(current);
+      current = [];
+      used = 0;
+      budget = Math.max(measure.bodyBudget - PACK_SAFETY_PX, 0);
+    }
+
+    current.push(section);
+    used += current.length > 1 ? section.heightPx + measure.gap : section.heightPx;
+  });
+
+  if (current.length > 0) {
+    groups.push(current);
+  }
+
+  return groups;
+}
+
+/** 按量测得到的分组渲染简历页面。 */
+export function renderResumeDocumentFromGroups(parts: ResumeParts, groups: HtmlSection[][], meta: DocumentMeta, pageChrome: PageChrome): string {
+  const firstGroup = groups[0] ?? [];
+  const restGroups = groups.slice(1);
+
+  return [
+    renderResumeFirstPage(meta, parts.introHtml, parts.sections, firstGroup, pageChrome),
     ...restGroups.map((group, index) => renderResumeBodyPage(group, index + 2, pageChrome))
   ].join("\n");
 }
 
 /** 输出简历 page-plan.json。 */
-export async function writeResumePagePlan(inputPath: string, html: string, toc: TocItem[]): Promise<void> {
-  const plan = planResumeDocument(html, toc);
+export async function writeResumePagePlan(inputPath: string, groups: HtmlSection[][], measure: ResumeMeasure): Promise<void> {
   const inputName = path.basename(inputPath, path.extname(inputPath));
   const outputPath = path.join(projectRoot, "output", `${inputName}-page-plan.json`);
   const payload = {
     flow: "resume hero -> selected focus -> experience groups -> evidence-backed capabilities",
     contract: {
-      templateIndependent: true,
-      goal: "先按职业叙事选择业务线和项目群，再套用任意简历视觉模板。",
-      maxGroupWeight: 2050,
-      firstGroupWeight: 1000,
+      templateIndependent: false,
+      goal: "先在真实模板与打印宽度下量测每个章节的像素高，再按每页真实预算装箱分页。",
+      page1BudgetPx: measure.page1Budget,
+      bodyBudgetPx: measure.bodyBudget,
+      packSafetyPx: PACK_SAFETY_PX,
       firstPageRole: "定位、摘要、精选业务线和第一组经历"
     },
-    pages: plan.groups.map((group, index) => ({
+    pages: groups.map((group, index) => ({
       page: index + 1,
       role: index === 0 ? "resume-cover-and-primary-experience" : "resume-experience",
       title: group.map((section) => section.title).join(" / "),
-      weight: group.reduce((sum, section) => sum + section.weight, 0),
+      heightPx: group.reduce((sum, section) => sum + (section.heightPx ?? 0), 0),
       sections: group.map((section) => ({
         id: section.id,
         title: section.title,
-        weight: section.weight
+        heightPx: section.heightPx ?? 0
       }))
     }))
   };
@@ -58,14 +116,18 @@ export async function writeResumePagePlan(inputPath: string, html: string, toc: 
   console.log(`Page plan written: ${path.relative(projectRoot, outputPath)}`);
 }
 
-function planResumeDocument(html: string, toc: TocItem[]): ResumePlan {
-  const sections = parseResumeSections(addHeadingIds(html, toc));
-
-  return {
-    introHtml: stripFirstHeading(getIntroHtml(html)),
-    sections,
-    groups: groupResumeSections(sections)
-  };
+function renderMeasureBodyPage(sectionsHtml: string): string {
+  return [
+    `<section class="resume-page resume-body-page">`,
+    `<header class="resume-page-header"><span>measure</span><span>measure</span></header>`,
+    `<div class="resume-page-title">`,
+    `<p class="resume-label">Experience 00</p>`,
+    `<h2>${MEASURE_DUMMY_TITLE}</h2>`,
+    `</div>`,
+    sectionsHtml,
+    `<footer class="resume-page-footer"><span>measure</span><span>measure</span></footer>`,
+    `</section>`
+  ].join("\n");
 }
 
 function renderResumeFirstPage(
@@ -73,7 +135,8 @@ function renderResumeFirstPage(
   introHtml: string,
   sections: HtmlSection[],
   firstGroup: HtmlSection[],
-  pageChrome: PageChrome
+  pageChrome: PageChrome,
+  measureMode = false
 ): string {
   const snapshotCards = sections.slice(0, 4).map((section, index) => [
     `<section>`,
@@ -102,7 +165,7 @@ function renderResumeFirstPage(
     `<p class="resume-label">Selected Focus</p>`,
     `<div class="resume-snapshot-grid">${snapshotCards}</div>`,
     `</div>`,
-    `<div class="resume-sections resume-primary-sections">${primarySections}</div>`,
+    `<div class="resume-sections resume-primary-sections"${measureMode ? ` data-measure="slot"` : ""}>${primarySections}</div>`,
     meta.motto ? `<p class="resume-motto">「${escapeHtml(meta.motto)}」</p>` : "",
     renderPageFooter(pageChrome),
     `</section>`
@@ -160,32 +223,6 @@ function parseResumeSections(html: string): HtmlSection[] {
         weight: estimateResumeWeight(section)
       };
     });
-}
-
-function groupResumeSections(sections: HtmlSection[]): HtmlSection[][] {
-  const pages: HtmlSection[][] = [];
-  let current: HtmlSection[] = [];
-  let currentWeight = 0;
-  let maxWeight = 1000;
-
-  for (const section of sections) {
-    const wouldOverflow = current.length > 0 && currentWeight + section.weight > maxWeight;
-    if (wouldOverflow) {
-      pages.push(current);
-      current = [];
-      currentWeight = 0;
-      maxWeight = 2400;
-    }
-
-    current.push(section);
-    currentWeight += section.weight;
-  }
-
-  if (current.length > 0) {
-    pages.push(current);
-  }
-
-  return pages;
 }
 
 function getIntroHtml(html: string): string {

@@ -67,6 +67,8 @@ export interface HtmlSection {
   title: string;
   html: string;
   weight: number;
+  /** 打印宽度下量测出的实际像素高（简历流装箱分页用）。 */
+  heightPx?: number;
 }
 
 /** 模板无关的正文分页计划。 */

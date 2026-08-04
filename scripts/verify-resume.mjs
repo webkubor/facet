@@ -47,10 +47,16 @@ for (const htmlPath of files) {
         const children = Array.from(el.children).filter((c) => !c.classList.contains("resume-page-footer"));
         const contentBottom = Math.max(...children.map((c) => c.getBoundingClientRect().bottom - el.getBoundingClientRect().top), 0);
         const title = el.querySelector(".resume-page-title h2");
+        const cards = Array.from(el.querySelectorAll(".resume-section-card")).map((c) => c.getBoundingClientRect());
+        let maxGap = 0;
+        for (let i = 1; i < cards.length; i += 1) {
+          maxGap = Math.max(maxGap, Math.round(cards[i].top - cards[i - 1].bottom));
+        }
         return {
           page: index + 1,
           offsetHeight: el.offsetHeight,
           fillRatio: Math.round((contentBottom / a4) * 100),
+          maxGap,
           titleLines: title ? Math.round(title.clientHeight / (parseFloat(getComputedStyle(title).lineHeight) || 30)) : 0
         };
       }),
@@ -64,6 +70,7 @@ for (const htmlPath of files) {
     report(p.titleLines <= 2, `第 ${p.page} 页大标题 ${p.titleLines} 行 ≤ 2 行`);
     const maxBlank = isLast ? 25 : 15;
     report(100 - p.fillRatio <= maxBlank, `第 ${p.page} 页留白 ${100 - p.fillRatio}% ≤ ${maxBlank}%`);
+    report(p.maxGap <= 120, `第 ${p.page} 页卡片间最大空洞 ${p.maxGap}px ≤ 120px`);
   }
 
   const pdfBuf = readFileSync(pdfPath).toString("latin1");
