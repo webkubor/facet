@@ -20,8 +20,16 @@ export interface ResumeMeasure {
   cardHeights: number[];
 }
 
+export interface ResumeGroup {
+  sections: HtmlSection[];
+  /** 页内富余摊进卡片间距的增量（有上限，防止大空洞）。 */
+  extraGapPx: number;
+}
+
 /** 打印度量与屏幕度量存在 1-2px 漂移，装箱时预留安全余量。 */
 const PACK_SAFETY_PX = 8;
+/** 单个卡片间隙最多吃掉的富余（加上基础 7px 后仍远低于 120px 空洞门禁）。 */
+const MAX_EXTRA_GAP_PX = 56;
 const MEASURE_DUMMY_TITLE = "量测占位标题量测占位标题量测占位标题量测占位标题量测占位标题量测占位标题量测占位标题";
 
 /** 解析简历导语与章节。 */
@@ -36,29 +44,40 @@ export function parseResumeParts(html: string, toc: TocItem[]): ResumeParts {
 export function renderResumeMeasureDocument(parts: ResumeParts, meta: DocumentMeta, pageChrome: PageChrome): string {
   const cards = parts.sections.map((section) => renderResumeSection(section)).join("\n");
 
+  // 预算槽位页带上座右铭一起量：正式渲染时座右铭落在末页，所有正文页按含座右铭的保守预算装箱。
   return [
     `<style>[data-measure="slot"] { flex: 1 1 auto; }</style>`,
     renderResumeFirstPage(meta, parts.introHtml, parts.sections, [], pageChrome, true),
-    renderMeasureBodyPage(`<div class="resume-sections" data-measure="slot"></div>`),
+    renderMeasureBodyPage(`<div class="resume-sections" data-measure="slot"></div>`, meta.motto),
     renderMeasureBodyPage(`<div class="resume-sections" data-measure="cards">${cards}</div>`)
   ].join("\n");
 }
 
-/** 按真实像素预算贪心装箱分页。 */
-export function packResumeSections(parts: ResumeParts, measure: ResumeMeasure): HtmlSection[][] {
-  const groups: HtmlSection[][] = [];
+/** 按真实像素预算贪心装箱分页，并把每页富余按上限摊进卡片间距。 */
+export function packResumeSections(parts: ResumeParts, measure: ResumeMeasure): ResumeGroup[] {
+  const groups: ResumeGroup[] = [];
   let current: HtmlSection[] = [];
   let used = 0;
+  let isFirstPage = true;
   let budget = Math.max(measure.page1Budget - PACK_SAFETY_PX, 0);
+
+  const closeGroup = () => {
+    const slack = Math.max(budget - used, 0);
+    const gapCount = Math.max(current.length - 1, 0);
+    const extraGapPx = isFirstPage || gapCount === 0 ? 0 : Math.min(MAX_EXTRA_GAP_PX, Math.floor(slack / gapCount));
+    groups.push({ sections: current, extraGapPx });
+    current = [];
+    used = 0;
+  };
 
   parts.sections.forEach((section, index) => {
     section.heightPx = measure.cardHeights[index] ?? 0;
     const need = current.length > 0 ? section.heightPx + measure.gap : section.heightPx;
 
-    if (current.length > 0 && used + need > budget) {
-      groups.push(current);
-      current = [];
-      used = 0;
+    // 首页预算装不下第一个章节时，允许首页不放章节（只留 hero/摘要/聚焦卡），章节从第二页开始。
+    if (used + need > budget && (current.length > 0 || isFirstPage)) {
+      closeGroup();
+      isFirstPage = false;
       budget = Math.max(measure.bodyBudget - PACK_SAFETY_PX, 0);
     }
 
@@ -67,25 +86,27 @@ export function packResumeSections(parts: ResumeParts, measure: ResumeMeasure): 
   });
 
   if (current.length > 0) {
-    groups.push(current);
+    closeGroup();
   }
 
   return groups;
 }
 
-/** 按量测得到的分组渲染简历页面。 */
-export function renderResumeDocumentFromGroups(parts: ResumeParts, groups: HtmlSection[][], meta: DocumentMeta, pageChrome: PageChrome): string {
-  const firstGroup = groups[0] ?? [];
+/** 按量测得到的分组渲染简历页面；座右铭固定渲染在最后一页收尾。 */
+export function renderResumeDocumentFromGroups(parts: ResumeParts, groups: ResumeGroup[], meta: DocumentMeta, pageChrome: PageChrome): string {
+  const firstGroup = groups[0]?.sections ?? [];
   const restGroups = groups.slice(1);
 
   return [
-    renderResumeFirstPage(meta, parts.introHtml, parts.sections, firstGroup, pageChrome),
-    ...restGroups.map((group, index) => renderResumeBodyPage(group, index + 2, pageChrome))
+    renderResumeFirstPage(meta, parts.introHtml, parts.sections, firstGroup, pageChrome, false, restGroups.length === 0),
+    ...restGroups.map((group, index) =>
+      renderResumeBodyPage(group, index + 2, pageChrome, index === restGroups.length - 1 ? meta.motto : "")
+    )
   ].join("\n");
 }
 
 /** 输出简历 page-plan.json。 */
-export async function writeResumePagePlan(inputPath: string, groups: HtmlSection[][], measure: ResumeMeasure): Promise<void> {
+export async function writeResumePagePlan(inputPath: string, groups: ResumeGroup[], measure: ResumeMeasure): Promise<void> {
   const inputName = path.basename(inputPath, path.extname(inputPath));
   const outputPath = path.join(projectRoot, "output", `${inputName}-page-plan.json`);
   const payload = {
@@ -101,9 +122,10 @@ export async function writeResumePagePlan(inputPath: string, groups: HtmlSection
     pages: groups.map((group, index) => ({
       page: index + 1,
       role: index === 0 ? "resume-cover-and-primary-experience" : "resume-experience",
-      title: group.map((section) => section.title).join(" / "),
-      heightPx: group.reduce((sum, section) => sum + (section.heightPx ?? 0), 0),
-      sections: group.map((section) => ({
+      title: group.sections.map((section) => section.title).join(" / "),
+      heightPx: group.sections.reduce((sum, section) => sum + (section.heightPx ?? 0), 0),
+      extraGapPx: group.extraGapPx,
+      sections: group.sections.map((section) => ({
         id: section.id,
         title: section.title,
         heightPx: section.heightPx ?? 0
@@ -116,7 +138,7 @@ export async function writeResumePagePlan(inputPath: string, groups: HtmlSection
   console.log(`Page plan written: ${path.relative(projectRoot, outputPath)}`);
 }
 
-function renderMeasureBodyPage(sectionsHtml: string): string {
+function renderMeasureBodyPage(sectionsHtml: string, motto = ""): string {
   return [
     `<section class="resume-page resume-body-page">`,
     `<header class="resume-page-header"><span>measure</span><span>measure</span></header>`,
@@ -125,6 +147,7 @@ function renderMeasureBodyPage(sectionsHtml: string): string {
     `<h2>${MEASURE_DUMMY_TITLE}</h2>`,
     `</div>`,
     sectionsHtml,
+    motto ? `<p class="resume-motto">「${escapeHtml(motto)}」</p>` : "",
     `<footer class="resume-page-footer"><span>measure</span><span>measure</span></footer>`,
     `</section>`
   ].join("\n");
@@ -136,7 +159,8 @@ function renderResumeFirstPage(
   sections: HtmlSection[],
   firstGroup: HtmlSection[],
   pageChrome: PageChrome,
-  measureMode = false
+  measureMode = false,
+  includeMotto = true
 ): string {
   const snapshotCards = sections.slice(0, 4).map((section, index) => [
     `<section>`,
@@ -166,15 +190,16 @@ function renderResumeFirstPage(
     `<div class="resume-snapshot-grid">${snapshotCards}</div>`,
     `</div>`,
     `<div class="resume-sections resume-primary-sections"${measureMode ? ` data-measure="slot"` : ""}>${primarySections}</div>`,
-    meta.motto ? `<p class="resume-motto">「${escapeHtml(meta.motto)}」</p>` : "",
+    meta.motto && includeMotto ? `<p class="resume-motto">「${escapeHtml(meta.motto)}」</p>` : "",
     renderPageFooter(pageChrome),
     `</section>`
   ].join("\n");
 }
 
-function renderResumeBodyPage(sections: HtmlSection[], pageNumber: number, pageChrome: PageChrome): string {
-  const titles = sections.map((section) => section.title);
+function renderResumeBodyPage(group: ResumeGroup, pageNumber: number, pageChrome: PageChrome, motto = ""): string {
+  const titles = group.sections.map((section) => section.title);
   const pageTitle = titles.length > 2 ? `${titles.slice(0, 2).join(" / ")} 等` : titles.join(" / ");
+  const gapStyle = group.extraGapPx > 0 ? ` style="row-gap: ${7 + group.extraGapPx}px"` : "";
 
   return [
     `<section class="resume-page resume-body-page">`,
@@ -183,7 +208,8 @@ function renderResumeBodyPage(sections: HtmlSection[], pageNumber: number, pageC
     `<p class="resume-label">Experience ${String(pageNumber).padStart(2, "0")}</p>`,
     `<h2>${escapeHtml(pageTitle)}</h2>`,
     `</div>`,
-    `<div class="resume-sections">${sections.map((section) => renderResumeSection(section)).join("\n")}</div>`,
+    `<div class="resume-sections"${gapStyle}>${group.sections.map((section) => renderResumeSection(section)).join("\n")}</div>`,
+    motto ? `<p class="resume-motto">「${escapeHtml(motto)}」</p>` : "",
     renderPageFooter(pageChrome),
     `</section>`
   ].join("\n");

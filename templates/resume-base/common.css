@@ -147,7 +147,7 @@ body {
 
 .resume-summary {
   margin-top: 9mm;
-  padding: 11px 13px;
+  padding: 9px 13px;
   border-left: 4px solid var(--accent);
   background: rgba(255, 255, 255, 0.52);
 }
@@ -161,7 +161,7 @@ body {
 }
 
 .resume-snapshot {
-  margin-top: 7mm;
+  margin-top: 6mm;
 }
 
 .resume-snapshot-grid {
@@ -172,7 +172,7 @@ body {
 }
 
 .resume-snapshot-grid section {
-  min-height: 25mm;
+  min-height: 21mm;
   padding: 9px;
   border: 1px solid var(--faint);
   border-radius: var(--radius);
@@ -209,7 +209,7 @@ body {
 }
 
 .resume-primary-sections {
-  margin-top: 7mm;
+  margin-top: 6mm;
 }
 
 .resume-page-title {
@@ -230,7 +230,7 @@ body {
 }
 
 .resume-motto {
-  margin: 2mm 0 0;
+  margin: 1mm 0 0;
   color: var(--muted);
   font-size: 11.5px;
   font-style: italic;
