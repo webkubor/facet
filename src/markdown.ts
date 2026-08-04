@@ -5,6 +5,7 @@
 import MarkdownIt from "markdown-it";
 import hljs from "highlight.js";
 import type { DocumentMeta, DocumentType, TocItem } from "./types.js";
+import { interpolateEnv } from "./env.js";
 import { cleanMarkdownInline, escapeHtml, slugify } from "./html-utils.js";
 
 const markdown = new MarkdownIt({
@@ -100,7 +101,7 @@ function parseFrontMatter(raw: string): Partial<Record<keyof DocumentMeta, strin
     }
 
     const key = line.slice(0, separatorIndex).trim();
-    const value = line.slice(separatorIndex + 1).trim().replace(/^["']|["']$/g, "");
+    const value = interpolateEnv(line.slice(separatorIndex + 1).trim().replace(/^["']|["']$/g, ""));
 
     if (metaKeys.has(key as keyof DocumentMeta)) {
       entries[key as keyof DocumentMeta] = value;

@@ -6,6 +6,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { parseArgs } from "./args.js";
 import { buildPdf } from "./build-one.js";
+import { loadDotEnv } from "./env.js";
 import { planArticlePages, writePagePlan } from "./content-flow.js";
 import { buildToc, parseMarkdownDocument, renderMarkdown } from "./markdown.js";
 import { createPageChrome, renderArticlePlan } from "./page-renderer.js";
@@ -15,6 +16,7 @@ import { loadThemeOverride } from "./theme.js";
 import { isResumeTemplate, resumeTemplateNames, tutorialTemplateNames } from "./types.js";
 
 async function main(): Promise<void> {
+  loadDotEnv();
   const options = parseArgs(process.argv.slice(2));
   const inputPath = path.resolve(projectRoot, options.input);
   const source = await readFile(inputPath, "utf8");

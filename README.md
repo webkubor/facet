@@ -241,6 +241,21 @@ shareFooter: "适合收藏，适合转发，也适合复习。"
 
 正文使用普通 Markdown。建议用 `##` 划分章节，`###` 划分小节。
 
+### 环境变量注入（隐私信息不入库）
+
+front matter 的所有值都支持 `${VAR}` 和 `${VAR:-默认值}` 语法，构建时会自动读取项目根目录的 `.env`（已被 `.gitignore` 屏蔽）：
+
+```md
+contact: "${RESUME_CONTACT:-hello@example.com / +86 138-0000-0000}"
+links: "${RESUME_LINKS:-github.com/example}"
+```
+
+```bash
+cp .env.example .env   # 填入真实联系方式，只留在本地
+```
+
+真实手机号、邮箱等隐私信息写进 `.env`，仓库里的 Markdown 只保留占位默认值。整份私人简历也可以命名为 `content/*.local.md`（同样被 `.gitignore` 屏蔽）。
+
 ## 输出产物
 
 ```text

@@ -6,3 +6,5 @@ output/*.png
 output/*.json
 tmp/
 .DS_Store
+.env
+content/*.local.md
