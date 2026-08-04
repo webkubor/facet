@@ -3,23 +3,33 @@
  * 职责：集中定义 Markdown、分页、模板和主题配置的数据结构。
  */
 
-/** 教程元信息。 */
+/** 文档类型。 */
+export type DocumentType = "tutorial" | "resume";
+
+/** 教程 / 简历元信息。 */
 export interface DocumentMeta {
   title: string;
   subtitle: string;
   date: string;
   author: string;
+  documentType: DocumentType;
   pageHeader: string;
   pageFooter: string;
   shareHeader: string;
   shareFooter: string;
+  role: string;
+  location: string;
+  contact: string;
+  links: string;
 }
 
 /** 命令行参数。 */
 export interface BuildOptions {
   input: string;
   output: string;
+  outputProvided: boolean;
   template: TemplateName;
+  templateProvided: boolean;
   themePath: string | undefined;
   all: boolean;
   share: boolean;
@@ -80,10 +90,14 @@ export type TemplateName =
   | "editorial-poster"
   | "research-dossier"
   | "gallery-catalog"
-  | "strategy-brief";
+  | "strategy-brief"
+  | "resume-payment-lead"
+  | "resume-global-checkout"
+  | "resume-ai-platform"
+  | "resume-infra-builder";
 
-/** 内置模板清单。 */
-export const templateNames: TemplateName[] = [
+/** 知识教程模板清单。 */
+export const tutorialTemplateNames: TemplateName[] = [
   "warm-handbook",
   "wechat-magazine",
   "creator-notebook",
@@ -93,3 +107,19 @@ export const templateNames: TemplateName[] = [
   "gallery-catalog",
   "strategy-brief"
 ];
+
+/** 简历模板清单。 */
+export const resumeTemplateNames: TemplateName[] = [
+  "resume-payment-lead",
+  "resume-global-checkout",
+  "resume-ai-platform",
+  "resume-infra-builder"
+];
+
+/** 全部内置模板清单。 */
+export const templateNames: TemplateName[] = [...tutorialTemplateNames, ...resumeTemplateNames];
+
+/** 判断模板是否为简历模板。 */
+export function isResumeTemplate(templateName: TemplateName): boolean {
+  return resumeTemplateNames.includes(templateName);
+}

@@ -1,0 +1,54 @@
+:root {
+  --paper: #f5f0eb;
+  --ink: #2f2a25;
+  --muted: #746c64;
+  --faint: #ddd0c4;
+  --soft: #eee5dc;
+  --accent: #8a7567;
+  --accent-2: #7f8f85;
+  --danger: #9a6a58;
+}
+
+.resume-page {
+  background:
+    linear-gradient(90deg, rgba(138, 117, 103, 0.12) 1px, transparent 1px),
+    linear-gradient(rgba(138, 117, 103, 0.1) 1px, transparent 1px),
+    #f5f0eb;
+  background-size: 12mm 12mm;
+}
+
+.resume-first-page {
+  background:
+    linear-gradient(90deg, rgba(127, 143, 133, 0.24) 0 8mm, transparent 8mm),
+    linear-gradient(90deg, rgba(138, 117, 103, 0.12) 1px, transparent 1px),
+    linear-gradient(rgba(138, 117, 103, 0.1) 1px, transparent 1px),
+    #f5f0eb;
+  background-size: auto, 12mm 12mm, 12mm 12mm, auto;
+}
+
+.resume-contact-row span,
+.resume-snapshot-grid section,
+.resume-section-card {
+  background: rgba(255, 252, 247, 0.78);
+}
+
+.resume-snapshot-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.resume-snapshot-grid section {
+  min-height: 19mm;
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  column-gap: 7px;
+  align-items: start;
+}
+
+.resume-snapshot-grid span {
+  grid-row: span 2;
+  background: var(--accent-2);
+}
+
+.resume-section-card h3 {
+  color: var(--accent);
+}

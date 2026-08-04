@@ -1,0 +1,58 @@
+:root {
+  --paper: #f4f1ea;
+  --ink: #24302b;
+  --muted: #697167;
+  --faint: #d8d1c4;
+  --soft: #e8e0d3;
+  --accent: #68785f;
+  --accent-2: #b18973;
+  --danger: #9b5e52;
+}
+
+.resume-page {
+  background:
+    linear-gradient(90deg, rgba(104, 120, 95, 0.18) 0 17mm, transparent 17mm),
+    linear-gradient(180deg, #f7f4ee 0%, #f4f1ea 100%);
+}
+
+.resume-first-page {
+  background:
+    linear-gradient(90deg, rgba(104, 120, 95, 0.22) 0 19mm, transparent 19mm),
+    radial-gradient(circle at 82% 18%, rgba(177, 137, 115, 0.18), transparent 20%),
+    #f4f1ea;
+}
+
+.resume-kicker {
+  width: fit-content;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.resume-hero h1 {
+  max-width: 132mm;
+  border-bottom: 3px solid var(--accent);
+  padding-bottom: 7px;
+}
+
+.resume-summary {
+  border-left-color: var(--accent);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.resume-section-card {
+  border-color: #d1c7b8;
+  background: rgba(255, 255, 255, 0.66);
+}
+
+.resume-section-card h3::before {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 15px;
+  margin-right: 8px;
+  border-radius: 999px;
+  background: var(--accent);
+  vertical-align: -2px;
+}

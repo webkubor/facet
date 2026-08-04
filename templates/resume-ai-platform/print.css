@@ -1,0 +1,51 @@
+:root {
+  --paper: #eef1ef;
+  --ink: #202b2f;
+  --muted: #637174;
+  --faint: #cfd8d6;
+  --soft: #dfe7e4;
+  --accent: #597377;
+  --accent-2: #a78f73;
+  --danger: #875f5a;
+}
+
+.resume-page {
+  background:
+    linear-gradient(135deg, rgba(89, 115, 119, 0.14) 0 22%, transparent 22%),
+    linear-gradient(180deg, #f3f5f3 0%, #eef1ef 100%);
+}
+
+.resume-first-page {
+  background:
+    linear-gradient(135deg, rgba(32, 43, 47, 0.9) 0 23%, transparent 23%),
+    linear-gradient(135deg, transparent 0 74%, rgba(89, 115, 119, 0.22) 74%),
+    #eef1ef;
+}
+
+.resume-first-page .resume-page-header {
+  color: rgba(255, 255, 255, 0.82);
+  border-bottom-color: rgba(255, 255, 255, 0.18);
+}
+
+.resume-kicker {
+  color: var(--accent);
+}
+
+.resume-hero h1 {
+  max-width: 140mm;
+}
+
+.resume-summary,
+.resume-snapshot-grid section,
+.resume-section-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(2px);
+}
+
+.resume-snapshot-grid span {
+  background: #202b2f;
+}
+
+.resume-section-body th {
+  color: #202b2f;
+}
