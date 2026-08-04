@@ -109,12 +109,15 @@ function renderResumeFirstPage(
 }
 
 function renderResumeBodyPage(sections: HtmlSection[], pageNumber: number, pageChrome: PageChrome): string {
+  const titles = sections.map((section) => section.title);
+  const pageTitle = titles.length > 2 ? `${titles.slice(0, 2).join(" / ")} 等` : titles.join(" / ");
+
   return [
     `<section class="resume-page resume-body-page">`,
     renderPageHeader(pageChrome),
     `<div class="resume-page-title">`,
     `<p class="resume-label">Experience ${String(pageNumber).padStart(2, "0")}</p>`,
-    `<h2>${escapeHtml(sections.map((section) => section.title).join(" / "))}</h2>`,
+    `<h2>${escapeHtml(pageTitle)}</h2>`,
     `</div>`,
     `<div class="resume-sections">${sections.map((section) => renderResumeSection(section)).join("\n")}</div>`,
     renderPageFooter(pageChrome),
@@ -170,7 +173,7 @@ function groupResumeSections(sections: HtmlSection[]): HtmlSection[][] {
       pages.push(current);
       current = [];
       currentWeight = 0;
-      maxWeight = 2050;
+      maxWeight = 2400;
     }
 
     current.push(section);
@@ -212,20 +215,11 @@ function estimateResumeWeight(html: string): number {
 }
 
 function describeResumeSection(section: HtmlSection): string {
-  if (/支付|收银台|钱包|跨境/.test(section.title)) {
-    return "支付业务复杂度与交付主线。";
-  }
+  const firstItem = section.html.match(/<li\b[^>]*>([\s\S]*?)<\/li>/);
+  const text = stripHtml(firstItem?.[1] ?? "").replace(/\s+/g, " ").trim();
 
-  if (/AI|ModelGo|Studio/.test(section.title)) {
-    return "AI 平台产品化与工具链。";
-  }
-
-  if (/基础设施|CLI|SDK|Token|工程/.test(section.title)) {
-    return "可复用工程资产沉淀。";
-  }
-
-  if (/官网|文档|国际化|站点/.test(section.title)) {
-    return "多市场内容和开发者体验。";
+  if (text) {
+    return text.length > 42 ? `${text.slice(0, 42)}…` : text;
   }
 
   return "代表项目和可验证结果。";
