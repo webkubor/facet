@@ -23,8 +23,19 @@
   font-family: "Inter", "SF Pro Text", "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 
+.resume-kicker {
+  display: inline-block;
+  width: fit-content;
+  padding: 4px 9px;
+  border-radius: 4px;
+  background: var(--ink);
+  color: #ffffff;
+}
+
 .resume-hero h1 {
+  width: fit-content;
   letter-spacing: 0;
+  box-shadow: inset 0 -11px 0 rgba(164, 147, 124, 0.32);
 }
 
 .resume-contact-row span {
@@ -41,8 +52,14 @@
   box-shadow: none;
 }
 
-.resume-section-card h3 {
+.resume-sections .resume-section-card:nth-child(even) {
+  border-left-color: var(--accent-2);
+}
+
+.resume-section-card > h3 {
+  padding-bottom: 6px;
   font-size: 14px;
+  background: linear-gradient(90deg, var(--accent-2) 0 34px, var(--faint) 34px 100%) left bottom / 100% 1.5px no-repeat;
 }
 
 .resume-section-body strong {

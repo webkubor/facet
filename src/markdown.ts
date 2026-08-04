@@ -43,7 +43,8 @@ export function parseMarkdownDocument(source: string): { meta: DocumentMeta; bod
       role: entries.role ?? "前端开发工程师",
       location: entries.location ?? "杭州",
       contact: entries.contact ?? "email@example.com",
-      links: entries.links ?? "GitHub / Portfolio"
+      links: entries.links ?? "GitHub / Portfolio",
+      motto: entries.motto ?? ""
     },
     body
   };
@@ -91,7 +92,8 @@ function parseFrontMatter(raw: string): Partial<Record<keyof DocumentMeta, strin
     "role",
     "location",
     "contact",
-    "links"
+    "links",
+    "motto"
   ]);
 
   for (const line of raw.split("\n")) {

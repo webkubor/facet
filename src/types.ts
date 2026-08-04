@@ -21,6 +21,7 @@ export interface DocumentMeta {
   location: string;
   contact: string;
   links: string;
+  motto: string;
 }
 
 /** 命令行参数。 */

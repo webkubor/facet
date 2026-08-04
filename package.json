@@ -39,7 +39,8 @@
     "build:resume": "tsx src/build.ts --input content/resume-example.md --template resume-payment-lead --output output/resume-example.pdf",
     "build:resume:all": "tsx src/build.ts --input content/resume-example.md --all",
     "setup:browsers": "playwright install chromium",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "verify:resume": "node scripts/verify-resume.mjs"
   },
   "dependencies": {
     "highlight.js": "^11.11.1",

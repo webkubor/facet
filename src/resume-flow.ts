@@ -103,6 +103,7 @@ function renderResumeFirstPage(
     `<div class="resume-snapshot-grid">${snapshotCards}</div>`,
     `</div>`,
     `<div class="resume-sections resume-primary-sections">${primarySections}</div>`,
+    meta.motto ? `<p class="resume-motto">「${escapeHtml(meta.motto)}」</p>` : "",
     renderPageFooter(pageChrome),
     `</section>`
   ].join("\n");
