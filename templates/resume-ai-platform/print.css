@@ -16,15 +16,11 @@
 }
 
 .resume-first-page {
+  border-top: 3.5mm solid #202b2f;
   background:
-    linear-gradient(135deg, rgba(32, 43, 47, 0.9) 0 23%, transparent 23%),
+    linear-gradient(135deg, rgba(32, 43, 47, 0.1) 0 23%, transparent 23%),
     linear-gradient(135deg, transparent 0 74%, rgba(89, 115, 119, 0.22) 74%),
     #eef1ef;
-}
-
-.resume-first-page .resume-page-header {
-  color: rgba(255, 255, 255, 0.82);
-  border-bottom-color: rgba(255, 255, 255, 0.18);
 }
 
 .resume-kicker {

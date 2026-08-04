@@ -36,8 +36,8 @@ export async function writeResumePagePlan(inputPath: string, html: string, toc: 
     contract: {
       templateIndependent: true,
       goal: "先按职业叙事选择业务线和项目群，再套用任意简历视觉模板。",
-      maxGroupWeight: 1800,
-      firstGroupWeight: 850,
+      maxGroupWeight: 2050,
+      firstGroupWeight: 1000,
       firstPageRole: "定位、摘要、精选业务线和第一组经历"
     },
     pages: plan.groups.map((group, index) => ({
@@ -162,7 +162,7 @@ function groupResumeSections(sections: HtmlSection[]): HtmlSection[][] {
   const pages: HtmlSection[][] = [];
   let current: HtmlSection[] = [];
   let currentWeight = 0;
-  let maxWeight = 850;
+  let maxWeight = 1000;
 
   for (const section of sections) {
     const wouldOverflow = current.length > 0 && currentWeight + section.weight > maxWeight;
@@ -170,7 +170,7 @@ function groupResumeSections(sections: HtmlSection[]): HtmlSection[][] {
       pages.push(current);
       current = [];
       currentWeight = 0;
-      maxWeight = 1800;
+      maxWeight = 2050;
     }
 
     current.push(section);
