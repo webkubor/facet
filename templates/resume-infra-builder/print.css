@@ -1,0 +1,50 @@
+:root {
+  --paper: #f2f0ec;
+  --ink: #24272a;
+  --muted: #6b6f72;
+  --faint: #d5d4cf;
+  --soft: #e6e2da;
+  --accent: #737d82;
+  --accent-2: #a4937c;
+  --danger: #8d665c;
+  --radius: 6px;
+  --body-font: "SFMono-Regular", "JetBrains Mono", "PingFang SC", "Microsoft YaHei", monospace;
+}
+
+.resume-page {
+  background:
+    linear-gradient(90deg, rgba(115, 125, 130, 0.12) 0 1px, transparent 1px),
+    #f2f0ec;
+  background-size: 9mm 100%;
+}
+
+.resume-page-header,
+.resume-page-footer {
+  font-family: "Inter", "SF Pro Text", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.resume-hero h1 {
+  letter-spacing: 0;
+}
+
+.resume-contact-row span {
+  border-radius: 4px;
+}
+
+.resume-snapshot-grid span {
+  border-radius: 4px;
+  background: var(--ink);
+}
+
+.resume-section-card {
+  border-left: 4px solid var(--accent);
+  box-shadow: none;
+}
+
+.resume-section-card h3 {
+  font-size: 14px;
+}
+
+.resume-section-body strong {
+  color: var(--accent);
+}

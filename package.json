@@ -10,6 +10,8 @@
     "html-to-pdf",
     "knowledge-pdf",
     "tutorial-pdf",
+    "resume-pdf",
+    "cv-template",
     "long-image",
     "morandi",
     "editorial-design",
@@ -34,6 +36,8 @@
     "build": "tsx src/build.ts",
     "build:example": "tsx src/build.ts --input content/example.md --template warm-handbook --output output/example-warm-handbook.pdf",
     "build:all": "tsx src/build.ts --input content/example.md --all",
+    "build:resume": "tsx src/build.ts --input content/resume-example.md --template resume-payment-lead --output output/resume-example.pdf",
+    "build:resume:all": "tsx src/build.ts --input content/resume-example.md --all",
     "setup:browsers": "playwright install chromium",
     "check": "tsc --noEmit"
   },

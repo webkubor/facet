@@ -4,7 +4,7 @@
  */
 import MarkdownIt from "markdown-it";
 import hljs from "highlight.js";
-import type { DocumentMeta, TocItem } from "./types.js";
+import type { DocumentMeta, DocumentType, TocItem } from "./types.js";
 import { cleanMarkdownInline, escapeHtml, slugify } from "./html-utils.js";
 
 const markdown = new MarkdownIt({
@@ -34,10 +34,15 @@ export function parseMarkdownDocument(source: string): { meta: DocumentMeta; bod
       subtitle: entries.subtitle ?? "HTML/CSS 到 PDF",
       date: entries.date ?? new Date().toISOString().slice(0, 10),
       author: entries.author ?? "Knowledge PDF Kit",
+      documentType: toDocumentType(entries.documentType),
       pageHeader: entries.pageHeader ?? "Knowledge PDF Kit",
       pageFooter: entries.pageFooter ?? entries.title ?? "知识类教程",
       shareHeader: entries.shareHeader ?? entries.title ?? "知识类教程",
-      shareFooter: entries.shareFooter ?? "适合收藏，适合转发，也适合复习。"
+      shareFooter: entries.shareFooter ?? "适合收藏，适合转发，也适合复习。",
+      role: entries.role ?? "前端开发工程师",
+      location: entries.location ?? "杭州",
+      contact: entries.contact ?? "email@example.com",
+      links: entries.links ?? "GitHub / Portfolio"
     },
     body
   };
@@ -70,17 +75,22 @@ export function buildToc(source: string): TocItem[] {
   return items;
 }
 
-function parseFrontMatter(raw: string): Partial<DocumentMeta> {
-  const entries: Partial<DocumentMeta> = {};
+function parseFrontMatter(raw: string): Partial<Record<keyof DocumentMeta, string>> {
+  const entries: Partial<Record<keyof DocumentMeta, string>> = {};
   const metaKeys = new Set<keyof DocumentMeta>([
     "title",
     "subtitle",
     "date",
     "author",
+    "documentType",
     "pageHeader",
     "pageFooter",
     "shareHeader",
-    "shareFooter"
+    "shareFooter",
+    "role",
+    "location",
+    "contact",
+    "links"
   ]);
 
   for (const line of raw.split("\n")) {
@@ -98,4 +108,12 @@ function parseFrontMatter(raw: string): Partial<DocumentMeta> {
   }
 
   return entries;
+}
+
+function toDocumentType(value: string | undefined): DocumentType {
+  if (value === "resume") {
+    return "resume";
+  }
+
+  return "tutorial";
 }

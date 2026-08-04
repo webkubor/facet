@@ -5,7 +5,7 @@
 <h1 align="center">Knowledge PDF Kit</h1>
 
 <p align="center">
-  把 Markdown 知识教程生成漂亮、稳定、可分享的 PDF 和长图。
+  把 Markdown 知识教程和项目型简历生成漂亮、稳定、可分享的 PDF 和长图。
 </p>
 
 <p align="center">
@@ -25,11 +25,11 @@
   <img alt="OpenCode" src="https://img.shields.io/badge/OpenCode-ready-0f766e.svg" />
 </p>
 
-Knowledge PDF Kit 面向小红书、公众号、社群课程和知识付费资料。它不是简单把网页打印成 PDF，而是先做模板无关的 `content flow`，再套用视觉主题，保证每一页的知识密度、页眉页脚、背景铺满和分享图效果都可控。
+Knowledge PDF Kit 面向小红书、公众号、社群课程、知识付费资料和项目型技术简历。它不是简单把网页打印成 PDF，而是先做模板无关的 `content flow`，再套用视觉主题，保证每一页的知识密度、页眉页脚、背景铺满和分享图效果都可控。
 
 ## 标签
 
-`markdown-to-pdf` `html-to-pdf` `knowledge-pdf` `tutorial-pdf` `wechat` `xiaohongshu` `long-image` `morandi` `editorial-design` `playwright` `typescript` `agent-ready`
+`markdown-to-pdf` `html-to-pdf` `knowledge-pdf` `tutorial-pdf` `resume-pdf` `cv-template` `wechat` `xiaohongshu` `long-image` `morandi` `editorial-design` `playwright` `typescript` `agent-ready`
 
 ## 30 秒上手
 
@@ -65,6 +65,13 @@ pnpm build -- --input content/example.md --template warm-handbook --no-share
 pnpm build -- --input content/example.md --template research-dossier --theme themes/morandi-sage.json
 ```
 
+生成项目型简历：
+
+```bash
+pnpm build:resume
+pnpm build:resume:all
+```
+
 ## 核心能力
 
 - Markdown -> HTML/CSS -> Playwright PDF，全链路本地生成。
@@ -73,7 +80,7 @@ pnpm build -- --input content/example.md --template research-dossier --theme the
 - 支持自定义 PDF 内页页眉页脚，以及长图外层标题和尾注。
 - 支持在生成前注入用户颜色偏好，动态覆写模板 CSS 变量。
 - 输出 `page-plan.json`，可检查每页承载哪些知识点。
-- 内置八套知识教程模板，覆盖不同领域、不同方向、不同视觉气质。
+- 内置八套知识教程模板和四套项目型简历模板，覆盖不同领域、不同方向、不同视觉气质。
 
 ## 支持的 Agent
 
@@ -107,6 +114,18 @@ Knowledge PDF Kit 对 Agent 的要求很低：能编辑 Markdown、运行 shell 
 | --- | --- |
 | ![Gallery Catalog](docs/designs/gallery-catalog.png) | ![Strategy Brief](docs/designs/strategy-brief.png) |
 
+## 简历模板预览
+
+四套简历模板复用同一条 resume flow：先用职业定位建立第一眼判断，再按业务线组织项目证据，避免把经历写成模块流水账。示例内容是公开脱敏版，保留项目类型和能力结构，不包含真实联系方式。
+
+| Payment Lead | Global Checkout |
+| --- | --- |
+| ![Payment Lead](docs/designs/resume-payment-lead.png) | ![Global Checkout](docs/designs/resume-global-checkout.png) |
+
+| AI Platform | Infra Builder |
+| --- | --- |
+| ![AI Platform](docs/designs/resume-ai-platform.png) | ![Infra Builder](docs/designs/resume-infra-builder.png) |
+
 ## 可用模板
 
 - `warm-handbook`：温暖手册风，适合入门教程、AI 知识普及、轻松但结构清晰的内容。
@@ -117,6 +136,10 @@ Knowledge PDF Kit 对 Agent 的要求很低：能编辑 Markdown、运行 shell 
 - `research-dossier`：莫兰迪冷灰蓝研究档案风，适合调研报告、白皮书、行业分析和方法论资料。
 - `gallery-catalog`：莫兰迪画册目录风，适合设计案例、作品集说明、品牌内容和审美型知识材料。
 - `strategy-brief`：莫兰迪商业策略简报风，适合咨询报告、业务复盘、增长策略和团队共识文档。
+- `resume-payment-lead`：跨境支付负责人风，适合支付中台、商户后台、多角色系统和长期业务主线。
+- `resume-global-checkout`：多国家收银台站点群风，适合国际化、本地支付、H5 站点群和渠道交付。
+- `resume-ai-platform`：AI 平台负责人风，适合模型平台、开发者体验、AI 产品化和复杂控制台。
+- `resume-infra-builder`：前端基础设施构建者风，适合 CLI、SDK、design tokens、工程化和平台工具链。
 
 ## Content Flow
 
@@ -135,6 +158,32 @@ output/<input-name>-page-plan.json
 ```
 
 这份计划用于检查每页的角色、知识点和估算密度。视觉模板只能改变样式，不能跳过这条 flow。
+
+## Resume Flow
+
+简历 PDF 不按时间线硬铺，也不把所有模块平均展开，而是先按阅读对象选择重点：
+
+1. 职业定位：姓名、角色、地点、联系方式、核心摘要。
+2. 精选焦点：把最重要的 3-4 条业务线先露出。
+3. 主项目页：优先承载最能证明 0 到 1 的业务线。
+4. 经历分组页：按内容密度合并相关项目，避免短项目独占一页。
+5. 能力收束：把技术栈、基础设施、早期经历放在末页形成完整闭环。
+
+简历输入需要在 front matter 里声明：
+
+```md
+---
+documentType: "resume"
+title: "候选人姓名"
+subtitle: "资深前端工程师 / 跨境支付与 AI 平台前端负责人"
+role: "Frontend Lead"
+location: "Hangzhou"
+contact: "email@example.com / +86 *** **** ****"
+links: "github.com/example / portfolio.example.com"
+---
+```
+
+构建时会输出同名 `page-plan.json`，用于检查每页承载哪些经历点，以及是否存在页面密度失衡。
 
 ## 用户偏好主题
 
@@ -187,6 +236,8 @@ shareFooter: "适合收藏，适合转发，也适合复习。"
 - `pageFooter`：PDF 正文页页脚左侧文案。
 - `shareHeader`：长图顶部标题。
 - `shareFooter`：长图底部提示语。
+- `documentType`：默认是 `tutorial`；生成简历时设置为 `resume`。
+- `role` / `location` / `contact` / `links`：简历模板首屏信息。
 
 正文使用普通 Markdown。建议用 `##` 划分章节，`###` 划分小节。
 
@@ -197,6 +248,8 @@ output/tutorial.pdf        # A4 PDF
 output/tutorial.html       # 可检查的中间 HTML
 output/tutorial.share.png  # 自动长图分享图
 output/example-page-plan.json
+output/resume-example.pdf
+output/resume-example-page-plan.json
 ```
 
 ## PDF UI 硬约束
@@ -206,6 +259,7 @@ output/example-page-plan.json
 - 正文不能用一个长 `article` 自然跨页，必须分组成 `.lesson-page` 页面容器。
 - `.lesson-page` 不能简单按每个二级标题一页硬切，短章节要合并。
 - 短导言不能独立成正文页，必须进入“学习地图”或和知识点合并。
+- 简历模板必须使用 `.resume-page` 页面容器，首页和正文页使用不同内容密度阈值。
 - 新模板只能改视觉 token 和组件表现，不能改 content flow 的页面角色。
 - 验收至少渲染并检查：封面、目录、学习地图、一个正文续页、最后一页。
 
@@ -216,6 +270,7 @@ content/                 # Markdown 教程
 docs/designs/            # README 模板预览图
 src/build.ts             # 构建器入口
 templates/base/          # 通用页面结构和 PDF 规则
+templates/resume-base/   # 简历页面结构和 PDF 规则
 templates/*/print.css    # 视觉主题
 output/                  # 构建产物
 ```
@@ -226,4 +281,6 @@ output/                  # 构建产物
 pnpm check
 pnpm build:example
 pnpm build:all
+pnpm build:resume
+pnpm build:resume:all
 ```

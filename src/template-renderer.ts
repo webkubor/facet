@@ -7,6 +7,7 @@ import path from "node:path";
 import { projectRoot } from "./paths.js";
 import type { DocumentMeta, TemplateName, TocItem } from "./types.js";
 import { escapeHtml } from "./html-utils.js";
+import { isResumeTemplate } from "./types.js";
 
 /** 渲染完整 HTML 文档。 */
 export async function renderTemplate(
@@ -16,8 +17,9 @@ export async function renderTemplate(
   templateName: TemplateName,
   themeOverride: string
 ): Promise<string> {
-  const templatePath = path.join(projectRoot, "templates/base/template.html");
-  const commonStylesPath = path.join(projectRoot, "templates/base/common.css");
+  const baseDir = isResumeTemplate(templateName) ? "resume-base" : "base";
+  const templatePath = path.join(projectRoot, `templates/${baseDir}/template.html`);
+  const commonStylesPath = path.join(projectRoot, `templates/${baseDir}/common.css`);
   const themeStylesPath = path.join(projectRoot, `templates/${templateName}/print.css`);
   const [template, commonStyles, themeStyles] = await Promise.all([
     readFile(templatePath, "utf8"),
@@ -30,6 +32,10 @@ export async function renderTemplate(
     .replaceAll("{{subtitle}}", escapeHtml(meta.subtitle))
     .replaceAll("{{date}}", escapeHtml(meta.date))
     .replaceAll("{{author}}", escapeHtml(meta.author))
+    .replaceAll("{{role}}", escapeHtml(meta.role))
+    .replaceAll("{{location}}", escapeHtml(meta.location))
+    .replaceAll("{{contact}}", escapeHtml(meta.contact))
+    .replaceAll("{{links}}", escapeHtml(meta.links))
     .replaceAll("{{shareHeader}}", escapeHtml(meta.shareHeader))
     .replaceAll("{{shareFooter}}", escapeHtml(meta.shareFooter))
     .replaceAll("{{template}}", templateName)

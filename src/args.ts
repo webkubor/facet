@@ -32,7 +32,9 @@ export function parseArgs(args: string[]): BuildOptions {
   return {
     input: values.get("input") ?? "content/example.md",
     output: values.get("output") ?? `output/example-${template}.pdf`,
+    outputProvided: values.has("output"),
     template,
+    templateProvided: values.has("template"),
     themePath: values.get("theme"),
     all: flags.has("--all"),
     share: !flags.has("--no-share")
