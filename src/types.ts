@@ -99,7 +99,9 @@ export type TemplateName =
   | "resume-payment-lead"
   | "resume-global-checkout"
   | "resume-ai-platform"
-  | "resume-infra-builder";
+  | "resume-infra-builder"
+  | "resume-growth-ops"
+  | "resume-design-folio";
 
 /** 知识教程模板清单。 */
 export const tutorialTemplateNames: TemplateName[] = [
@@ -118,7 +120,9 @@ export const resumeTemplateNames: TemplateName[] = [
   "resume-payment-lead",
   "resume-global-checkout",
   "resume-ai-platform",
-  "resume-infra-builder"
+  "resume-infra-builder",
+  "resume-growth-ops",
+  "resume-design-folio"
 ];
 
 /** 全部内置模板清单。 */

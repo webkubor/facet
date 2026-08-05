@@ -6,11 +6,12 @@
  *  1. print 媒体模拟下逐页 offsetHeight ≤ 297mm（含边框，防空白尾页）
  *  2. PDF 实际页数（解析页树）== DOM 页数
  *  3. 正文页大标题不超过 2 行
- *  4. 非末页留白 ≤ 15%，末页 ≤ 25%；卡片间垂直空洞 ≤ 120px
+ *  4. 留白与卡片空洞：阈值按职业族取自 templates/resume-families.json（技术高密度 / 运营中密度 / 视觉低密度）
  *  5. 联系方式徽章非空、未残留 ${VAR} 占位符
- *  6. 字号与 docs/design-spec.md 字阶一致（姓名 35 / 副标题 14 / 正文 12 / 徽章 11 / 页眉 10）
+ *  6. 字号与该族字阶一致（技术族姓名 35 / 视觉族 40，其余见 families 真源）
  *  7. 关键文本 WCAG 对比度：正文 ≥ 4.5，muted 辅助文本 ≥ 4.0，标题 ≥ 3.0
- *  8. 视觉重点存在：正文 strong 高亮 ≥ 6 处，聚焦卡 = 4 张
+ *  8. 视觉重点存在：strong 高亮下限按族（技术 6 / 运营 8 / 视觉 3），聚焦卡 = 4 张
+ *  9. 头像（若声明 avatar）：data URI 内联、解码成功、尺寸落在该族区间、hero 已切两栏
  */
 import { chromium } from "playwright";
 import { readFileSync } from "node:fs";
@@ -18,6 +19,14 @@ import path from "node:path";
 
 const A4_HEIGHT_PX = 1123; // 297mm @ 96dpi，向上取整
 const files = process.argv.slice(2);
+
+// 门禁阈值按职业族取值，单一真源在 templates/resume-families.json（见 docs/design-spec.md）
+const FAMILIES = JSON.parse(readFileSync(new URL("../templates/resume-families.json", import.meta.url), "utf8"));
+
+function gatesFor(templateName) {
+  const family = FAMILIES.templates[templateName] ?? "tech";
+  return { family, label: FAMILIES.families[family].label, ...FAMILIES.families[family].gates };
+}
 
 if (files.length === 0) {
   console.error("用法：node scripts/verify-resume.mjs output/xxx.html ...");
@@ -41,6 +50,12 @@ for (const htmlPath of files) {
   const pdfPath = absolute.replace(/\.html$/, ".pdf");
   console.log(`\n== ${path.basename(htmlPath)} ==`);
   await page.goto(`file://${absolute}`);
+
+  const templateName = await page.evaluate(() =>
+    (document.body.className.match(/template-([\w-]+)/) ?? [])[1] ?? ""
+  );
+  const gates = gatesFor(templateName);
+  console.log(`  · 职业族：${gates.label}（${templateName}）`);
 
   const audit = await page.evaluate((a4) => {
     const pages = Array.from(document.querySelectorAll(".resume-page"));
@@ -136,13 +151,12 @@ for (const htmlPath of files) {
     const isLast = p.page === audit.pages.length;
     report(p.offsetHeight <= A4_HEIGHT_PX, `第 ${p.page} 页高度 ${p.offsetHeight}px ≤ ${A4_HEIGHT_PX}px`);
     report(p.titleLines <= 2, `第 ${p.page} 页大标题 ${p.titleLines} 行 ≤ 2 行`);
-    const maxBlank = isLast ? 25 : 15;
+    const maxBlank = isLast ? gates.maxBlankLast : gates.maxBlankBody;
     report(100 - p.fillRatio <= maxBlank, `第 ${p.page} 页留白 ${100 - p.fillRatio}% ≤ ${maxBlank}%`);
-    report(p.maxGap <= 120, `第 ${p.page} 页卡片间最大空洞 ${p.maxGap}px ≤ 120px`);
+    report(p.maxGap <= gates.maxCardGap, `第 ${p.page} 页卡片间最大空洞 ${p.maxGap}px ≤ ${gates.maxCardGap}px`);
   }
 
-  const SPEC_FONTS = { h1: 35, subtitle: 14, body: 12, chip: 11, header: 10 };
-  for (const [key, expected] of Object.entries(SPEC_FONTS)) {
+  for (const [key, expected] of Object.entries(gates.fonts)) {
     report(Math.abs(audit.fonts[key] - expected) <= 1, `字号 ${key} ${audit.fonts[key]}px ≈ 规范 ${expected}px`);
   }
 
@@ -153,16 +167,17 @@ for (const htmlPath of files) {
     report(audit.contrast.innerHeading >= 3.0, `小节标题对比度 ${audit.contrast.innerHeading} ≥ 3.0`);
   }
   report(audit.contrast.motto >= 4.0, `座右铭对比度 ${audit.contrast.motto} ≥ 4.0`);
-  report(audit.emphasis.strongCount >= 6, `视觉重点 strong ${audit.emphasis.strongCount} 处 ≥ 6`);
-  report(audit.emphasis.snapshotCount === 4, `聚焦卡 ${audit.emphasis.snapshotCount} 张 == 4`);
+  report(audit.emphasis.strongCount >= gates.minStrong, `视觉重点 strong ${audit.emphasis.strongCount} 处 ≥ ${gates.minStrong}`);
+  report(audit.emphasis.snapshotCount === gates.snapshotCount, `聚焦卡 ${audit.emphasis.snapshotCount} 张 == ${gates.snapshotCount}`);
 
   if (audit.portrait) {
     // 规范见 docs/design-spec.md「简历体系组件」：22-26mm 圆形/方形头像，必须内联且已解码。
     report(audit.portrait.inlined, "头像已内联为 data URI（导出后不依赖外部文件）");
     report(audit.portrait.loaded, "头像已成功解码");
+    const [minPx, maxPx] = gates.portraitPx;
     report(
-      audit.portrait.size >= 80 && audit.portrait.size <= 100,
-      `头像尺寸 ${audit.portrait.size}px 落在规范 22-26mm（80-100px）`
+      audit.portrait.size >= minPx && audit.portrait.size <= maxPx,
+      `头像尺寸 ${audit.portrait.size}px 落在 ${gates.label}族规范（${minPx}-${maxPx}px）`
     );
     report(audit.portrait.heroSplit, "首屏已切换为带头像的两栏 hero");
   }

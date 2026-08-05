@@ -80,7 +80,8 @@ pnpm build:resume:all
 - 支持自定义 PDF 内页页眉页脚，以及长图外层标题和尾注。
 - 支持在生成前注入用户颜色偏好，动态覆写模板 CSS 变量。
 - 输出 `page-plan.json`，可检查每页承载哪些知识点。
-- 内置八套知识教程模板和四套项目型简历模板，覆盖不同领域、不同方向、不同视觉气质。
+- 内置八套知识教程模板和六套简历模板，简历按职业族分密度：技术高密度、运营中密度、视觉低密度。
+- 简历校验门禁按职业族切换阈值，不会拿技术岗的信息密度去卡设计岗的留白。
 
 ## 支持的 Agent
 
@@ -116,7 +117,9 @@ Knowledge PDF Kit 对 Agent 的要求很低：能编辑 Markdown、运行 shell 
 
 ## 简历模板预览
 
-四套简历模板复用同一条 resume flow：先用定位建立第一眼判断，再按职责线组织证据，避免把经历写成模块流水账。示例内容用的是本仓库维护者 **小楠 Lunove** 的 agent 履历 —— 同一条 flow，人和 agent 都能用，不包含任何真实个人信息。
+六套简历模板复用同一条 resume flow，但**按职业族分密度**：技术族高密度（单页信息量优先）、运营族中密度（指标先行）、视觉族低密度（留白即作品）。留白、字阶、strong 下限和头像尺寸的门禁阈值都随族切换，真源在 [`templates/resume-families.json`](templates/resume-families.json)。
+
+示例内容用的是本仓库维护者 **小楠 Lunove** 的 agent 履历 —— 同一条 flow，人和 agent 都能用，不包含任何真实个人信息。
 
 | Payment Lead | Global Checkout |
 | --- | --- |
@@ -125,6 +128,10 @@ Knowledge PDF Kit 对 Agent 的要求很低：能编辑 Markdown、运行 shell 
 | AI Platform | Infra Builder |
 | --- | --- |
 | ![AI Platform](docs/designs/resume-ai-platform.png) | ![Infra Builder](docs/designs/resume-infra-builder.png) |
+
+| Growth Ops | Design Folio |
+| --- | --- |
+| ![Growth Ops](docs/designs/resume-growth-ops.png) | ![Design Folio](docs/designs/resume-design-folio.png) |
 
 ## 可用模板
 
@@ -140,6 +147,8 @@ Knowledge PDF Kit 对 Agent 的要求很低：能编辑 Markdown、运行 shell 
 - `resume-global-checkout`：多国家收银台站点群风，适合国际化、本地支付、H5 站点群和渠道交付。
 - `resume-ai-platform`：AI 平台负责人风，适合模型平台、开发者体验、AI 产品化和复杂控制台。
 - `resume-infra-builder`：前端基础设施构建者风，适合 CLI、SDK、design tokens、工程化和平台工具链。
+- `resume-growth-ops`：运营 / 增长风（中密度），指标卡先行，适合增长、投放、社群、内容运营和数据驱动岗位。
+- `resume-design-folio`：视觉 / UI 风（低密度），大留白无框排版，适合设计师、品牌视觉和作品集导向的简历。
 
 ## Content Flow
 

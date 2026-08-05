@@ -1,0 +1,195 @@
+/**
+ * 视觉 / UI 族（design）
+ * 密度策略：低密度 —— 留白即作品，版面本身就是能力证明。
+ * 卡片去边框只留细线，行距与 padding 放大，每页承载的内容量自然低于技术族。
+ * 规范见 docs/design-spec.md「职业族与密度策略」。
+ */
+:root {
+  --paper: #f4f2ef;
+  --ink: #1c1b1a;
+  --muted: #6e6963;
+  --faint: #ddd8d2;
+  --soft: #e9e5e0;
+  --accent: #c2705a;
+  --accent-2: #8d8a86;
+  --danger: #a35a4b;
+  --radius: 0px;
+  --page-pad-top: 20mm;
+  --page-pad-right: 20mm;
+  --page-pad-bottom: 18mm;
+  --page-pad-left: 20mm;
+}
+
+.resume-page {
+  background: #f4f2ef;
+}
+
+.resume-first-page {
+  background:
+    linear-gradient(90deg, rgba(194, 112, 90, 0.14) 0 3mm, transparent 3mm),
+    #f4f2ef;
+}
+
+.resume-page-header,
+.resume-page-footer {
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+/* hero：大字 + 大头像，身份区独占视觉重心 */
+.resume-hero-with-portrait {
+  column-gap: 14mm;
+}
+
+.resume-kicker,
+.resume-label {
+  color: var(--accent);
+  letter-spacing: 2.4px;
+}
+
+.resume-hero h1 {
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.resume-subtitle {
+  font-size: 15px;
+}
+
+.resume-portrait {
+  width: 33mm;
+  height: 33mm;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: 0 0 0 1px var(--faint);
+}
+
+.resume-portrait img {
+  border-radius: 0;
+  filter: grayscale(0.15) contrast(1.02);
+}
+
+.resume-contact-row span {
+  border: 0;
+  border-radius: 0;
+  padding: 4px 0;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* 去掉竖线分隔：换行时行首会出现孤立竖线，改用间距 + 细点分隔 */
+.resume-contact-row {
+  column-gap: 20px;
+  row-gap: 4px;
+}
+
+.resume-contact-row span + span::before {
+  content: "·";
+  margin-right: 20px;
+  color: var(--faint);
+}
+
+.resume-summary {
+  padding: 0 0 0 14px;
+  border-left: 1px solid var(--accent);
+  background: transparent;
+}
+
+.resume-summary p {
+  font-size: 12.5px;
+  line-height: 2;
+}
+
+/* 聚焦卡：去掉盒子，只留编号与细分隔线 */
+.resume-snapshot-grid {
+  gap: 12px;
+}
+
+.resume-snapshot-grid section {
+  min-height: 0;
+  padding: 10px 0 0;
+  border: 0;
+  border-top: 1px solid var(--ink);
+  border-radius: 0;
+  background: transparent;
+}
+
+.resume-snapshot-grid span {
+  width: auto;
+  height: auto;
+  margin-bottom: 6px;
+  border-radius: 0;
+  background: transparent;
+  color: var(--accent);
+  font-size: 10px;
+  letter-spacing: 1.6px;
+}
+
+.resume-snapshot-grid p {
+  font-size: 9.5px;
+  line-height: 1.6;
+}
+
+/* 内容卡：无框、大呼吸，靠细线分组 */
+.resume-sections {
+  gap: 14px;
+}
+
+.resume-section-card {
+  padding: 16px 0 0;
+  border: 0;
+  border-top: 1px solid var(--faint);
+  border-radius: 0;
+  background: transparent;
+}
+
+.resume-section-card > h3 {
+  margin-bottom: 10px;
+  font-size: 17px;
+  font-weight: 750;
+  letter-spacing: 0.2px;
+}
+
+.resume-section-body h3 {
+  margin: 14px 0 7px;
+  padding-left: 0;
+  border-left: 0;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+}
+
+.resume-section-body li {
+  margin: 6px 0;
+  line-height: 1.9;
+}
+
+.resume-section-body strong {
+  background: none;
+  box-shadow: inset 0 -1px 0 var(--accent);
+  font-weight: 700;
+}
+
+.resume-section-body th {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--ink);
+  color: var(--ink);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.resume-section-body td {
+  border: 0;
+  border-bottom: 1px solid var(--faint);
+}
+
+.resume-motto {
+  font-size: 12px;
+  letter-spacing: 1px;
+}
