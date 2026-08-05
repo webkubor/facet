@@ -117,7 +117,13 @@ Knowledge PDF Kit 对 Agent 的要求很低：能编辑 Markdown、运行 shell 
 
 ## 简历模板预览
 
-六套简历模板复用同一条 resume flow，但**按职业族分密度**：技术族高密度（单页信息量优先）、运营族中密度（指标先行）、视觉族低密度（留白即作品）。留白、字阶、strong 下限和头像尺寸的门禁阈值都随族切换，真源在 [`templates/resume-families.json`](templates/resume-families.json)。
+六套简历模板复用同一条 resume flow，但**按职业族换骨架、换密度**，不是只换配色：
+
+- **技术族**（`stacked`）：单列高密度，身份 → 焦点卡四列 → 内容卡，单页信息量优先。
+- **运营族**（`metrics-band`）：整宽 KPI 指标带顶在页首，编号放大成大数字，让数据先于叙述被读到。
+- **视觉族**（`sidebar`）：左 64mm 窄栏放大头像与纵向档案，右宽栏承载内容，卡片去框大留白。
+
+留白、字阶、strong 下限、头像尺寸的门禁阈值也随族切换，真源在 [`templates/resume-families.json`](templates/resume-families.json)。
 
 示例内容用的是本仓库维护者 **小楠 Lunove** 的 agent 履历 —— 同一条 flow，人和 agent 都能用，不包含任何真实个人信息。
 

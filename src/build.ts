@@ -20,6 +20,7 @@ import {
   writeResumePagePlan
 } from "./resume-flow.js";
 import { renderTemplate } from "./template-renderer.js";
+import { layoutOf } from "./resume-families.js";
 import { loadThemeOverride } from "./theme.js";
 import type { TemplateName } from "./types.js";
 import { isResumeTemplate, resumeTemplateNames, tutorialTemplateNames } from "./types.js";
@@ -46,11 +47,12 @@ async function main(): Promise<void> {
 
     // 分页由真实模板的量测结果驱动：不同模板的字体/间距不同，分组按模板各算各的。
     const buildResumeFor = async (resumeTemplateName: TemplateName, outputPath: string, writePlan: boolean): Promise<void> => {
-      const measureBody = renderResumeMeasureDocument(parts, parsed.meta, pageChrome);
+      const layout = layoutOf(resumeTemplateName);
+      const measureBody = renderResumeMeasureDocument(parts, parsed.meta, pageChrome, layout);
       const measureHtml = await renderTemplate(parsed.meta, measureBody, toc, resumeTemplateName, themeOverride);
       const measure = await measureResumeLayout(measureHtml);
       const groups = packResumeSections(parts, measure);
-      const bodyHtml = renderResumeDocumentFromGroups(parts, groups, parsed.meta, pageChrome);
+      const bodyHtml = renderResumeDocumentFromGroups(parts, groups, parsed.meta, pageChrome, layout);
 
       if (writePlan) {
         await writeResumePagePlan(inputPath, groups, measure);

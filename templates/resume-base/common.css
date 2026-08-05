@@ -247,6 +247,82 @@ body {
   margin-top: 6mm;
 }
 
+/* ─── 首页骨架 A：metrics-band ─────────────────────────────
+   KPI 带顶在页首，编号放大成指标数字，身份区退到带下方。 */
+.resume-layout-metrics-band .resume-snapshot-band {
+  margin-top: 0;
+  margin-bottom: 6mm;
+  padding-bottom: 5mm;
+  border-bottom: 1px solid var(--faint);
+}
+
+.resume-layout-metrics-band .resume-snapshot-band .resume-label {
+  margin-bottom: 4px;
+}
+
+.resume-layout-metrics-band .resume-contact-row {
+  margin-top: 3mm;
+  padding-top: 3mm;
+}
+
+/* ─── 首页骨架 B：sidebar ──────────────────────────────────
+   左窄栏是身份档案（头像 / 姓名 / 联系方式 / 纵向焦点），右宽栏承载内容。 */
+.resume-layout-sidebar .resume-split {
+  display: grid;
+  grid-template-columns: 64mm minmax(0, 1fr);
+  column-gap: 10mm;
+  flex: 1 1 auto;
+}
+
+.resume-layout-sidebar .resume-aside {
+  padding-right: 9mm;
+  border-right: 1px solid var(--faint);
+}
+
+.resume-layout-sidebar .resume-main {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 窄栏里 hero 回到单列，头像放大顶在最上方 */
+.resume-layout-sidebar .resume-hero-with-portrait {
+  grid-template-columns: 1fr;
+  row-gap: 6mm;
+}
+
+.resume-layout-sidebar .resume-portrait {
+  order: -1;
+  width: 38mm;
+  height: 38mm;
+}
+
+.resume-layout-sidebar .resume-contact-row {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.resume-layout-sidebar .resume-summary {
+  margin-top: 0;
+}
+
+/* 焦点列表在窄栏里纵向排布，不再是四列网格 */
+.resume-layout-sidebar .resume-snapshot-stack .resume-snapshot-grid {
+  grid-template-columns: 1fr;
+  gap: 5px;
+}
+
+.resume-layout-sidebar .resume-snapshot-stack section {
+  min-height: 0;
+}
+
+/* 正文页只用一条左侧细线呼应首页侧栏，不复制 64mm 缩进 —— 那会白白丢掉半页版面 */
+.resume-layout-sidebar.resume-body-page .resume-page-title,
+.resume-layout-sidebar.resume-body-page .resume-sections {
+  padding-left: 10mm;
+  border-left: 1px solid var(--faint);
+}
+
 .resume-page-title {
   margin-bottom: 6mm;
 }

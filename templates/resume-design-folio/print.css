@@ -92,6 +92,23 @@
   color: var(--faint);
 }
 
+/* 侧栏里联系方式是纵向堆叠，行首中点会变成孤立符号 —— 去掉，改用细线分隔 */
+.resume-layout-sidebar .resume-contact-row span + span::before {
+  content: none;
+}
+
+.resume-layout-sidebar .resume-contact-row span + span {
+  padding-top: 5px;
+  border-top: 1px solid var(--faint);
+  width: 100%;
+}
+
+/* 窄栏里姓名收到 36px，避免「小楠 ·」这种难看的断行 */
+.resume-layout-sidebar .resume-hero h1 {
+  font-size: 36px;
+  line-height: 1.2;
+}
+
 .resume-summary {
   padding: 0 0 0 14px;
   border-left: 1px solid var(--accent);

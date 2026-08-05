@@ -4,6 +4,7 @@
  */
 import type { DocumentMeta, HtmlSection, PageChrome, TocItem } from "./types.js";
 import { countMatches, escapeHtml, slugify, stripHtml } from "./html-utils.js";
+import type { ResumeLayout } from "./resume-families.js";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { projectRoot } from "./paths.js";
@@ -41,15 +42,15 @@ export function parseResumeParts(html: string, toc: TocItem[]): ResumeParts {
 }
 
 /** 生成量测文档：首页留空槽位测预算，正文页测预算与每张卡片实际像素高。 */
-export function renderResumeMeasureDocument(parts: ResumeParts, meta: DocumentMeta, pageChrome: PageChrome): string {
+export function renderResumeMeasureDocument(parts: ResumeParts, meta: DocumentMeta, pageChrome: PageChrome, layout: ResumeLayout = "stacked"): string {
   const cards = parts.sections.map((section) => renderResumeSection(section)).join("\n");
 
   // 预算槽位页带上座右铭一起量：正式渲染时座右铭落在末页，所有正文页按含座右铭的保守预算装箱。
   return [
     `<style>[data-measure="slot"] { flex: 1 1 auto; }</style>`,
-    renderResumeFirstPage(meta, parts.introHtml, parts.sections, [], pageChrome, true),
-    renderMeasureBodyPage(`<div class="resume-sections" data-measure="slot"></div>`, meta.motto),
-    renderMeasureBodyPage(`<div class="resume-sections" data-measure="cards">${cards}</div>`)
+    renderResumeFirstPage(meta, parts.introHtml, parts.sections, [], pageChrome, true, true, layout),
+    renderMeasureBodyPage(`<div class="resume-sections" data-measure="slot"></div>`, meta.motto, layout),
+    renderMeasureBodyPage(`<div class="resume-sections" data-measure="cards">${cards}</div>`, "", layout)
   ].join("\n");
 }
 
@@ -93,14 +94,14 @@ export function packResumeSections(parts: ResumeParts, measure: ResumeMeasure): 
 }
 
 /** 按量测得到的分组渲染简历页面；座右铭固定渲染在最后一页收尾。 */
-export function renderResumeDocumentFromGroups(parts: ResumeParts, groups: ResumeGroup[], meta: DocumentMeta, pageChrome: PageChrome): string {
+export function renderResumeDocumentFromGroups(parts: ResumeParts, groups: ResumeGroup[], meta: DocumentMeta, pageChrome: PageChrome, layout: ResumeLayout = "stacked"): string {
   const firstGroup = groups[0]?.sections ?? [];
   const restGroups = groups.slice(1);
 
   return [
-    renderResumeFirstPage(meta, parts.introHtml, parts.sections, firstGroup, pageChrome, false, restGroups.length === 0),
+    renderResumeFirstPage(meta, parts.introHtml, parts.sections, firstGroup, pageChrome, false, restGroups.length === 0, layout),
     ...restGroups.map((group, index) =>
-      renderResumeBodyPage(group, index + 2, pageChrome, index === restGroups.length - 1 ? meta.motto : "")
+      renderResumeBodyPage(group, index + 2, pageChrome, index === restGroups.length - 1 ? meta.motto : "", layout)
     )
   ].join("\n");
 }
@@ -138,9 +139,9 @@ export async function writeResumePagePlan(inputPath: string, groups: ResumeGroup
   console.log(`Page plan written: ${path.relative(projectRoot, outputPath)}`);
 }
 
-function renderMeasureBodyPage(sectionsHtml: string, motto = ""): string {
+function renderMeasureBodyPage(sectionsHtml: string, motto = "", layout: ResumeLayout = "stacked"): string {
   return [
-    `<section class="resume-page resume-body-page">`,
+    `<section class="resume-page resume-body-page resume-layout-${layout}">`,
     `<header class="resume-page-header"><span>measure</span><span>measure</span></header>`,
     `<div class="resume-page-title">`,
     `<p class="resume-label">Experience 00</p>`,
@@ -160,7 +161,8 @@ function renderResumeFirstPage(
   firstGroup: HtmlSection[],
   pageChrome: PageChrome,
   measureMode = false,
-  includeMotto = true
+  includeMotto = true,
+  layout: ResumeLayout = "stacked"
 ): string {
   const snapshotCards = sections.slice(0, 4).map((section, index) => [
     `<section>`,
@@ -171,9 +173,8 @@ function renderResumeFirstPage(
   ].join("")).join("\n");
   const primarySections = firstGroup.map((section) => renderResumeSection(section)).join("\n");
 
-  return [
-    `<section class="resume-page resume-first-page">`,
-    renderPageHeader(pageChrome),
+  // 首页积木：三种骨架用同一批组件，区别在于装配顺序与容器（见 docs/design-spec.md 布局表）。
+  const identity = [
     `<div class="resume-hero${meta.avatar ? " resume-hero-with-portrait" : ""}">`,
     `<div class="resume-identity">`,
     `<p class="resume-kicker">${escapeHtml(meta.role)}</p>`,
@@ -183,31 +184,56 @@ function renderResumeFirstPage(
     meta.avatar
       ? `<figure class="resume-portrait"><img src="${meta.avatar}" alt="${escapeHtml(meta.title)}" /></figure>`
       : "",
-    `</div>`,
+    `</div>`
+  ].join("\n");
+  const contact = [
     `<div class="resume-contact-row">`,
     `<span>${escapeHtml(meta.location)}</span>`,
     `<span>${escapeHtml(meta.contact)}</span>`,
     `<span>${escapeHtml(meta.links)}</span>`,
-    `</div>`,
-    `<div class="resume-summary">${introHtml}</div>`,
-    `<div class="resume-snapshot">`,
+    `</div>`
+  ].join("\n");
+  const summary = `<div class="resume-summary">${introHtml}</div>`;
+  const focus = (extraClass = "") => [
+    `<div class="resume-snapshot${extraClass}">`,
     `<p class="resume-label">Selected Focus</p>`,
     `<div class="resume-snapshot-grid">${snapshotCards}</div>`,
-    `</div>`,
-    `<div class="resume-sections resume-primary-sections"${measureMode ? ` data-measure="slot"` : ""}>${primarySections}</div>`,
-    meta.motto && includeMotto ? `<p class="resume-motto">「${escapeHtml(meta.motto)}」</p>` : "",
+    `</div>`
+  ].join("\n");
+  const primary = `<div class="resume-sections resume-primary-sections"${measureMode ? ` data-measure="slot"` : ""}>${primarySections}</div>`;
+  const motto = meta.motto && includeMotto ? `<p class="resume-motto">「${escapeHtml(meta.motto)}」</p>` : "";
+
+  const skeleton = {
+    // 单列纵向：信息密度最高
+    stacked: [identity, contact, summary, focus(), primary],
+    // 指标带优先：KPI 数字带顶在最前，数字先于叙述被读到
+    "metrics-band": [focus(" resume-snapshot-band"), identity, contact, summary, primary],
+    // 左右分栏：左窄栏是身份档案，右宽栏是内容
+    sidebar: [
+      `<div class="resume-split">`,
+      `<aside class="resume-aside">${identity}\n${contact}\n${focus(" resume-snapshot-stack")}</aside>`,
+      `<div class="resume-main">${summary}\n${primary}</div>`,
+      `</div>`
+    ]
+  }[layout];
+
+  return [
+    `<section class="resume-page resume-first-page resume-layout-${layout}">`,
+    renderPageHeader(pageChrome),
+    ...skeleton,
+    motto,
     renderPageFooter(pageChrome),
     `</section>`
   ].join("\n");
 }
 
-function renderResumeBodyPage(group: ResumeGroup, pageNumber: number, pageChrome: PageChrome, motto = ""): string {
+function renderResumeBodyPage(group: ResumeGroup, pageNumber: number, pageChrome: PageChrome, motto = "", layout: ResumeLayout = "stacked"): string {
   const titles = group.sections.map((section) => section.title);
   const pageTitle = titles.length > 2 ? `${titles.slice(0, 2).join(" / ")} 等` : titles.join(" / ");
   const gapStyle = group.extraGapPx > 0 ? ` style="row-gap: ${7 + group.extraGapPx}px"` : "";
 
   return [
-    `<section class="resume-page resume-body-page">`,
+    `<section class="resume-page resume-body-page resume-layout-${layout}">`,
     renderPageHeader(pageChrome),
     `<div class="resume-page-title">`,
     `<p class="resume-label">Experience ${String(pageNumber).padStart(2, "0")}</p>`,

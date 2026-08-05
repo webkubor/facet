@@ -1,5 +1,5 @@
 {
-  "$comment": "简历职业族的单一真源：src/types.ts 与 scripts/verify-resume.mjs 都从这里取值。改密度策略先改这里，再改 CSS。规范见 docs/design-spec.md。",
+  "$comment": "简历职业族的单一真源：src/resume-families.ts 与 scripts/verify-resume.mjs 都从这里取值。layout 决定首页骨架（不只是配色），gates 决定门禁阈值。改策略先改这里，再改 CSS。规范见 docs/design-spec.md。",
   "families": {
     "tech": {
       "label": "技术",
@@ -21,7 +21,8 @@
           80,
           100
         ]
-      }
+      },
+      "layout": "stacked"
     },
     "growth": {
       "label": "运营 / 增长",
@@ -43,7 +44,8 @@
           80,
           105
         ]
-      }
+      },
+      "layout": "metrics-band"
     },
     "design": {
       "label": "视觉 / UI",
@@ -55,7 +57,7 @@
         "minStrong": 3,
         "snapshotCount": 4,
         "fonts": {
-          "h1": 40,
+          "h1": 36,
           "subtitle": 15,
           "body": 12.5,
           "chip": 11,
@@ -63,9 +65,10 @@
         },
         "portraitPx": [
           95,
-          140
+          150
         ]
-      }
+      },
+      "layout": "sidebar"
     }
   },
   "templates": {
@@ -75,5 +78,10 @@
     "resume-infra-builder": "tech",
     "resume-growth-ops": "growth",
     "resume-design-folio": "design"
+  },
+  "layouts": {
+    "stacked": "单列纵向：身份 → 联系方式 → 摘要 → 聚焦卡四列 → 内容卡。信息密度最高。",
+    "metrics-band": "指标带优先：顶部整宽 KPI 带（4 个大数字）→ 身份 → 联系方式 → 摘要 → 内容卡。数字先于叙述。",
+    "sidebar": "左右分栏：左窄栏放大头像、身份、联系方式与纵向焦点列表；右宽栏放摘要与内容卡。"
   }
 }
