@@ -7,7 +7,7 @@ author: "Knowledge PDF Kit"
 role: "Frontend Lead"
 location: "Hangzhou"
 contact: "${RESUME_CONTACT:-hello@example.com / +86 138-0000-0000}"
-links: "${RESUME_LINKS:-github.com/example / portfolio.example.com}"
+links: "${RESUME_LINKS:-github.com/webkubor / webkubor.online}"
 pageHeader: "Resume PDF Kit"
 pageFooter: "Payment Platform / AI Platform / Frontend Infrastructure"
 shareHeader: "一份按业务线组织的技术简历"
@@ -18,11 +18,11 @@ shareFooter: "把项目经历整理成更清楚、更可信、更好读的 PDF�
 
 长期负责跨境支付与 AI 平台方向的前端 0 到 1 建设，擅长把复杂业务拆成稳定的产品界面、可复用的前端架构和可交付的工程流程。经历覆盖支付中台、商户后台、代理商后台、多国家 H5 收银台、订单自动化工具链、AI 模型平台控制台、开发者文档站与前端基础设施。
 
-## Tarspay 跨境支付业务线
+## XXX 跨境支付业务线
 
 ### 支付中台 / 多角色后台
 
-- 主导 Tarspay 管理后台、商户后台、代理商后台等多角色中台系统建设，覆盖账户、交易、结算、风控、订单、渠道和运营配置等高频业务模块。
+- 主导 XXX Pay 管理后台、商户后台、代理商后台等多角色中台系统建设，覆盖账户、交易、结算、风控、订单、渠道和运营配置等高频业务模块。
 - 通过 Vue 3、Vite、TypeScript、路由权限、状态管理、表单配置化和多语言能力，支撑不同角色在同一业务体系内协作。
 - 把支付业务的复杂状态、异常处理、列表筛选、导出、详情追踪和操作反馈沉淀为稳定的后台交互模式。
 
@@ -38,10 +38,10 @@ shareFooter: "把项目经历整理成更清楚、更可信、更好读的 PDF�
 
 | 市场 | 代表站点 | 支付场景 |
 | --- | --- | --- |
-| 巴基斯坦 | PK Payment Web | JazzCash / Easypaisa |
-| 孟加拉 | BD Payment Web / Reorder Money | bKash / Nagad / 补单 |
-| 泰国 | TH Payment Web | PromptPay |
-| 越南 | VN Payment Web | 二维码代收 |
+| 巴基斯坦 | PK Checkout Web | JazzCash / Easypaisa |
+| 孟加拉 | BD Checkout Web / 补单站点 | bKash / Nagad / 补单 |
+| 泰国 | TH Checkout Web | PromptPay |
+| 越南 | VN Checkout Web | 二维码代收 |
 
 ### 关键职责
 
@@ -61,11 +61,11 @@ shareFooter: "把项目经历整理成更清楚、更可信、更好读的 PDF�
 - 从 0 搭建订单自动化脚本、订单后台和 API 服务，用于聚合多商户、多账户订单拉取、状态同步和排查。
 - 通过后台看板、Socket/API 服务和自动化任务，把人工盯单流程转成可监控、可回溯的系统能力。
 
-## ModelGo AI 平台业务线
+## XXX AI 平台业务线
 
 ### 客户中心 / 控制台
 
-- 主导 ModelGo 客户中心从 0 到 1 建设，覆盖鉴权、工作空间、API Key、模型体验、模型对比、用量、账单、日志、异步任务、Guardrails 等核心模块。
+- 主导 XXX AI 客户中心从 0 到 1 建设，覆盖鉴权、工作空间、API Key、模型体验、模型对比、用量、账单、日志、异步任务、Guardrails 等核心模块。
 - 支持国内与海外两个市场的运行时配置、品牌主题、API 域名和文档入口切换。
 - 持续优化模型体验页的上传、流式输出、对比视图、异常提示和移动/低视口适配。
 
@@ -78,7 +78,7 @@ shareFooter: "把项目经历整理成更清楚、更可信、更好读的 PDF�
 
 ### CLI / SDK / Design Tokens
 
-- 从 0 搭建 ModelGo 配置 CLI，用于把 ModelGo 快速接入 Claude Code、Codex 等 AI 编程客户端。
+- 从 0 搭建平台配置 CLI，用于把模型服务快速接入 Claude Code、Codex 等 AI 编程客户端。
 - 搭建前端埋点 SDK，统一公共属性、批量上报、登录态鉴权和脱敏边界。
 - 建设 design-tokens 单一真源，在控制台、官网、海外站、文档站之间复用品牌色、语义色、暗色主题和基础视觉变量。
 

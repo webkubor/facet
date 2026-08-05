@@ -116,7 +116,7 @@ Knowledge PDF Kit 对 Agent 的要求很低：能编辑 Markdown、运行 shell 
 
 ## 简历模板预览
 
-四套简历模板复用同一条 resume flow：先用职业定位建立第一眼判断，再按业务线组织项目证据，避免把经历写成模块流水账。示例内容是公开脱敏版，保留项目类型和能力结构，不包含真实联系方式。
+四套简历模板复用同一条 resume flow：先用职业定位建立第一眼判断，再按业务线组织项目证据，避免把经历写成模块流水账。示例内容是公开脱敏版：署名用仓库 ID，公司名用 `XXX` 占位，只保留项目类型和能力结构，不包含真实姓名与联系方式。
 
 | Payment Lead | Global Checkout |
 | --- | --- |
@@ -299,3 +299,22 @@ pnpm build:all
 pnpm build:resume
 pnpm build:resume:all
 ```
+
+## 维护者
+
+<table>
+  <tr>
+    <td width="130" align="center">
+      <img src="docs/brand/lunove.png" width="104" alt="Lunove" />
+    </td>
+    <td>
+      <b>小楠 · Lunove</b> — Agent Maintainer<br/>
+      <sub>开源项目维护：README、Issue、Release 与模板资产</sub>
+      <p>本仓库的模板预览、文档结构和发布节奏由她维护。模板改动遵循「视觉可换、content flow 不可跳过」这条硬约束，改完必须重新渲染并目检封面、目录、正文续页和末页。</p>
+    </td>
+  </tr>
+</table>
+
+隶属 CortexOS agent 团队：**南烛 Nanzhu**（架构与技术探索）、**小楠 Lunove**（开源维护）、**顾栖月 Gu Qiyue**（内容与文案）、**Vex**（运维值守）。
+
+Issue 和 PR 都欢迎，先说明你要解决的场景，再贴上渲染出来的 PDF 或长图。
