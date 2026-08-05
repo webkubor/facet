@@ -99,7 +99,40 @@ body {
 .resume-hero {
   display: grid;
   grid-template-columns: 1fr;
+  align-items: center;
   gap: 8px;
+}
+
+/* 有头像时切两栏：左身份、右portrait。各模板可在 print.css 里重排。 */
+.resume-hero-with-portrait {
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 12mm;
+}
+
+.resume-identity {
+  display: grid;
+  gap: 8px;
+}
+
+.resume-portrait {
+  margin: 0;
+  width: 26mm;
+  height: 26mm;
+  padding: 2px;
+  border-radius: 999px;
+  background: var(--paper);
+  box-shadow:
+    0 0 0 1px var(--faint),
+    0 0 0 4px rgba(255, 255, 255, 0.55),
+    0 0 0 5px var(--accent);
+}
+
+.resume-portrait img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  object-fit: cover;
 }
 
 .resume-kicker,
@@ -132,7 +165,9 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 7px;
-  margin-top: 4px;
+  margin-top: 4mm;
+  padding-top: 3.5mm;
+  border-top: 1px solid var(--faint);
 }
 
 .resume-contact-row span {
@@ -146,7 +181,7 @@ body {
 }
 
 .resume-summary {
-  margin-top: 9mm;
+  margin-top: 5mm;
   padding: 9px 13px;
   border-left: 4px solid var(--accent);
   background: rgba(255, 255, 255, 0.52);
@@ -161,7 +196,7 @@ body {
 }
 
 .resume-snapshot {
-  margin-top: 6mm;
+  margin-top: 5mm;
 }
 
 .resume-snapshot-grid {

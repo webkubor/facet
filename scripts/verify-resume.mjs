@@ -116,7 +116,19 @@ for (const htmlPath of files) {
       emphasis: {
         strongCount: document.querySelectorAll(".resume-section-body strong").length,
         snapshotCount: document.querySelectorAll(".resume-snapshot-grid section").length
-      }
+      },
+      portrait: (() => {
+        const figure = document.querySelector(".resume-portrait");
+        if (!figure) return null;
+        const img = figure.querySelector("img");
+        const box = figure.getBoundingClientRect();
+        return {
+          inlined: Boolean(img?.getAttribute("src")?.startsWith("data:")),
+          loaded: Boolean(img?.complete && img.naturalWidth > 0),
+          size: Math.round(box.width),
+          heroSplit: Boolean(document.querySelector(".resume-hero-with-portrait"))
+        };
+      })()
     };
   }, A4_HEIGHT_PX);
 
@@ -143,6 +155,17 @@ for (const htmlPath of files) {
   report(audit.contrast.motto >= 4.0, `座右铭对比度 ${audit.contrast.motto} ≥ 4.0`);
   report(audit.emphasis.strongCount >= 6, `视觉重点 strong ${audit.emphasis.strongCount} 处 ≥ 6`);
   report(audit.emphasis.snapshotCount === 4, `聚焦卡 ${audit.emphasis.snapshotCount} 张 == 4`);
+
+  if (audit.portrait) {
+    // 规范见 docs/design-spec.md「简历体系组件」：22-26mm 圆形/方形头像，必须内联且已解码。
+    report(audit.portrait.inlined, "头像已内联为 data URI（导出后不依赖外部文件）");
+    report(audit.portrait.loaded, "头像已成功解码");
+    report(
+      audit.portrait.size >= 80 && audit.portrait.size <= 100,
+      `头像尺寸 ${audit.portrait.size}px 落在规范 22-26mm（80-100px）`
+    );
+    report(audit.portrait.heroSplit, "首屏已切换为带头像的两栏 hero");
+  }
 
   const pdfBuf = readFileSync(pdfPath).toString("latin1");
   const pdfPages = [...pdfBuf.matchAll(/\/Type\s*\/Pages[^>]*?\/Count\s+(\d+)/g)].map((m) => Number(m[1]))[0] ?? -1;

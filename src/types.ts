@@ -22,6 +22,8 @@ export interface DocumentMeta {
   contact: string;
   links: string;
   motto: string;
+  /** 简历首屏头像：front matter 写仓库内相对路径，构建时内联成 data URI。 */
+  avatar: string;
 }
 
 /** 命令行参数。 */

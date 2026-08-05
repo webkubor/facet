@@ -6,6 +6,7 @@ import MarkdownIt from "markdown-it";
 import hljs from "highlight.js";
 import type { DocumentMeta, DocumentType, TocItem } from "./types.js";
 import { interpolateEnv } from "./env.js";
+import { inlineAvatar } from "./avatar.js";
 import { cleanMarkdownInline, escapeHtml, slugify } from "./html-utils.js";
 
 const markdown = new MarkdownIt({
@@ -44,7 +45,8 @@ export function parseMarkdownDocument(source: string): { meta: DocumentMeta; bod
       location: entries.location ?? "杭州",
       contact: entries.contact ?? "email@example.com",
       links: entries.links ?? "GitHub / Portfolio",
-      motto: entries.motto ?? ""
+      motto: entries.motto ?? "",
+      avatar: inlineAvatar(entries.avatar ?? "")
     },
     body
   };
@@ -93,7 +95,8 @@ function parseFrontMatter(raw: string): Partial<Record<keyof DocumentMeta, strin
     "location",
     "contact",
     "links",
-    "motto"
+    "motto",
+    "avatar"
   ]);
 
   for (const line of raw.split("\n")) {

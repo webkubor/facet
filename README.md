@@ -178,10 +178,14 @@ title: "候选人姓名"
 subtitle: "资深前端工程师 / 跨境支付与 AI 平台前端负责人"
 role: "Frontend Lead"
 location: "Hangzhou"
+avatar: "docs/brand/avatar.png"
 contact: "email@example.com / +86 *** **** ****"
 links: "github.com/example / portfolio.example.com"
+motto: "一句收尾用的座右铭。"
 ---
 ```
+
+`avatar` 写仓库内相对路径，构建时会内联成 data URI，导出的 HTML/PDF 不依赖外部文件；读不到就自动降级为无头像的单栏首屏，不会卡住构建。四套简历模板的头像版式各不相同（右圆 / 左圆镜像 / 深色条反白 / 方形圆角），详见 [docs/design-spec.md](docs/design-spec.md)。
 
 构建时会输出同名 `page-plan.json`，用于检查每页承载哪些经历点，以及是否存在页面密度失衡。
 
@@ -238,6 +242,8 @@ shareFooter: "适合收藏，适合转发，也适合复习。"
 - `shareFooter`：长图底部提示语。
 - `documentType`：默认是 `tutorial`；生成简历时设置为 `resume`。
 - `role` / `location` / `contact` / `links`：简历模板首屏信息。
+- `avatar`：简历首屏头像，仓库内相对路径，构建时内联。
+- `motto`：座右铭，渲染在最后一页右下角收尾。
 
 正文使用普通 Markdown。建议用 `##` 划分章节，`###` 划分小节。
 

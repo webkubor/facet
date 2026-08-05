@@ -52,3 +52,17 @@
 .resume-section-card h3 {
   color: var(--accent);
 }
+
+/* hero 变体：左头像 · 右身份（镜像） */
+.resume-hero-with-portrait {
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 9mm;
+}
+
+.resume-hero-with-portrait .resume-portrait {
+  order: -1;
+  box-shadow:
+    0 0 0 1px var(--faint),
+    0 0 0 4px rgba(255, 252, 247, 0.9),
+    0 0 0 5px var(--accent-2);
+}

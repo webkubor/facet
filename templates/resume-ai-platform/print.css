@@ -16,7 +16,7 @@
 }
 
 .resume-first-page .resume-summary {
-  margin-top: 7mm;
+  margin-top: 5mm;
 }
 
 .resume-first-page {
@@ -48,4 +48,35 @@
 
 .resume-section-body th {
   color: #202b2f;
+}
+
+/* hero 变体：深色条幅，头像反白环 */
+.resume-first-page .resume-hero-with-portrait {
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 8mm;
+  padding: 4mm 6mm;
+  border-radius: var(--radius);
+  background: linear-gradient(120deg, #202b2f 0%, #2c3a3e 100%);
+}
+
+.resume-first-page .resume-hero-with-portrait .resume-portrait {
+  order: -1;
+  width: 22mm;
+  height: 22mm;
+  background: transparent;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.28),
+    0 0 0 4px rgba(255, 255, 255, 0.12);
+}
+
+.resume-first-page .resume-hero-with-portrait .resume-kicker {
+  color: #a8c4c7;
+}
+
+.resume-first-page .resume-hero-with-portrait h1 {
+  color: #f4f7f6;
+}
+
+.resume-first-page .resume-hero-with-portrait .resume-subtitle {
+  color: #c2cfd0;
 }

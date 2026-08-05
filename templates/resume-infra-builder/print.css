@@ -62,3 +62,18 @@
   background: linear-gradient(90deg, var(--accent-2) 0 34px, var(--faint) 34px 100%) left bottom / 100% 1.5px no-repeat;
 }
 
+/* hero 变体：方形圆角头像，呼应等宽字体的工程感 */
+.resume-portrait {
+  width: 25mm;
+  height: 25mm;
+  padding: 3px;
+  border-radius: 6px;
+  box-shadow:
+    0 0 0 1px var(--faint),
+    0 0 0 4px rgba(242, 240, 236, 0.9),
+    0 0 0 5px var(--ink);
+}
+
+.resume-portrait img {
+  border-radius: 4px;
+}

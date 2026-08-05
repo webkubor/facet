@@ -174,15 +174,20 @@ function renderResumeFirstPage(
   return [
     `<section class="resume-page resume-first-page">`,
     renderPageHeader(pageChrome),
-    `<div class="resume-hero">`,
+    `<div class="resume-hero${meta.avatar ? " resume-hero-with-portrait" : ""}">`,
+    `<div class="resume-identity">`,
     `<p class="resume-kicker">${escapeHtml(meta.role)}</p>`,
     `<h1>${escapeHtml(meta.title)}</h1>`,
     `<p class="resume-subtitle">${escapeHtml(meta.subtitle)}</p>`,
+    `</div>`,
+    meta.avatar
+      ? `<figure class="resume-portrait"><img src="${meta.avatar}" alt="${escapeHtml(meta.title)}" /></figure>`
+      : "",
+    `</div>`,
     `<div class="resume-contact-row">`,
     `<span>${escapeHtml(meta.location)}</span>`,
     `<span>${escapeHtml(meta.contact)}</span>`,
     `<span>${escapeHtml(meta.links)}</span>`,
-    `</div>`,
     `</div>`,
     `<div class="resume-summary">${introHtml}</div>`,
     `<div class="resume-snapshot">`,

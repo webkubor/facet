@@ -30,7 +30,35 @@
 | 座右铭 | 11.5px 斜体 | — | muted 色 |
 | 表格 | 10px | — | — |
 
-间距：卡片 padding 11×13px，卡片间 gap 7px，模块间 6-9mm，页底 padding 15mm（含 2mm 打印安全余量）。
+间距：卡片 padding 11×13px，卡片间 gap 7px，页底 padding 15mm（含 2mm 打印安全余量）。首屏模块节奏固定为
+hero → 联系方式（上边框分隔，margin-top 4mm / padding-top 3.5mm）→ 摘要 5mm → 聚焦卡 5mm → 主项目 6mm，
+这串数字是首页装箱预算的一部分，改动必须重跑 `verify:resume` 确认留白仍 ≤15%。
+
+## 简历体系组件（resume-base/common.css）
+
+| 组件 | class | 结构约定 |
+| --- | --- | --- |
+| 首屏身份区 | `.resume-hero` > `.resume-identity` | 默认单栏；提供 `avatar` 时挂 `.resume-hero-with-portrait` 切两栏 |
+| 头像 | `.resume-portrait` > `img` | 26×26mm 圆形，1px faint 描边 + 5px accent 环，`object-fit: cover` |
+| 联系方式徽章 | `.resume-contact-row` > `span` | 独立于 hero 的一行，上边框分隔，胶囊形 |
+| 摘要 | `.resume-summary` | 左侧 4px accent 竖条 |
+| 聚焦卡 | `.resume-snapshot-grid` > `section` | 固定 4 张，编号圆点 + 标题 + 摘要 |
+| 内容卡 | `.resume-section-card` | 卡内 h3 为业务线名，`.resume-section-body h3` 为小节名 |
+| 座右铭 | `.resume-motto` | 末页右下收尾 |
+
+头像是**可选组件**：`avatar` 只写仓库内相对路径，构建时由 `src/avatar.ts` 内联成 data URI，
+读不到或类型不支持就跳过并降级为单栏 hero，不让缺图卡住构建。
+
+## 模板变体职责（resume-*/print.css）
+
+各模板只允许改**色板、纸面质感和 hero 排布**，不得改字阶、不得改 content flow 的页面角色：
+
+| 模板 | 色调与纸面 | hero 版式 |
+| --- | --- | --- |
+| `resume-payment-lead` | 橄榄绿 / 陶土，暖纸 + 左侧色带 | 左身份 · 右圆形头像 |
+| `resume-global-checkout` | 驼棕 / 灰绿，方格纸 | 左圆形头像 · 右身份（镜像） |
+| `resume-ai-platform` | 青灰 / 沙色，斜切几何 + 深色顶边 | 深色 hero 条，左头像反白 · 右身份 |
+| `resume-infra-builder` | 石墨 / 麦色，竖网格 + 等宽字体 | 左身份 · 右方形圆角头像 |
 
 ## 空间利用规则
 
