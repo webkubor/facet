@@ -1,6 +1,6 @@
 {
   "name": "knowledge-pdf-kit",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Generate polished knowledge tutorial PDFs and shareable long images from Markdown with reusable content flow templates.",
   "private": false,
   "license": "MIT",
