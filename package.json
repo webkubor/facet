@@ -1,6 +1,6 @@
 {
   "name": "facet",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "One Markdown source, multiple facets: talk slides for presenting, PDF and long images for sharing.",
   "private": false,
   "license": "MIT",
