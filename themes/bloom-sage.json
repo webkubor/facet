@@ -1,0 +1,22 @@
+{
+  "name": "Bloom Sage (Morandi)",
+  "_source": "取自 typora-Bloom-theme/theme-src/root-sage.css —— 已在 Typora/DSH 上实践过的莫兰迪色板，用 oklch 表示（低饱和场景下感知均匀，比 hex 更准），对比度由该仓库的 contrast.config.json 校验过。改色请回源仓库改，别在这里各调一份。",
+  "colors": {
+    "paper": "oklch(97% 0.01 115)",
+    "ink": "oklch(25% 0.02 115)",
+    "muted": "oklch(45% 0.02 45)",
+    "faint": "color-mix(in oklch, oklch(25% 0.02 115), transparent 85%)",
+    "soft": "oklch(92% 0.01 115)",
+    "accent": "oklch(54% 0.11 115)",
+    "accent2": "oklch(58% 0.12 30)",
+    "danger": "oklch(60% 0.12 25)"
+  },
+  "cssVariables": {
+    "--radius": "8px",
+    "--code-bg": "oklch(95% 0.01 115)",
+    "--code-ink": "oklch(25% 0.02 115)",
+    "--code-keyword": "oklch(55% 0.12 115)",
+    "--code-string": "oklch(52% 0.12 140)",
+    "--code-comment": "oklch(45% 0.02 45)"
+  }
+}

@@ -37,7 +37,8 @@ export function parseArgs(args: string[]): BuildOptions {
     templateProvided: values.has("template"),
     themePath: values.get("theme"),
     all: flags.has("--all"),
-    share: !flags.has("--no-share")
+    share: !flags.has("--no-share"),
+    talk: flags.has("--talk")
   };
 }
 

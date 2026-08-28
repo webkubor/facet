@@ -1,0 +1,251 @@
+/* Talk（演讲页）—— show 导向：一屏一章节，大字、可翻页、可全屏。
+ * 变量由 --theme themes/*.json 覆写；打印时每屏一页。
+ */
+:root {
+  --paper: #f7f5f0;
+  --ink: #24303a;
+  --muted: #5f6b76;
+  --faint: #e3dfd6;
+  --soft: #eef1f2;
+  --accent: #627481;
+  --accent-2: #7d9d8c;
+  --danger: #9a5948;
+  --display-font: "Source Han Serif SC", "Songti SC", "STSong", serif;
+  --body-font: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+
+body.talk {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+.talk-stage { height: 100vh; overflow: hidden; position: relative; }
+
+.slide {
+  display: none;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 7vh 8vw;
+}
+.slide.active { display: flex; align-items: center; }
+
+.slide-inner {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  transform: scale(var(--talk-scale, 1));
+  transform-origin: center center;
+}
+
+.slide-kicker {
+  color: var(--accent);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  margin-bottom: 12px;
+}
+
+.slide h2 {
+  font-family: var(--display-font);
+  font-size: 44px;
+  line-height: 1.25;
+  margin: 0 0 18px;
+}
+.slide h3 {
+  font-size: 24px;
+  margin: 26px 0 8px;
+}
+.slide p { font-size: 20px; line-height: 1.7; margin: 12px 0; }
+.slide ul, .slide ol { font-size: 20px; line-height: 1.7; padding-left: 26px; }
+.slide li { margin: 6px 0; }
+
+.slide blockquote {
+  border-left: 4px solid var(--accent-2);
+  background: var(--soft);
+  margin: 18px 0;
+  padding: 12px 20px;
+  border-radius: 0 10px 10px 0;
+}
+.slide blockquote p { margin: 0; font-size: 20px; }
+
+.slide table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+  margin: 16px 0;
+}
+.slide th, .slide td {
+  border: 1px solid var(--faint);
+  padding: 9px 12px;
+  text-align: left;
+  line-height: 1.5;
+}
+.slide th { background: var(--soft); font-weight: 700; }
+
+/* 代码块走主题变量：原先硬编码 #1f2937 深蓝灰，满屏代码时会把柔和色系整个压掉。
+   莫兰迪是低饱和高明度，一块纯深色就会成为唯一的视觉重心——所以默认改浅底深字。 */
+.slide pre {
+  background: var(--code-bg, #ece6db);
+  color: var(--code-ink, #3f4740);
+  border: 1px solid var(--faint);
+  padding: 18px 20px;
+  border-radius: 10px;
+  overflow-x: auto;
+  /* 投影可读：正文 20px，代码原先 14.5px 差了太多，后排看不清 */
+  font-size: 17px;
+  line-height: 1.65;
+}
+.slide pre code { background: transparent; padding: 0; }
+
+/* 语法着色：hljs 只标了 class、不带配色，这里补一套低饱和的，
+   保持可辨识又不跳出莫兰迪。 */
+.slide .hljs-section, .slide .hljs-title { color: var(--accent); font-weight: 700; }
+.slide .hljs-string, .slide .hljs-attr { color: var(--code-string, #8a7355); }
+.slide .hljs-comment { color: var(--code-comment, #9a9386); font-style: italic; }
+.slide .hljs-keyword, .slide .hljs-built_in { color: var(--code-keyword, #7d6b78); }
+.slide .hljs-bullet, .slide .hljs-symbol { color: var(--accent-2); }
+.slide code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.slide p code, .slide li code, .slide td code {
+  background: var(--soft);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.88em;
+}
+
+/* 封面 */
+.slide.cover { text-align: center; justify-content: center; }
+.cover-inner { max-width: 1000px; }
+.cover-brand {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 6px 16px;
+  margin-bottom: 26px;
+}
+.slide.cover h1 {
+  font-family: var(--display-font);
+  font-size: 60px;
+  line-height: 1.22;
+  margin: 0 0 18px;
+}
+.cover-sub { font-size: 23px; color: var(--muted); margin: 0; }
+.cover-meta { font-size: 15px; color: var(--muted); margin-top: 20px; }
+
+.cover-nav {
+  margin-top: 34px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 10px;
+}
+.cover-nav a {
+  display: block;
+  text-align: left;
+  padding: 12px 16px;
+  border: 1px solid var(--faint);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 16px;
+  line-height: 1.4;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.cover-nav a:hover { border-color: var(--accent); transform: translateY(-1px); }
+.cover-nav a .n {
+  color: var(--accent);
+  font-weight: 700;
+  margin-right: 8px;
+  font-variant-numeric: tabular-nums;
+}
+.cover-hint { margin-top: 26px; font-size: 13.5px; color: var(--muted); }
+
+/* 进度条 */
+.talk-progress {
+  position: fixed;
+  right: 22px;
+  bottom: 16px;
+  font-size: 14px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  z-index: 10;
+}
+.talk-bar {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  height: 4px;
+  width: 100%;
+  background: var(--faint);
+  z-index: 10;
+}
+.talk-bar i {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+
+/* 打印：每屏一页 */
+@media print {
+  body.talk { background: #fff; }
+  .slide {
+    display: block !important;
+    height: auto;
+    min-height: 100vh;
+    padding: 24px 32px;
+    page-break-after: always;
+    align-items: flex-start;
+  }
+  .talk-progress, .talk-bar { display: none; }
+}
+
+/* 片尾：署名 + 系列 + 归档站点。视觉上比正文轻，留白多，
+   收尾要「把话头交出去」而不是再压一屏信息。 */
+.slide.closing { text-align: center; justify-content: center; }
+.closing-inner { max-width: 760px; }
+.closing-series {
+  display: inline-block;
+  margin-bottom: 20px;
+  padding: 5px 14px;
+  border: 1px solid var(--faint);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 14px;
+  letter-spacing: 0.08em;
+}
+.slide.closing .closing-title {
+  margin: 0;
+  font-family: var(--display-font);
+  font-size: 46px;
+  color: var(--ink);
+}
+.closing-note {
+  margin: 16px auto 0;
+  max-width: 620px;
+  font-size: 19px;
+  line-height: 1.75;
+  color: var(--muted);
+}
+.closing-by {
+  margin-top: 32px;
+  font-size: 17px;
+  color: var(--ink);
+}
+.closing-by .dot { margin: 0 10px; color: var(--faint); }
+.closing-site {
+  margin-top: 10px;
+  font-size: 15px;
+  color: var(--muted);
+}
+.closing-site strong { color: var(--accent); font-weight: 600; }

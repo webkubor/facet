@@ -2,10 +2,11 @@
  * 知识教程 PDF 构建器入口
  * 职责：编排 Markdown 解析、content flow 规划、模板渲染和 PDF/长图输出。
  */
-import { readFile } from "node:fs/promises";
+import { readFile, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { parseArgs } from "./args.js";
 import { buildPdf } from "./build-one.js";
+import { buildTalkHTML } from "./talk.js";
 import { loadDotEnv } from "./env.js";
 import { measureResumeLayout } from "./browser-output.js";
 import { planArticlePages, writePagePlan } from "./content-flow.js";
@@ -79,6 +80,22 @@ async function main(): Promise<void> {
   const articlePlan = planArticlePages(renderedMarkdown, toc);
   const bodyHtml = renderArticlePlan(articlePlan, pageChrome);
   await writePagePlan(inputPath, articlePlan);
+
+  // talk 形态（show 导向）：只出演讲页 HTML，复用同一份 Markdown 与主题。
+  if (options.talk) {
+    const inputName = path.basename(inputPath, path.extname(inputPath));
+    const talkPath = path.resolve(projectRoot, options.outputProvided ? options.output : `output/${inputName}.talk.html`);
+    const talkHtml = await buildTalkHTML({
+      meta: parsed.meta,
+      toc,
+      bodySource: parsed.body,
+      themeOverride
+    });
+    await mkdir(path.dirname(talkPath), { recursive: true });
+    await writeFile(talkPath, talkHtml, "utf8");
+    console.log(`Talk HTML written: ${path.relative(projectRoot, talkPath)}`);
+    return;
+  }
 
   if (options.all) {
     const inputName = path.basename(inputPath, path.extname(inputPath));

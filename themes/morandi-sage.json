@@ -11,6 +11,11 @@
     "danger": "#9a5d50"
   },
   "cssVariables": {
-    "--radius": "8px"
+    "--radius": "8px",
+    "--code-bg": "#ece6db",
+    "--code-ink": "#3f4740",
+    "--code-string": "#8a7355",
+    "--code-comment": "#9a9386",
+    "--code-keyword": "#7d6b78"
   }
 }

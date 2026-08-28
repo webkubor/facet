@@ -73,6 +73,24 @@ pnpm build:resume
 pnpm build:resume:all
 ```
 
+生成演讲页（show 导向，现场讲解用）：
+
+```bash
+pnpm build:talk
+# 打开 output/ai-readable-kit.talk.html —— ← → 翻页、数字键跳转、F 全屏
+```
+
+## 两种功能导向：show 与 share
+
+同一份 Markdown，产出两种功能导向的产物，各管各的：
+
+| 导向 | 产物 | 形态 | 用途 |
+| --- | --- | --- | --- |
+| **show** | `*.talk.html` | 演讲页（`--talk`） | 一屏一章节、大字、键盘翻页、可全屏，现场讲解用 |
+| **share** | `*.pdf` + `*.share.png` | A4 PDF + 长图 | 存档、打印、小红书/公众号分发 |
+
+讲解时打开 `talk.html`（审美与 PDF 同源，`--theme` 覆写同一套颜色），讲完发 PDF 和长图——内容只写一份。
+
 ## 核心能力
 
 - Markdown -> HTML/CSS -> Playwright PDF，全链路本地生成。
@@ -80,6 +98,7 @@ pnpm build:resume:all
 - 自动生成长图分享产物 `*.share.png`，适合小红书、公众号素材分发。
 - 支持自定义 PDF 内页页眉页脚，以及长图外层标题和尾注。
 - 支持在生成前注入用户颜色偏好，动态覆写模板 CSS 变量。
+- `--talk` 演讲页：同一份 Markdown 输出「一屏一章节」的演讲 HTML，键盘翻页、可全屏，现场讲解用（show 导向）；PDF/长图仍是分发用（share 导向）。
 - 输出 `page-plan.json`，可检查每页承载哪些知识点。
 - 内置八套知识教程模板和六套简历模板，简历按职业族分密度：技术高密度、运营中密度、视觉低密度。
 - 简历校验门禁按职业族切换阈值，不会拿技术岗的信息密度去卡设计岗的留白。
@@ -284,6 +303,7 @@ cp .env.example .env   # 填入真实联系方式，只留在本地
 output/tutorial.pdf        # A4 PDF
 output/tutorial.html       # 可检查的中间 HTML
 output/tutorial.share.png  # 自动长图分享图
+output/ai-readable-kit.talk.html  # 演讲页（--talk，现场讲解用）
 output/example-page-plan.json
 output/resume-example.pdf
 output/resume-example-page-plan.json

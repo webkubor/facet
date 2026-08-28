@@ -24,6 +24,15 @@ export interface DocumentMeta {
   motto: string;
   /** 简历首屏头像：front matter 写仓库内相对路径，构建时内联成 data URI。 */
   avatar: string;
+  /** talk 片尾：系列标识，如「AI 可读性 · 第 1 期」。空则不渲染该行。 */
+  series: string;
+  /** talk 片尾：讲稿归档站点，如 share.webkubor.online。空则不渲染。 */
+  site: string;
+  /** talk 片尾主标题。默认「聊到这里」——不用「感谢聆听」那类收束语，
+   *  那会把讲者放回讲台上，与交流姿态冲突。 */
+  closingTitle: string;
+  /** talk 片尾副文案：一句话邀请继续交流。 */
+  closingNote: string;
 }
 
 /** 命令行参数。 */
@@ -36,6 +45,8 @@ export interface BuildOptions {
   themePath: string | undefined;
   all: boolean;
   share: boolean;
+  /** 只生成演讲页（show 导向），不生成 PDF/长图。 */
+  talk: boolean;
 }
 
 /** 用户偏好主题配置。 */

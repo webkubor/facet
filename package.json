@@ -36,6 +36,8 @@
     "build": "tsx src/build.ts",
     "build:example": "tsx src/build.ts --input content/example.md --template warm-handbook --output output/example-warm-handbook.pdf",
     "build:all": "tsx src/build.ts --input content/example.md --all",
+    "build:talk": "tsx src/build.ts --input content/ai-readable-kit.md --talk --theme themes/scorecard-blue.json --output output/ai-readable-kit.talk.html",
+    "talk:dev": "bunx vite output --port 4173 --host --open /ai-readable-kit.talk.html",
     "build:resume": "tsx src/build.ts --input content/resume-example.md --template resume-payment-lead --output output/resume-example.pdf",
     "build:resume:all": "tsx src/build.ts --input content/resume-example.md --all",
     "setup:browsers": "playwright install chromium",

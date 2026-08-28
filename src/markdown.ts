@@ -46,7 +46,11 @@ export function parseMarkdownDocument(source: string): { meta: DocumentMeta; bod
       contact: entries.contact ?? "email@example.com",
       links: entries.links ?? "GitHub / Portfolio",
       motto: entries.motto ?? "",
-      avatar: inlineAvatar(entries.avatar ?? "")
+      avatar: inlineAvatar(entries.avatar ?? ""),
+      series: entries.series ?? "",
+      site: entries.site ?? "",
+      closingTitle: entries.closingTitle ?? "聊到这里",
+      closingNote: entries.closingNote ?? "以上都是我自己的实践，欢迎随时来找我抬杠、补充或纠正。"
     },
     body
   };
@@ -96,7 +100,11 @@ function parseFrontMatter(raw: string): Partial<Record<keyof DocumentMeta, strin
     "contact",
     "links",
     "motto",
-    "avatar"
+    "avatar",
+    "series",
+    "site",
+    "closingTitle",
+    "closingNote"
   ]);
 
   for (const line of raw.split("\n")) {
