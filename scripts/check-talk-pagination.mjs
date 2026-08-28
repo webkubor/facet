@@ -64,6 +64,15 @@ async function main() {
     const html = await readFile(output, "utf8");
     const labels = [...html.matchAll(/aria-label="([^"]*)"/g)].map((m) => m[1]);
 
+    // 封面章节导航同样不能混进代码块里的标题（buildToc 也要挖掉围栏）
+    const navText = (html.match(/<nav class="cover-nav">[\s\S]*?<\/nav>/) ?? [""])[0];
+    const navLeaked = ["这是什么", "常用命令", "约定"].filter((t) => navText.includes(t));
+    if (navLeaked.length) {
+      console.error(`❌ 目录回归：封面章节导航混进了代码块里的标题 → ${navLeaked.join("、")}`);
+      console.error(`   修法：src/markdown.ts 的 buildToc 要先 stripFencedBlocks 再扫标题。`);
+      process.exit(1);
+    }
+
     const leaked = ["这是什么", "常用命令", "约定"].filter((t) => labels.includes(t));
     const expected = ["真章节一", "真章节二"].filter((t) => labels.includes(t));
 

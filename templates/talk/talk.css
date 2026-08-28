@@ -422,3 +422,21 @@ body.talk {
   .slide-rail .num { font-size: 48px; }
   .talk-progress, .talk-bar { display: none; }
 }
+/* 续屏：同一章拆成多屏时，第 2 屏起标题降一级并标「续」，
+   避免连着三屏出现三个一模一样的大标题、观众以为翻错了。 */
+.slide h2.continued {
+  font-size: 0.62em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--faint);
+  padding-bottom: 10px;
+}
+.slide h2.continued .cont-mark {
+  display: inline-block;
+  margin-left: 10px;
+  padding: 2px 9px;
+  border: 1px solid var(--faint);
+  border-radius: 999px;
+  font-size: 0.5em;
+  vertical-align: middle;
+  color: var(--muted);
+}

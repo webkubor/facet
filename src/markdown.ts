@@ -62,12 +62,33 @@ export function renderMarkdown(source: string): string {
   return markdown.render(source);
 }
 
+/**
+ * 代码块整体挖空（保留行数，行号/偏移不受影响）。
+ * 正文里贴 AGENTS.md 之类的 md 模板时，模板内部的 `## 这是什么` 不是真章节。
+ */
+function stripFencedBlocks(source: string): string {
+  let inFence = false;
+  return source
+    .split(/\r?\n/)
+    .map((line) => {
+      if (/^\s*(```|~~~)/.test(line)) {
+        inFence = !inFence;
+        return "";
+      }
+      return inFence ? "" : line;
+    })
+    .join("\n");
+}
+
 /** 提取二级和三级标题目录。 */
 export function buildToc(source: string): TocItem[] {
   const items: TocItem[] = [];
   const headingPattern = /^(#{2,3})\s+(.+)$/gm;
   const usedIds = new Map<string, number>();
-  let match: RegExpExecArray | null = headingPattern.exec(source);
+  // 代码块里的标题不进目录：否则目录条数与实际章节对不上，
+  // 点进去还会跳错页（talk 封面的章节导航按目录序号跳）。
+  const scanned = stripFencedBlocks(source);
+  let match: RegExpExecArray | null = headingPattern.exec(scanned);
 
   while (match) {
     const marker = match[1] ?? "";
@@ -78,7 +99,7 @@ export function buildToc(source: string): TocItem[] {
 
     usedIds.set(baseId, count + 1);
     items.push({ level: marker.length, id, text });
-    match = headingPattern.exec(source);
+    match = headingPattern.exec(scanned);
   }
 
   return items;
