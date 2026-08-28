@@ -44,7 +44,8 @@
     "check": "tsc --noEmit && node scripts/check-talk-pagination.mjs",
     "verify:resume": "node scripts/verify-resume.mjs",
     "check:pagination": "node scripts/check-talk-pagination.mjs",
-    "build:site": "node scripts/build-site.mjs"
+    "build:site": "node scripts/build-site.mjs",
+    "check:slides": "node scripts/check-slide-overflow.mjs"
   },
   "dependencies": {
     "highlight.js": "^11.11.1",
