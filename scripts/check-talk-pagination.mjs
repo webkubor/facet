@@ -74,6 +74,14 @@ async function main() {
     }
 
     const leaked = ["这是什么", "常用命令", "约定"].filter((t) => labels.includes(t));
+    // 片尾页：被整块替换覆盖丢过一次（2026-08-28），加断言守住
+    if (!html.includes("closing-title") || !labels.includes("片尾")) {
+      console.error("❌ 片尾页丢失：应有 kind:'closing' 的最后一屏（署名 / 系列 / 归档站点）");
+      console.error("   实际页序：" + labels.join(" | "));
+      console.error("   修法：src/talk.ts 的 planTalkSlides 末尾要 push closing，renderTalkSlides 要分发到 renderClosingSlide。");
+      process.exit(1);
+    }
+
     const expected = ["真章节一", "真章节二"].filter((t) => labels.includes(t));
 
     if (leaked.length) {

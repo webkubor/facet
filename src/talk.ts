@@ -248,6 +248,11 @@ function planTalkSlides(bodySource: string): TalkSlide[] {
     });
   }
 
+  // 片尾：署名 + 系列 + 归档站点。固定最后一页，不从正文取。
+  // ⚠️ 这行被整块替换覆盖丢过一次（2026-08-28 加拆屏时），
+  //    check-talk-pagination 已加断言守住，别再删。
+  slides.push({ id: "closing", kind: "closing", title: "片尾", html: "" });
+
   return slides;
 }
 
@@ -265,6 +270,10 @@ function renderTalkSlides(slides: TalkSlide[], meta: DocumentMeta, toc: TocItem[
   return slides.map((slide, index) => {
     if (slide.kind === "cover") {
       return renderCoverSlide(slide, meta, chapterToc, slides);
+    }
+
+    if (slide.kind === "closing") {
+      return renderClosingSlide(meta);
     }
 
     if (slide.kind === "chapter") {
@@ -345,6 +354,29 @@ function renderCoverSlide(slide: TalkSlide, meta: DocumentMeta, chapterToc: TocI
     `<div class="cover-right-head"><h3>章节目录</h3><span>Index</span></div>`,
     `<nav class="cover-nav">${nav}</nav>`,
     `</aside>`,
+    `</div>`,
+    `</section>`
+  ].join("\n");
+}
+
+/**
+ * 片尾：署名 + 系列 + 归档站点。
+ * 主标题默认「聊到这里」而不是「感谢聆听」——后者是收束语，会把讲者重新放回讲台，
+ * 与全篇的交流姿态冲突；片尾要做的是把话头交出去，不是把场子收回来。
+ */
+function renderClosingSlide(meta: DocumentMeta): string {
+  const rows = [
+    meta.series ? `<p class="closing-series">${escapeHtml(meta.series)}</p>` : "",
+    `<h2 class="closing-title">${escapeHtml(meta.closingTitle)}</h2>`,
+    meta.closingNote ? `<p class="closing-note">${escapeHtml(meta.closingNote)}</p>` : "",
+    `<p class="closing-by"><span>${escapeHtml(meta.author)}</span><span class="dot">·</span><span>${escapeHtml(meta.date)}</span></p>`,
+    meta.site ? `<p class="closing-site">讲稿与往期都在 <strong>${escapeHtml(meta.site)}</strong></p>` : ""
+  ].filter(Boolean);
+
+  return [
+    `<section class="slide closing" data-index="closing" aria-label="片尾">`,
+    `<div class="slide-inner closing-inner">`,
+    ...rows,
     `</div>`,
     `</section>`
   ].join("\n");
