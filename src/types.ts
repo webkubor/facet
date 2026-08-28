@@ -33,6 +33,9 @@ export interface DocumentMeta {
   closingTitle: string;
   /** talk 片尾副文案：一句话邀请继续交流。 */
   closingNote: string;
+  /** 发布 slug：有值才会被 build-site 收进 share 站，同时作为 URL 路径。
+   *  没有 slug = 不发布（简历、草稿、私有内容靠这个天然排除，不用另维护一份清单）。 */
+  slug: string;
 }
 
 /** 命令行参数。 */
@@ -47,6 +50,8 @@ export interface BuildOptions {
   share: boolean;
   /** 只生成演讲页（show 导向），不生成 PDF/长图。 */
   talk: boolean;
+  /** 只生成阅读页（read 导向）：连续排版的网页长文，不分页、不出 PDF。 */
+  read: boolean;
 }
 
 /** 用户偏好主题配置。 */

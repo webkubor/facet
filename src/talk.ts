@@ -40,19 +40,12 @@ export async function buildTalkHTML(input: {
     .replace("{{slides}}", slidesHtml);
 }
 
-/** 按 `##` 章节切分 Markdown 源（`###` 小节留在章内；H1 与导言作为开场块）。 */
+/** 按 ## 把 Markdown 切成多个 chapter 块；cover 之前的 H1 段属于开场屏。 */
 function splitChapters(source: string): string[] {
   const blocks: string[] = [];
   let current: string[] = [];
-  // 代码块内的 `## xxx` 不是章节标题——正文里贴 AGENTS.md / md 模板时，
-  // 里面的二级标题会被当成分页点，凭空多出「这是什么」「常用命令」这种碎片页。
-  let inFence = false;
-
-  for (const line of source.split("\n")) {
-    if (/^\s*(```|~~~)/.test(line)) {
-      inFence = !inFence;
-    }
-    if (!inFence && /^##\s+/.test(line) && current.some((l) => l.trim() !== "")) {
+  for (const line of source.split(/\r?\n/)) {
+    if (/^##\s+/.test(line) && current.length > 0) {
       blocks.push(current.join("\n"));
       current = [];
     }
@@ -61,7 +54,6 @@ function splitChapters(source: string): string[] {
   if (current.some((l) => l.trim() !== "")) {
     blocks.push(current.join("\n"));
   }
-
   return blocks;
 }
 
@@ -72,11 +64,13 @@ function planTalkSlides(bodySource: string): TalkSlide[] {
     const chapter = block.match(/^##\s+(.+)$/m);
     if (chapter) {
       const title = (chapter[1] ?? "").trim();
+      // 去掉首行 `## 标题`，避免和布局里的 h2 重复
+      const bodyLines = block.split(/\r?\n/).slice(1);
       slides.push({
         id: slugify(title),
         kind: "chapter",
         title,
-        html: renderMarkdown(block)
+        html: renderMarkdown(bodyLines.join("\n"))
       });
       continue;
     }
@@ -91,31 +85,60 @@ function planTalkSlides(bodySource: string): TalkSlide[] {
     });
   }
 
-  // 片尾：署名 + 系列 + 归档站点。固定最后一页，不从正文取。
-  slides.push({ id: "closing", kind: "closing", title: "片尾", html: "" });
-
   return slides;
+}
+
+function pad(n: number): string {
+  return String(n).padStart(2, "0");
 }
 
 function renderTalkSlides(slides: TalkSlide[], meta: DocumentMeta, toc: TocItem[]): string {
   const chapterToc = toc.filter((item) => item.level === 2);
+  const chapterCount = slides.filter((s) => s.kind === "chapter").length;
+  let chapterCursor = 0;
 
   return slides.map((slide, index) => {
     if (slide.kind === "cover") {
       return renderCoverSlide(slide, meta, chapterToc, slides);
     }
 
-    if (slide.kind === "closing") {
-      return renderClosingSlide(meta);
+    if (slide.kind === "chapter") {
+      chapterCursor += 1;
+      const num = pad(chapterCursor);
+      const kicker = `第 ${num} 章`;
+      const railTag = chapterCursor === chapterCount ? "ENDING" : "CHAPTER";
+      return [
+        `<section class="slide" data-index="${index}" aria-label="${escapeHtml(slide.title)}">`,
+        `<div class="slide-inner">`,
+        `<aside class="slide-rail">`,
+        `<span class="num">${num}</span>`,
+        `<span class="of">/ ${pad(chapterCount)}</span>`,
+        `<span class="rail-tag">${escapeHtml(railTag)}</span>`,
+        `</aside>`,
+        `<div class="slide-body">`,
+        `<p class="slide-kicker">${escapeHtml(kicker)}</p>`,
+        `<h2>${escapeHtml(slide.title)}</h2>`,
+        slide.html,
+        `</div>`,
+        `</div>`,
+        `</section>`
+      ].join("\n");
     }
 
-    const kicker = slide.kind === "intro" ? "开场" : `0${index}`;
+    // intro / 开场：左侧 00 号，右侧放导言
+    const kicker = "PROLOGUE";
     return [
       `<section class="slide" data-index="${index}" aria-label="${escapeHtml(slide.title)}">`,
       `<div class="slide-inner">`,
-      `<p class="slide-kicker">${escapeHtml(kicker)}</p>`,
-      slide.kind === "chapter" ? `<h2>${escapeHtml(slide.title)}</h2>` : "",
-      `<div class="slide-body">${slide.html}</div>`,
+      `<aside class="slide-rail">`,
+      `<span class="num">00</span>`,
+      `<span class="of">/ ${pad(chapterCount)}</span>`,
+      `<span class="rail-tag">${escapeHtml(kicker)}</span>`,
+      `</aside>`,
+      `<div class="slide-body">`,
+      `<p class="slide-kicker">${escapeHtml(meta.shareHeader)}</p>`,
+      slide.html,
+      `</div>`,
       `</div>`,
       `</section>`
     ].join("\n");
@@ -130,43 +153,27 @@ function renderCoverSlide(slide: TalkSlide, meta: DocumentMeta, chapterToc: TocI
 
   const nav = chapterToc.map((item, i) => [
     `<a href="#${item.id}" data-slide="${chapterIndexes[i] ?? i + 1}">`,
-    `<span class="n">${String(i + 1).padStart(2, "0")}</span>`,
-    `<span>${escapeHtml(item.text)}</span>`,
+    `<span class="n">${pad(i + 1)}</span>`,
+    `<span class="label">${escapeHtml(item.text)}</span>`,
+    `<span class="arrow">→</span>`,
     `</a>`
   ].join("")).join("\n");
 
   return [
     `<section class="slide cover active" data-index="0" aria-label="封面">`,
-    `<div class="slide-inner cover-inner">`,
+    `<div class="cover-inner">`,
+    `<div class="cover-left">`,
+    `<span class="cover-eyebrow">A FACET PRESENTATION</span>`,
     `<span class="cover-brand">${escapeHtml(meta.shareHeader)}</span>`,
     `<h1>${escapeHtml(meta.title)}</h1>`,
     `<p class="cover-sub">${escapeHtml(meta.subtitle)}</p>`,
-    `<p class="cover-meta">${escapeHtml(meta.author)} · ${escapeHtml(meta.date)} · ${chapterIndexes.length} 个章节</p>`,
-    `<nav class="cover-nav">${nav}</nav>`,
+    `<p class="cover-meta"><span>${escapeHtml(meta.author)}</span><span>${escapeHtml(meta.date)}</span><span>${chapterIndexes.length} 个章节</span></p>`,
     `<p class="cover-hint">← → 翻页 · 数字键跳转 · F 全屏</p>`,
     `</div>`,
-    `</section>`
-  ].join("\n");
-}
-
-/**
- * 片尾：署名 + 系列 + 归档站点。
- * 主标题默认「聊到这里」而不是「感谢聆听」——后者是收束语，会把讲者重新放回讲台，
- * 与全篇的交流姿态冲突；片尾要做的是把话头交出去，不是把场子收回来。
- */
-function renderClosingSlide(meta: DocumentMeta): string {
-  const rows = [
-    meta.series ? `<p class="closing-series">${escapeHtml(meta.series)}</p>` : "",
-    `<h2 class="closing-title">${escapeHtml(meta.closingTitle)}</h2>`,
-    meta.closingNote ? `<p class="closing-note">${escapeHtml(meta.closingNote)}</p>` : "",
-    `<p class="closing-by"><span>${escapeHtml(meta.author)}</span><span class="dot">·</span><span>${escapeHtml(meta.date)}</span></p>`,
-    meta.site ? `<p class="closing-site">讲稿与往期都在 <strong>${escapeHtml(meta.site)}</strong></p>` : ""
-  ].filter(Boolean);
-
-  return [
-    `<section class="slide closing" data-index="closing" aria-label="片尾">`,
-    `<div class="slide-inner closing-inner">`,
-    ...rows,
+    `<aside class="cover-right">`,
+    `<div class="cover-right-head"><h3>章节目录</h3><span>Index</span></div>`,
+    `<nav class="cover-nav">${nav}</nav>`,
+    `</aside>`,
     `</div>`,
     `</section>`
   ].join("\n");

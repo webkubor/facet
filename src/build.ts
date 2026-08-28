@@ -7,6 +7,7 @@ import path from "node:path";
 import { parseArgs } from "./args.js";
 import { buildPdf } from "./build-one.js";
 import { buildTalkHTML } from "./talk.js";
+import { buildReadHTML } from "./read.js";
 import { loadDotEnv } from "./env.js";
 import { measureResumeLayout } from "./browser-output.js";
 import { planArticlePages, writePagePlan } from "./content-flow.js";
@@ -94,6 +95,23 @@ async function main(): Promise<void> {
     await mkdir(path.dirname(talkPath), { recursive: true });
     await writeFile(talkPath, talkHtml, "utf8");
     console.log(`Talk HTML written: ${path.relative(projectRoot, talkPath)}`);
+    return;
+  }
+
+  // read 形态（阅读导向）：连续排版的网页长文，不分页、不出 PDF。
+  if (options.read) {
+    const inputName = path.basename(inputPath, path.extname(inputPath));
+    const readPath = path.resolve(projectRoot, options.outputProvided ? options.output : `output/${inputName}.read.html`);
+    const readHtml = await buildReadHTML({
+      meta: parsed.meta,
+      toc,
+      bodySource: parsed.body,
+      themeOverride,
+      talkHref: "talk.html"
+    });
+    await mkdir(path.dirname(readPath), { recursive: true });
+    await writeFile(readPath, readHtml, "utf8");
+    console.log(`Read HTML written: ${path.relative(projectRoot, readPath)}`);
     return;
   }
 

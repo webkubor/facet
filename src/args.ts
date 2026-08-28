@@ -38,7 +38,8 @@ export function parseArgs(args: string[]): BuildOptions {
     themePath: values.get("theme"),
     all: flags.has("--all"),
     share: !flags.has("--no-share"),
-    talk: flags.has("--talk")
+    talk: flags.has("--talk"),
+    read: flags.has("--read")
   };
 }
 

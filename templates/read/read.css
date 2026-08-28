@@ -1,0 +1,189 @@
+/* Read（阅读页）—— 连续排版的网页长文。
+ * 变量由 --theme themes/*.json 覆写；与 talk 共用同一套色板。
+ * 排版取向：单栏、限宽、行距宽松——网页阅读的约束是眼睛，不是纸张边界。
+ */
+:root {
+  --paper: #f7f5f0;
+  --ink: #24303a;
+  --muted: #5f6b76;
+  --faint: #e3dfd6;
+  --soft: #eef1f2;
+  --accent: #627481;
+  --accent-2: #7d9d8c;
+  --danger: #9a5948;
+  --display-font: "Source Han Serif SC", "Songti SC", "STSong", serif;
+  --body-font: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body.read {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body-font);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.75;
+}
+
+/* 正文宽度按「一行 30-40 个汉字」定——再宽读者每行末尾回扫会丢行 */
+.read-shell {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 72px 24px 96px;
+}
+
+/* 页头 */
+.read-series {
+  display: inline-block;
+  margin: 0 0 18px;
+  padding: 5px 14px;
+  border: 1px solid var(--faint);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+}
+.read-title {
+  font-family: var(--display-font);
+  font-size: 40px;
+  line-height: 1.3;
+  margin: 0 0 14px;
+}
+.read-sub {
+  font-size: 18px;
+  color: var(--muted);
+  margin: 0;
+}
+.read-meta {
+  margin: 22px 0 0;
+  padding-bottom: 26px;
+  border-bottom: 1px solid var(--faint);
+  font-size: 14.5px;
+  color: var(--muted);
+}
+.read-meta .dot { margin: 0 8px; color: var(--faint); }
+.read-talk-link {
+  margin-left: 14px;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+.read-talk-link:hover { text-decoration: underline; }
+
+/* 目录 */
+.read-toc {
+  margin: 34px 0;
+  padding: 20px 24px;
+  background: var(--soft);
+  border-radius: 10px;
+}
+.read-toc-title {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+}
+.read-toc ol { margin: 0; padding-left: 20px; }
+.read-toc li { margin: 5px 0; font-size: 15.5px; }
+.read-toc a { color: var(--ink); text-decoration: none; }
+.read-toc a:hover { color: var(--accent); }
+
+/* 正文 */
+.read-body { font-size: 17px; }
+.read-body h2 {
+  font-family: var(--display-font);
+  font-size: 27px;
+  line-height: 1.35;
+  margin: 52px 0 16px;
+  padding-top: 8px;
+  border-top: 1px solid var(--faint);
+}
+.read-body h3 { font-size: 20px; margin: 32px 0 10px; }
+.read-body p { margin: 16px 0; }
+.read-body ul, .read-body ol { padding-left: 24px; }
+.read-body li { margin: 7px 0; }
+.read-body a { color: var(--accent); }
+
+.read-body blockquote {
+  border-left: 4px solid var(--accent-2);
+  background: var(--soft);
+  margin: 22px 0;
+  padding: 14px 20px;
+  border-radius: 0 10px 10px 0;
+}
+.read-body blockquote p { margin: 0; }
+
+.read-body table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  margin: 22px 0;
+  /* 窄屏表格不撑破版心，自己横向滚 */
+  display: block;
+  overflow-x: auto;
+}
+.read-body th, .read-body td {
+  border: 1px solid var(--faint);
+  padding: 9px 12px;
+  text-align: left;
+  line-height: 1.6;
+}
+.read-body th { background: var(--soft); font-weight: 700; }
+
+/* 代码：同 talk，走主题变量的浅底深字 */
+.read-body pre {
+  background: var(--code-bg, #ece6db);
+  color: var(--code-ink, #3f4740);
+  border: 1px solid var(--faint);
+  padding: 16px 18px;
+  border-radius: 10px;
+  overflow-x: auto;
+  font-size: 14.5px;
+  line-height: 1.7;
+}
+.read-body pre code { background: transparent; padding: 0; }
+.read-body code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.read-body p code, .read-body li code, .read-body td code {
+  background: var(--soft);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.88em;
+}
+.read-body .hljs-section, .read-body .hljs-title { color: var(--accent); font-weight: 700; }
+.read-body .hljs-string, .read-body .hljs-attr { color: var(--code-string, #8a7355); }
+.read-body .hljs-comment { color: var(--code-comment, #9a9386); font-style: italic; }
+.read-body .hljs-keyword, .read-body .hljs-built_in { color: var(--code-keyword, #7d6b78); }
+
+/* 片尾 */
+.read-footer {
+  margin-top: 64px;
+  padding-top: 30px;
+  border-top: 1px solid var(--faint);
+  text-align: center;
+}
+.read-footer-title {
+  font-family: var(--display-font);
+  font-size: 24px;
+  margin: 0 0 10px;
+}
+.read-footer-note {
+  margin: 0 auto;
+  max-width: 560px;
+  color: var(--muted);
+  font-size: 15.5px;
+}
+.read-footer-by { margin-top: 22px; font-size: 14.5px; }
+.read-footer-by .dot { margin: 0 8px; color: var(--faint); }
+.read-footer-site { margin-top: 6px; font-size: 13.5px; color: var(--muted); }
+.read-footer-site strong { color: var(--accent); font-weight: 600; }
+
+@media (max-width: 600px) {
+  .read-shell { padding: 44px 18px 72px; }
+  .read-title { font-size: 30px; }
+  .read-body { font-size: 16.5px; }
+  .read-body h2 { font-size: 23px; }
+}
