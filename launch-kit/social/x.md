@@ -2,12 +2,12 @@
 
 ## 主推（单条）
 
-Most md-to-pdf tools just print a webpage. knowledge-pdf-kit plans the layout first: a template-independent content flow (cover → TOC → learning map → lessons → review), then applies one of 8 visual themes.
+Most md-to-pdf tools just print a webpage. facet plans the layout first: a template-independent content flow (cover → TOC → learning map → lessons → review), then applies one of 8 visual themes.
 
 One command → A4 PDF + a vertical share image.
 
 MIT, TypeScript + Playwright.
-https://github.com/webkubor/knowledge-pdf-kit
+https://github.com/webkubor/facet
 
 （配图：warm-handbook 与 morandi-sage 两张长图对比）
 
@@ -19,4 +19,4 @@ https://github.com/webkubor/knowledge-pdf-kit
 
 3/ Then pick a theme: 8 built-in templates, and a --theme flag that injects your palette as CSS variables without touching the flow.
 
-4/ MIT licensed. pnpm install && pnpm build:all → PDF + share image + page plan. https://github.com/webkubor/knowledge-pdf-kit
+4/ MIT licensed. pnpm install && pnpm build:all → PDF + share image + page plan. https://github.com/webkubor/facet

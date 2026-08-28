@@ -1,7 +1,7 @@
 {
-  "name": "knowledge-pdf-kit",
+  "name": "facet",
   "version": "0.2.0",
-  "description": "Generate polished knowledge tutorial PDFs and shareable long images from Markdown with reusable content flow templates.",
+  "description": "One Markdown source, multiple facets: talk slides for presenting, PDF and long images for sharing.",
   "private": false,
   "license": "MIT",
   "type": "module",
@@ -26,12 +26,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/webkubor/knowledge-pdf-kit.git"
+    "url": "git+https://github.com/webkubor/facet.git"
   },
   "bugs": {
-    "url": "https://github.com/webkubor/knowledge-pdf-kit/issues"
+    "url": "https://github.com/webkubor/facet/issues"
   },
-  "homepage": "https://github.com/webkubor/knowledge-pdf-kit#readme",
+  "homepage": "https://github.com/webkubor/facet#readme",
   "scripts": {
     "build": "tsx src/build.ts",
     "build:example": "tsx src/build.ts --input content/example.md --template warm-handbook --output output/example-warm-handbook.pdf",

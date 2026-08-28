@@ -1,4 +1,4 @@
-# Manifest — knowledge-pdf-kit launch kit
+# Manifest — facet launch kit
 
 生成时间：2026-07-31（v2 同日更新：新增 Agent 镜头、本机制作流水线、VoxCraft TTS 链路实测）。
 模式：Demo kit（内容 + 真实构建证据；录屏/成片制作路径见 video/production-pipeline.md）。

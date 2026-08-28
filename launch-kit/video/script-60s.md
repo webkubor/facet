@@ -26,7 +26,7 @@
 
 **[00:48–00:60] CTA**
 画面：GitHub 仓库页 README（模板封面预览表格滚动），结尾定格仓库名 + icon。
-口播：开源 MIT，Markdown 写好，剩下交给它。仓库名 knowledge-pdf-kit，链接放评论区。
+口播：开源 MIT，Markdown 写好，剩下交给它。仓库名 facet，链接放评论区。
 
 **[v2 新增，插在 00:46–00:54] Agent 工作流**
 画面：Claude Code 窗口输入「把这篇 Markdown 做成研究档案风 PDF」，Agent 自动执行 build，产物出现在 output/。

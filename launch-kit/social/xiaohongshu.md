@@ -10,7 +10,7 @@ Markdown 一键变小红书长图+PDF，开源的
 教程用 Markdown 写得好好的，一导出 PDF 就没法看——
 短章节孤零零占一整页，背景断在半截，想发小红书还得自己截图拼长图。
 
-最近开源了一个小工具：knowledge-pdf-kit。
+最近开源了一个小工具：facet。
 
 一条命令，同时出两样东西：
 📄 A4 PDF（可收藏、可打印）
@@ -41,4 +41,4 @@ MIT 开源，仓库地址放评论区了 👇
 
 ## 评论区首条
 
-仓库：https://github.com/webkubor/knowledge-pdf-kit ，pnpm install 之后 pnpm build:all 就能看到全部教程和简历模板效果～
+仓库：https://github.com/webkubor/facet ，pnpm install 之后 pnpm build:all 就能看到全部教程和简历模板效果～

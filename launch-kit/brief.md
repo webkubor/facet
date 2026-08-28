@@ -1,4 +1,4 @@
-# Launch Brief — Knowledge PDF Kit
+# Launch Brief — Facet
 
 ## 项目一句话
 
@@ -27,7 +27,7 @@
 
 ## CTA
 
-GitHub 仓库：https://github.com/webkubor/knowledge-pdf-kit — `pnpm install && pnpm build:all` 30 秒出结果。
+GitHub 仓库：https://github.com/webkubor/facet — `pnpm install && pnpm build:all` 30 秒出结果。
 
 ## 平台
 

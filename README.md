@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="docs/brand/icon.svg" width="96" height="96" alt="Knowledge PDF Kit icon" />
+  <img src="docs/brand/icon.svg" width="96" height="96" alt="Facet icon" />
 </p>
 
-<h1 align="center">Knowledge PDF Kit</h1>
+<h1 align="center">Facet</h1>
 
 <p align="center">
   把 Markdown 知识教程和项目型简历生成漂亮、稳定、可分享的 PDF 和长图。
@@ -26,7 +26,7 @@
   <img alt="OpenCode" src="https://img.shields.io/badge/OpenCode-ready-0f766e.svg" />
 </p>
 
-Knowledge PDF Kit 面向小红书、公众号、社群课程、知识付费资料和项目型技术简历。它不是简单把网页打印成 PDF，而是先做模板无关的 `content flow`，再套用视觉主题，保证每一页的知识密度、页眉页脚、背景铺满和分享图效果都可控。
+Facet 面向小红书、公众号、社群课程、知识付费资料和项目型技术简历。它不是简单把网页打印成 PDF，而是先做模板无关的 `content flow`，再套用视觉主题，保证每一页的知识密度、页眉页脚、背景铺满和分享图效果都可控。
 
 ## 标签
 
@@ -105,7 +105,7 @@ pnpm build:talk
 
 ## 支持的 Agent
 
-Knowledge PDF Kit 对 Agent 的要求很低：能编辑 Markdown、运行 shell 命令、查看生成图即可。仓库里的 content flow、page plan 和模板目录都是为了让 Agent 稳定复用。
+Facet 对 Agent 的要求很低：能编辑 Markdown、运行 shell 命令、查看生成图即可。仓库里的 content flow、page plan 和模板目录都是为了让 Agent 稳定复用。
 
 | Agent | 支持状态 | 推荐用法 |
 | --- | --- | --- |

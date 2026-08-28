@@ -16,4 +16,4 @@ Markdown 教程一条命令变成 PDF 和长图
 
 ## 置顶评论
 
-GitHub 搜 knowledge-pdf-kit 或看主页链接。三条命令上手：clone → pnpm install → pnpm build:all
+GitHub 搜 facet 或看主页链接。三条命令上手：clone → pnpm install → pnpm build:all

@@ -2,11 +2,11 @@
 
 ## Title (Show HN, factual)
 
-Show HN: Knowledge PDF Kit – Markdown to PDF that plans page layout before styling
+Show HN: Facet – Markdown to PDF that plans page layout before styling
 
 ## URL
 
-https://github.com/webkubor/knowledge-pdf-kit
+https://github.com/webkubor/facet
 
 ## First comment (builder context)
 

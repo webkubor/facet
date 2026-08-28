@@ -10,7 +10,7 @@
 | 00:24–00:36 | 模板封面轮播 | 12 张图 0.8s/张 快切，末尾 3 张放慢 | 八套教程模板和四套简历模板随便换，同一份 Markdown 气质完全不同 | 12 templates | 已有：docs/designs/*.png（12 张） |
 | 00:36–00:46 | 主题覆写对比 | 敲 `--theme themes/morandi-sage.json`，暖橙/灰绿两张长图并排滑入 | 把喜欢的颜色写成 JSON，注入任何模板 | --theme morandi-sage.json | 已有：example-warm-handbook.share.png、example-dossier-sage.share.png；需捕获：命令录屏 |
 | 00:46–00:54 | 【新增】Agent 工作流 | Claude Code 窗口输入「把这篇 Markdown 做成研究档案风 PDF」→ Agent 自动跑 build → 产物出现在 output/ | 它对 Agent 也友好——让 Claude Code 或 Codex 直接替你跑完整个流程 | agent-ready | 需捕获：Claude Code 录屏（本次会话即是可复现实例） |
-| 00:54–01:05 | GitHub README 滚动 | 浏览器滚动 README 模板预览表格，定格仓库头部 | 开源 MIT，仓库名 knowledge-pdf-kit，链接评论区 | github.com/webkubor/knowledge-pdf-kit | 需捕获：浏览器录屏（干净 profile，无书签栏） |
+| 00:54–01:05 | GitHub README 滚动 | 浏览器滚动 README 模板预览表格，定格仓库头部 | 开源 MIT，仓库名 facet，链接评论区 | github.com/webkubor/facet | 需捕获：浏览器录屏（干净 profile，无书签栏） |
 
 ## 录制注意
 

@@ -1,4 +1,4 @@
-# Claims Ledger — Knowledge PDF Kit
+# Claims Ledger — Facet
 
 构建环境：macOS，pnpm 11.1.2，2026-07-31 本地实测。
 
@@ -19,7 +19,7 @@
 
 ## 未验证假设（不进公开文案）
 
-- npm 是否已发布 `knowledge-pdf-kit` 包 — 未验证，安装口径统一 git clone。
+- npm 是否已发布 `facet` 包 — 未验证，安装口径统一 git clone。
 - `pnpm build:all` 和 `pnpm build:resume:all` 已在 2026-08-04 跑通；README 文案可写 8 套教程模板 + 4 套简历模板。
 - Windows/Linux 兼容性未测。
 

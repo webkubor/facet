@@ -1,6 +1,6 @@
 # 更新日志
 
-本文件记录 Knowledge PDF Kit 的版本变更。
+本文件记录 Facet 的版本变更。
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
 ## [0.2.0] - 2026-08-05
@@ -51,5 +51,5 @@
 - 视觉自动化校验 `scripts/verify-resume.mjs`：页高、PDF 页数、留白比例、字阶、WCAG 对比度。
 - `--theme` 用户偏好主题注入，front matter 支持 `${VAR}` 环境变量插值。
 
-[0.2.0]: https://github.com/webkubor/knowledge-pdf-kit/releases/tag/v0.2.0
-[0.1.0]: https://github.com/webkubor/knowledge-pdf-kit/releases/tag/v0.1.0
+[0.2.0]: https://github.com/webkubor/facet/releases/tag/v0.2.0
+[0.1.0]: https://github.com/webkubor/facet/releases/tag/v0.1.0
