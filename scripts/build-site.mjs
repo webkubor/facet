@@ -104,7 +104,7 @@ function renderIndex(posts) {
         <p class="entry-meta">
           <span>${escapeHtml(p.date ?? "")}</span>
           <a href="/${escapeHtml(p.slug)}/">阅读版</a>
-          <a href="/${escapeHtml(p.slug)}/talk.html">演讲版</a>
+          <a href="/${escapeHtml(p.slug)}/talk">演讲版</a>
         </p>
       </li>`).join("\n");
 
@@ -172,7 +172,7 @@ function renderLlmsTxt(posts) {
 }
 
 function renderSitemap(posts) {
-  const urls = [`https://${SITE.domain}/`, ...posts.flatMap((p) => [`https://${SITE.domain}/${p.slug}/`, `https://${SITE.domain}/${p.slug}/talk.html`])];
+  const urls = [`https://${SITE.domain}/`, ...posts.flatMap((p) => [`https://${SITE.domain}/${p.slug}/`, `https://${SITE.domain}/${p.slug}/talk`])];
   return [
     `<?xml version="1.0" encoding="UTF-8"?>`,
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`,

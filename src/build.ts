@@ -107,7 +107,8 @@ async function main(): Promise<void> {
       toc,
       bodySource: parsed.body,
       themeOverride,
-      talkHref: "talk.html"
+      // CF Pages 会把 /x.html 308 到 /x，直接写无扩展名少一跳
+      talkHref: "talk"
     });
     await mkdir(path.dirname(readPath), { recursive: true });
     await writeFile(readPath, readHtml, "utf8");

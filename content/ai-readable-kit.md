@@ -18,6 +18,8 @@ closingNote: "以上都是我自己项目上的实践，样本量就一个。哪
 
 我在做一个叫 Scorecard 的小工具，给开源项目按九个维度打分。今年加第九维「AI 可读性」的时候，顺手拿自己的项目跑了一遍——结果是我自己的官网被屏蔽了 AI 爬虫，而我完全不知道。
 
+更打脸的是今天：准备这次分享的时候我又查了一遍，发现**修完一层还有第二层**，我以为早就解决的问题其实一直在。
+
 这次想聊的就是这个过程：我看到了什么、踩了哪些坑、以及有几个问题我到现在也没想清楚，想听听大家怎么看。
 
 ## 我为什么会去关心这件事
@@ -114,9 +116,9 @@ User-agent: *
 Allow: /
 ```
 
-### 翻车现场
+### 第一层翻车：托管 robots.txt
 
-Cloudflare 有个「托管 robots.txt」功能，会给站点注入一排 Disallow：GPTBot、ClaudeBot、Google-Extended、CCBot 全在里面。我的站开了这个功能，而我根本不知道它做了什么——**自己做的质检工具，第一刀砍在自己身上**。
+Cloudflare 有个「托管 robots.txt」功能，会给站点注入一排 Disallow —— GPTBot、ClaudeBot、Google-Extended、CCBot、Bytespider、Amazonbot 一共九个，还附赠一段 `Content-Signal: ai-train=no`。我的站开着这个功能，而我根本不知道它做了什么——**自己做的质检工具，第一刀砍在自己身上**。
 
 我是这么发现的：
 
@@ -124,7 +126,20 @@ Cloudflare 有个「托管 robots.txt」功能，会给站点注入一排 Disall
 curl -s https://你的域名/robots.txt | grep -iE "gptbot|claudebot|perplexity"
 ```
 
-看到 `Disallow: /` 的话，内容就进不了 AI 搜索答案。修法是站点自己提供放行的 robots.txt，然后去 Cloudflare 后台关掉「托管 robots.txt」，让 origin 的规则生效。
+### 第二层翻车：关掉之后，爬虫还是进不来
+
+关掉托管、curl 一看 `Allow: /`，我以为收工了。然后顺手拿 GPTBot 的 UA 打了一下自己的站：
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" -A "GPTBot/1.0" https://你的域名/
+# 403
+```
+
+**robots.txt 只是君子协定，Cloudflare 还有一个 `ai_bots_protection` 在边缘真拦**，直接回 403。两层是独立的开关，关了一层不代表另一层也开了 —— 我这次就是在 robots.txt 已经写着 `Allow: /` 的情况下，被 403 了。
+
+顺手记几个把我绕进去的点：官方文档只写了怎么开、没写怎么关；有人试过用 Worker 覆盖，覆盖不掉，因为注入发生在边缘；API 也没有一个叫 robots 的端点，字段藏在 `bot_management` 里叫 `is_robots_txt_managed`，得翻 API 参考才找得到。默认开着 + 文档不写关法 + 藏在别的产品下 —— 「被默认屏蔽而不自知」不是谁粗心，是这三件事叠出来的必然结果。
+
+所以自查不能只看 robots.txt，**得带着爬虫的 UA 真打一次**。
 
 ## 用同一套标准跑出来的参照
 
@@ -143,11 +158,17 @@ curl -s https://你的域名/robots.txt | grep -iE "gptbot|claudebot|perplexity"
 2. 给 llms.txt 加自动生成，靠人维护迟早会过期
 3. 把 robots.txt 检查做成 CI 的一步，免得再被默认屏蔽一次
 
-如果你也想给自己的项目看一眼，一条命令就够：
+如果你也想给自己的站看一眼，两条命令，缺一不可：
 
 ```bash
+# 第一层：robots.txt 里有没有被注入 Disallow
 curl -s https://你的域名/robots.txt | grep -iE "gptbot|claudebot|perplexity"
+
+# 第二层：爬虫实际进不进得来（403 就是被边缘拦了）
+curl -s -o /dev/null -w "%{http_code}\n" -A "GPTBot/1.0" https://你的域名/
 ```
+
+只跑第一条会漏 —— 我今天就是这么漏掉的。
 
 ## 我还没想清楚的几个问题
 

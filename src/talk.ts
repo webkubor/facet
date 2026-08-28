@@ -44,8 +44,16 @@ export async function buildTalkHTML(input: {
 function splitChapters(source: string): string[] {
   const blocks: string[] = [];
   let current: string[] = [];
+  // 代码块内的 `## xxx` 不是章节标题——正文里贴 AGENTS.md / md 模板时，
+  // 里面的二级标题会被当成分页点，凭空多出「这是什么」「常用命令」这种碎片页。
+  // ⚠️ 这条修过一次又被覆盖回去过（2026-08-28），改本函数时别再把 inFence 丢了。
+  let inFence = false;
+
   for (const line of source.split(/\r?\n/)) {
-    if (/^##\s+/.test(line) && current.length > 0) {
+    if (/^\s*(```|~~~)/.test(line)) {
+      inFence = !inFence;
+    }
+    if (!inFence && /^##\s+/.test(line) && current.length > 0) {
       blocks.push(current.join("\n"));
       current = [];
     }
