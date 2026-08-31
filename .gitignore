@@ -1,5 +1,6 @@
 node_modules/
 .worktrees/
+.claude/
 output/*.pdf
 output/*.html
 output/*.png
@@ -8,6 +9,7 @@ tmp/
 .DS_Store
 .env
 content/*.local.md
+dist/
 
 # share 站构建产物（node scripts/build-site.mjs 生成）
 dist-share/

@@ -1,6 +1,8 @@
+#!/usr/bin/env node
 /**
- * 知识教程 PDF 构建器入口
+ * Facet CLI 入口
  * 职责：编排 Markdown 解析、content flow 规划、模板渲染和 PDF/长图输出。
+ * 既可作为 `pnpm build` 脚本运行（tsx），也可作为 npm 安装后的 `facet` 命令运行（dist/build.js）。
  */
 import { readFile, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -30,7 +32,10 @@ import { isResumeTemplate, resumeTemplateNames, tutorialTemplateNames } from "./
 async function main(): Promise<void> {
   loadDotEnv();
   const options = parseArgs(process.argv.slice(2));
-  const inputPath = path.resolve(projectRoot, options.input);
+  // input / output 都相对 cwd 解析，方便 npx 模式与开发模式都直接落在用户当前目录
+  // （templates / themes 由 projectRoot 解析，仍指向包内资源）。
+  const cwd = process.cwd();
+  const inputPath = path.resolve(cwd, options.input);
   const source = await readFile(inputPath, "utf8");
   const parsed = parseMarkdownDocument(source);
   const themeOverride = await loadThemeOverride(options.themePath);
@@ -39,7 +44,7 @@ async function main(): Promise<void> {
   // 否则即使 --output 指向临时目录，page-plan 也会落回仓库 output/。
   if (options.talk) {
     const inputName = path.basename(inputPath, path.extname(inputPath));
-    const talkPath = path.resolve(projectRoot, options.outputProvided ? options.output : `output/${inputName}.talk.html`);
+    const talkPath = path.resolve(cwd, options.outputProvided ? options.output : `output/${inputName}.talk.html`);
     const talkHtml = await buildTalkHTML({
       meta: parsed.meta,
       toc,
@@ -48,7 +53,7 @@ async function main(): Promise<void> {
     });
     await mkdir(path.dirname(talkPath), { recursive: true });
     await writeFile(talkPath, talkHtml, "utf8");
-    console.log(`Talk HTML written: ${path.relative(projectRoot, talkPath)}`);
+    console.log(`Talk HTML written: ${path.relative(cwd, talkPath)}`);
     return;
   }
 
@@ -83,14 +88,14 @@ async function main(): Promise<void> {
     if (options.all) {
       const inputName = path.basename(inputPath, path.extname(inputPath));
       for (const [index, resumeTemplateName] of resumeTemplateNames.entries()) {
-        const outputPath = path.resolve(projectRoot, `output/${inputName}-${resumeTemplateName}.pdf`);
+        const outputPath = path.resolve(cwd, `output/${inputName}-${resumeTemplateName}.pdf`);
         await buildResumeFor(resumeTemplateName, outputPath, index === 0);
       }
 
       return;
     }
 
-    const outputPath = path.resolve(projectRoot, options.outputProvided ? options.output : createDefaultOutput(inputPath, templateName));
+    const outputPath = path.resolve(cwd, options.outputProvided ? options.output : createDefaultOutput(inputPath, templateName));
     await buildResumeFor(templateName, outputPath, true);
     return;
   }
@@ -102,7 +107,7 @@ async function main(): Promise<void> {
   // read 形态（阅读导向）：连续排版的网页长文，不分页、不出 PDF。
   if (options.read) {
     const inputName = path.basename(inputPath, path.extname(inputPath));
-    const readPath = path.resolve(projectRoot, options.outputProvided ? options.output : `output/${inputName}.read.html`);
+    const readPath = path.resolve(cwd, options.outputProvided ? options.output : `output/${inputName}.read.html`);
     const readHtml = await buildReadHTML({
       meta: parsed.meta,
       toc,
@@ -113,21 +118,21 @@ async function main(): Promise<void> {
     });
     await mkdir(path.dirname(readPath), { recursive: true });
     await writeFile(readPath, readHtml, "utf8");
-    console.log(`Read HTML written: ${path.relative(projectRoot, readPath)}`);
+    console.log(`Read HTML written: ${path.relative(cwd, readPath)}`);
     return;
   }
 
   if (options.all) {
     const inputName = path.basename(inputPath, path.extname(inputPath));
     for (const tutorialTemplateName of tutorialTemplateNames) {
-      const outputPath = path.resolve(projectRoot, `output/${inputName}-${tutorialTemplateName}.pdf`);
+      const outputPath = path.resolve(cwd, `output/${inputName}-${tutorialTemplateName}.pdf`);
       await buildPdf({ meta: parsed.meta, bodyHtml, toc, outputPath, templateName: tutorialTemplateName, share: options.share, themeOverride });
     }
 
     return;
   }
 
-  const outputPath = path.resolve(projectRoot, options.output);
+  const outputPath = path.resolve(cwd, options.output);
   await buildPdf({ meta: parsed.meta, bodyHtml, toc, outputPath, templateName, share: options.share, themeOverride });
 }
 

@@ -109,7 +109,7 @@ export function renderResumeDocumentFromGroups(parts: ResumeParts, groups: Resum
 /** 输出简历 page-plan.json。 */
 export async function writeResumePagePlan(inputPath: string, groups: ResumeGroup[], measure: ResumeMeasure): Promise<void> {
   const inputName = path.basename(inputPath, path.extname(inputPath));
-  const outputPath = path.join(projectRoot, "output", `${inputName}-page-plan.json`);
+  const outputPath = path.join(process.cwd(), "output", `${inputName}-page-plan.json`);
   const payload = {
     flow: "resume hero -> selected focus -> experience groups -> evidence-backed capabilities",
     contract: {
@@ -136,7 +136,7 @@ export async function writeResumePagePlan(inputPath: string, groups: ResumeGroup
 
   await mkdir(path.dirname(outputPath), { recursive: true });
   await writeFile(outputPath, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
-  console.log(`Page plan written: ${path.relative(projectRoot, outputPath)}`);
+  console.log(`Page plan written: ${path.relative(process.cwd(), outputPath)}`);
 }
 
 function renderMeasureBodyPage(sectionsHtml: string, motto = "", layout: ResumeLayout = "stacked"): string {

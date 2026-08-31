@@ -38,6 +38,20 @@
 - talk 代码块硬编码 `#1f2937` 深蓝灰不走主题变量，满屏代码时把柔和色系整个压掉；
   字号 14.5px 投影后排看不清，提到 17px。
 
+### 新增（npm 化）
+
+- **npm CLI 入口**：`src/build.ts` 加 `#!/usr/bin/env node` shebang；
+  `package.json` 新增 `bin: { "facet": "./dist/build.js" }` 与 `files` 白名单
+  （dist / templates / themes / 样例内容 / README / LICENSE / CHANGELOG）。
+  发布后可用 `npx facet --input xxx.md`，不强制 clone 仓库。
+- **`pnpm build:cli`**：把 `src/` 编译到 `dist/`，作为发布前准备；
+  `prepublishOnly` 自动调用。
+- **cwd 路径解析**：`--input` / `--output` / `page-plan.json` 改为相对 `process.cwd()`
+  解析，避免 npx 模式下产物误写入 `node_modules/facet/` 只读区。
+  `templates/` / `themes/` / `.env` / `resume-families.json` 仍按包内 `projectRoot` 解析。
+- `tsconfig.json` 显式声明 `rootDir: "src"`，对齐 TypeScript 7 的强制要求。
+- `.gitignore` 新增 `dist/`，编译产物不进入版本控制。
+
 ### 变更
 
 - 项目名与包名改为 `facet`：`pdf` 是渲染目标之一、不是核心，写进项目名会让人
