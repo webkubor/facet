@@ -15,7 +15,7 @@
  * 用法：node scripts/build-site.mjs [--theme themes/bloom-sage.json]
  */
 import { execFile } from "node:child_process";
-import { mkdir, readdir, readFile, writeFile, rm } from "node:fs/promises";
+import { copyFile, mkdir, readdir, readFile, writeFile, rm } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { join, dirname } from "node:path";
 import { promisify } from "node:util";
@@ -24,6 +24,8 @@ const run = promisify(execFile);
 const projectRoot = fileURLToPath(new URL("..", import.meta.url));
 const contentDir = join(projectRoot, "content");
 const distDir = join(projectRoot, "dist-share");
+const avatarSource = join(projectRoot, "docs", "brand", "webkubor-avatar.jpg");
+const avatarOutput = join(distDir, "assets", "webkubor-avatar.jpg");
 
 const args = process.argv.slice(2);
 const themeArg = args.indexOf("--theme");
@@ -71,6 +73,8 @@ async function main() {
 
   await rm(distDir, { recursive: true, force: true });
   await mkdir(distDir, { recursive: true });
+  await mkdir(join(distDir, "assets"), { recursive: true });
+  await copyFile(avatarSource, avatarOutput);
 
   for (const post of posts) {
     const outDir = join(distDir, post.slug);
@@ -116,11 +120,16 @@ function renderIndex(posts) {
 <title>${escapeHtml(SITE.name)}</title>
 <meta name="description" content="${escapeHtml(SITE.intro)}" />
 <style>
-:root{--paper:oklch(97% 0.01 115);--ink:oklch(25% 0.02 115);--muted:oklch(45% 0.02 45);--faint:color-mix(in oklch,oklch(25% 0.02 115),transparent 85%);--soft:oklch(92% 0.01 115);--accent:oklch(54% 0.11 115);--display-font:"Source Han Serif SC","Songti SC",serif;--body-font:"Inter","PingFang SC",sans-serif}
+:root{--paper:oklch(97% 0.01 115);--ink:oklch(25% 0.02 115);--muted:oklch(45% 0.02 45);--faint:color-mix(in oklch,oklch(25% 0.02 115),transparent 85%);--soft:oklch(92% 0.01 115);--accent:oklch(54% 0.11 115);--display-font:"Source Han Serif SC","Songti SC",serif;--body-font:"Inter","PingFang SC",sans-serif;--avatar-size:48px}
 *{box-sizing:border-box}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body-font);line-height:1.7;-webkit-font-smoothing:antialiased}
 .shell{max-width:760px;margin:0 auto;padding:88px 24px 96px}
 h1{font-family:var(--display-font);font-size:38px;margin:0 0 12px}
+.author{align-items:center;display:flex;gap:12px;margin:14px 0 18px}
+.author-avatar{border:1px solid var(--faint);border-radius:50%;display:block;height:var(--avatar-size);object-fit:cover;object-position:50% 32%;width:var(--avatar-size)}
+.author-copy{display:grid;gap:1px;line-height:1.3}
+.author-name{font-size:14px;font-weight:650;letter-spacing:.02em}
+.author-role{color:var(--muted);font-size:12.5px}
 .intro{color:var(--muted);font-size:17px;margin:0 0 8px}
 .count{color:var(--muted);font-size:14px;margin:0 0 40px;padding-bottom:28px;border-bottom:1px solid var(--faint)}
 ul{list-style:none;padding:0;margin:0}
@@ -140,6 +149,10 @@ footer{margin-top:56px;color:var(--muted);font-size:13.5px}
 <body>
 <div class="shell">
   <h1>${escapeHtml(SITE.name)}</h1>
+  <div class="author">
+    <img class="author-avatar" src="/assets/webkubor-avatar.jpg" alt="webkubor 的头像" width="48" height="48" />
+    <div class="author-copy"><span class="author-name">webkubor</span><span class="author-role">个人技术分享</span></div>
+  </div>
   <p class="intro">${escapeHtml(SITE.intro)}</p>
   <p class="count">共 ${posts.length} 期</p>
   <ul>${items}
