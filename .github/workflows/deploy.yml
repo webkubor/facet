@@ -1,0 +1,76 @@
+name: deploy-share
+
+# Share 站部署到 Cloudflare Pages。
+# 触发：push 到 main 自动部署，或 GitHub UI 手动 workflow_dispatch。
+# 路径过滤避免 docs/README/launch-kit 改动触发部署。
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'content/**'
+      - 'templates/**'
+      - 'themes/**'
+      - 'src/**'
+      - 'scripts/build-site.mjs'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'wrangler.toml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  # 同一 ref 只跑一个部署，旧的直接取消，避免交错覆盖
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: build site + wrangler pages deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # 即使 main 流程有 cdn/edge 缓存，几分钟到几十分钟内会刷新
+    environment:
+      name: production-share
+      url: https://share.webkubor.online
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.2
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      # 注意：build:site 不需要 Playwright，只渲 read/talk 两个 HTML 形态，
+      # 跳过一次 ~150MB 浏览器下载。
+      - name: Build share site
+        run: pnpm build:site
+
+      - name: Verify generated site
+        # 防 build 静默退（脚本里 posts.length === 0 也会成功退出）
+        run: |
+          test -f dist-share/index.html || (echo "::error::index.html missing" && exit 1)
+          test -f dist-share/robots.txt || (echo "::error::robots.txt missing" && exit 1)
+          test -f dist-share/sitemap.xml || (echo "::error::sitemap.xml missing" && exit 1)
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist-share --project-name=facet-share --branch=main
+          # 不要把 dist-share 上传到 artifact（10MB+ HTML，没必要）
+          workingDirectory: .

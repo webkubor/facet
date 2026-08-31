@@ -16,6 +16,8 @@
   <img alt="Playwright" src="https://img.shields.io/badge/Playwright-PDF-2eAD33.svg?logo=playwright&logoColor=white" />
   <img alt="pnpm" src="https://img.shields.io/badge/pnpm-11-f69220.svg?logo=pnpm&logoColor=white" />
   <img alt="Output" src="https://img.shields.io/badge/output-PDF%20%2B%20long%20image-f59e0b.svg" />
+  <a href="https://github.com/webkubor/facet/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/webkubor/facet/actions/workflows/ci.yml/badge.svg" /></a>
+  <a href="https://share.webkubor.online/"><img alt="Live Demo" src="https://img.shields.io/badge/demo-share.webkubor.online-0f766e.svg?logo=cloudflarepages&logoColor=white" /></a>
 </p>
 
 <p align="center">
@@ -28,11 +30,31 @@
 
 Facet 面向小红书、公众号、社群课程、知识付费资料和项目型技术简历。它不是简单把网页打印成 PDF，而是先做模板无关的 `content flow`，再套用视觉主题，保证每一页的知识密度、页眉页脚、背景铺满和分享图效果都可控。
 
+## 在线示例
+
+[share.webkubor.online](https://share.webkubor.online/) 是 facet 渲出来的真实站点——每期内容都有阅读版（连续长文）和演讲版（一屏一章节）两个刻面，颜色由主题驱动。改完内容 `pnpm deploy:site` 几分钟内同步上去。
+
 ## 标签
 
 `markdown-to-pdf` `html-to-pdf` `knowledge-pdf` `tutorial-pdf` `resume-pdf` `cv-template` `wechat` `xiaohongshu` `long-image` `morandi` `editorial-design` `playwright` `typescript` `agent-ready`
 
-## 30 秒上手
+## 一行命令（不用 clone 仓库）
+
+从 npm registry 直接跑（**下一步**——`npm publish` 之后再启用；本期已加好 `bin` 字段和 `files` 白名单，发布即可用）：
+
+```bash
+npx facet --input mypost.md --template wechat-magazine --output mypost.pdf
+npx facet --input mypost.md --all                       # 一次性出全部 8 套教程模板
+npx facet --input resume.md --template resume-payment-lead --output resume.pdf
+```
+
+首次会下载 ~150MB 浏览器内核，跑完就缓存。不传 `--output` 时，PDF/HTML/长图/分页计划都落在**当前目录**（`./` 和 `./output/`），不会污染包目录。
+
+> 在 npm publish 之前，先用下面的开发者路径；本期已经把 CLI 入口和资源文件准备好，发布只是 `pnpm publish` 的事。
+
+## 30 秒上手（开发者路径）
+
+在仓库内迭代模板或加新模板时用这套：
 
 ```bash
 pnpm install

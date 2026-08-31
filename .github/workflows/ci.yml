@@ -1,0 +1,100 @@
+name: ci
+
+# 所有 push 与 PR 都跑一遍：类型 + smoke build + 视觉门禁。
+# 视觉门禁套在真模板真打印宽度上做，PDF 渲出后才判通过；
+# 任何 PDF UI 硬约束（README 列的那 8 条）回归都会被这条流水线挡住。
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+# 取消同一 PR / push 前还在排队或跑着的旧 run，省分钟。
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: typecheck + smoke build + visual gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      # 让 puppeteer/playwright 知道 Linux 上要装哪几类系统库。
+      # 缺这个会报 “missing X server or $DISPLAY”。
+      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.cache/ms-playwright
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.2
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install CJK + Inter fonts
+        # 模板字体栈优先 Inter、PingFang SC、Microsoft YaHei，
+        # Linux runner 都不带。装 Noto CJK + Inter 避免豆腐块 + 字阶塌陷。
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk fonts-inter
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+
+      - name: Install Chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm setup:browsers
+
+      - name: Type check
+        run: pnpm tsc --noEmit
+
+      - name: Smoke build (tutorial)
+        run: pnpm build:example
+
+      - name: Smoke build (resume, 1 模板)
+        # 完整 6 套留给本地；CI 只验证 happy path，1 套够用。
+        run: pnpm build:resume
+
+      - name: Smoke build (talk)
+        run: pnpm build:talk
+
+      - name: Visual gate — verify-resume
+        # 视觉门禁：留白、字阶、对比度、强下限、头像等阈值，
+        # 真源在 templates/resume-families.json，CI 跑同一份真源。
+        run: node scripts/verify-resume.mjs output/resume-example.html
+
+      - name: Visual gate — talk pagination
+        # 守住 2026-08-28 那次 inFence 丢失导致的章节分裂。
+        run: node scripts/check-talk-pagination.mjs
+
+      - name: Upload build artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: facet-output-${{ github.run_id }}
+          path: |
+            output/*.pdf
+            output/*.html
+            output/*.json
+          retention-days: 7

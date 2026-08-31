@@ -1,0 +1,10 @@
+name = "facet-share"
+compatibility_date = "2024-09-01"
+pages_build_output_dir = "./dist-share"
+
+# 本地预览：pnpm dev:site
+# 部署到 production：pnpm deploy:site（需 CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID）
+#
+# Cloudflare Pages 项目 facet-share 已在控制台创建好并绑了 share.webkubor.online
+# 自定义域。GitHub Actions 用 API Token + Account ID 部署，Token 权限只需
+# "Cloudflare Pages: Edit"，不要给全账号 Admin 权限。
