@@ -35,6 +35,23 @@ async function main(): Promise<void> {
   const parsed = parseMarkdownDocument(source);
   const themeOverride = await loadThemeOverride(options.themePath);
   const toc = buildToc(parsed.body);
+  // talk 只需要文档元数据、目录和 Markdown 原文。不要先规划文章分页，
+  // 否则即使 --output 指向临时目录，page-plan 也会落回仓库 output/。
+  if (options.talk) {
+    const inputName = path.basename(inputPath, path.extname(inputPath));
+    const talkPath = path.resolve(projectRoot, options.outputProvided ? options.output : `output/${inputName}.talk.html`);
+    const talkHtml = await buildTalkHTML({
+      meta: parsed.meta,
+      toc,
+      bodySource: parsed.body,
+      themeOverride
+    });
+    await mkdir(path.dirname(talkPath), { recursive: true });
+    await writeFile(talkPath, talkHtml, "utf8");
+    console.log(`Talk HTML written: ${path.relative(projectRoot, talkPath)}`);
+    return;
+  }
+
   const pageChrome = createPageChrome(parsed.meta);
   const renderedMarkdown = renderMarkdown(parsed.body);
   const isResume = parsed.meta.documentType === "resume";
@@ -81,22 +98,6 @@ async function main(): Promise<void> {
   const articlePlan = planArticlePages(renderedMarkdown, toc);
   const bodyHtml = renderArticlePlan(articlePlan, pageChrome);
   await writePagePlan(inputPath, articlePlan);
-
-  // talk 形态（show 导向）：只出演讲页 HTML，复用同一份 Markdown 与主题。
-  if (options.talk) {
-    const inputName = path.basename(inputPath, path.extname(inputPath));
-    const talkPath = path.resolve(projectRoot, options.outputProvided ? options.output : `output/${inputName}.talk.html`);
-    const talkHtml = await buildTalkHTML({
-      meta: parsed.meta,
-      toc,
-      bodySource: parsed.body,
-      themeOverride
-    });
-    await mkdir(path.dirname(talkPath), { recursive: true });
-    await writeFile(talkPath, talkHtml, "utf8");
-    console.log(`Talk HTML written: ${path.relative(projectRoot, talkPath)}`);
-    return;
-  }
 
   // read 形态（阅读导向）：连续排版的网页长文，不分页、不出 PDF。
   if (options.read) {

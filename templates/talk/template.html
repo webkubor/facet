@@ -11,8 +11,48 @@
   <body class="talk">
     <main class="talk-stage">{{slides}}</main>
 
-    <div class="talk-progress"><span id="talk-pos">1</span><span class="sep">/</span><span id="talk-total">1</span></div>
+    <div class="talk-cue" id="talkCue" aria-live="polite">
+      <span id="talk-pos">1</span><span class="sep">/</span><span id="talk-total">1</span><span id="talk-cue-title"></span>
+    </div>
     <div class="talk-bar"><i id="talk-bar-fill"></i></div>
+
+    <!-- 字体配置面板：本地可用，发布后默认收起 -->
+    <details class="font-panel" id="fontPanel">
+      <summary class="font-panel-toggle">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><text x="1" y="13" font-size="14" font-family="serif" font-weight="700">A</text></svg>
+      </summary>
+      <div class="font-panel-body">
+        <div class="font-row">
+          <label>标题</label>
+          <select id="fontDisplay">
+            <option value='&quot;Source Han Serif SC&quot;, &quot;Songti SC&quot;, serif'>宋体（默认）</option>
+            <option value='"MiSans", "PingFang SC", sans-serif'>MiSans</option>
+            <option value='"Gotham", "PingFang SC", sans-serif'>Gotham</option>
+            <option value='"Ma Shan Zheng", "Songti SC", serif'>马善政楷书</option>
+            <option value='"Jiangxi Zhuokai", "Songti SC", serif'>江西拙楷</option>
+            <option value='"Alimama FangYuanTi VF", "PingFang SC", sans-serif'>阿里妈妈方圆</option>
+            <option value='"HYShangWeiShouShuW", "PingFang SC", sans-serif'>汉仪尚巍手书</option>
+          </select>
+        </div>
+        <div class="font-row">
+          <label>正文</label>
+          <select id="fontBody">
+            <option value='"Inter", "PingFang SC", sans-serif'>Inter（默认）</option>
+            <option value='"MiSans", "PingFang SC", sans-serif'>MiSans</option>
+            <option value='"Noto Sans SC", "PingFang SC", sans-serif'>NotoSansSC</option>
+            <option value='"OPPOSans", "PingFang SC", sans-serif'>OPPO Sans</option>
+            <option value='"Gotham", "PingFang SC", sans-serif'>Gotham</option>
+          </select>
+        </div>
+        <div class="font-row">
+          <label>代码</label>
+          <select id="fontMono">
+            <option value='ui-monospace, SFMono-Regular, Menlo, Consolas, monospace'>系统等宽（默认）</option>
+            <option value='"JetBrains Mono", "JetBrainsMono Nerd Font", monospace'>JetBrains Mono</option>
+          </select>
+        </div>
+      </div>
+    </details>
 
     <script>
       (function () {
@@ -21,6 +61,9 @@
         var posEl = document.getElementById("talk-pos");
         var totalEl = document.getElementById("talk-total");
         var fillEl = document.getElementById("talk-bar-fill");
+        var cueEl = document.getElementById("talkCue");
+        var cueTitleEl = document.getElementById("talk-cue-title");
+        var cueTimer;
 
         function show(next) {
           if (!slides.length) return;
@@ -31,6 +74,12 @@
           if (posEl) posEl.textContent = String(pos + 1);
           if (totalEl) totalEl.textContent = String(slides.length);
           if (fillEl) fillEl.style.width = ((pos + 1) / slides.length * 100) + "%";
+          if (cueTitleEl) cueTitleEl.textContent = slides[pos].getAttribute("data-cue") || "";
+          if (cueEl) {
+            cueEl.classList.add("is-visible");
+            window.clearTimeout(cueTimer);
+            cueTimer = window.setTimeout(function () { cueEl.classList.remove("is-visible"); }, 1500);
+          }
           window.scrollTo(0, 0);
         }
 
@@ -53,14 +102,38 @@
           });
         });
 
-        // 大屏自适应：以 1280×800 为基准，按视口等比缩放内容（含超大屏/投影）。
-        function fitScale() {
-          var scale = Math.min(window.innerWidth / 1280, window.innerHeight / 800);
-          scale = Math.max(0.5, Math.min(3, scale));
-          document.documentElement.style.setProperty("--talk-scale", String(scale));
+        // 字体选择器
+        var fontDisplay = document.getElementById("fontDisplay");
+        var fontBody = document.getElementById("fontBody");
+        var fontMono = document.getElementById("fontMono");
+        var root = document.documentElement;
+        var KEY = "facet-talk-fonts";
+
+        function applyFonts(obj) {
+          if (obj.display) { root.style.setProperty("--display-font", obj.display); if (fontDisplay) fontDisplay.value = obj.display; }
+          if (obj.body) { root.style.setProperty("--body-font", obj.body); if (fontBody) fontBody.value = obj.body; }
+          if (obj.mono) { root.style.setProperty("--mono-font", obj.mono); if (fontMono) fontMono.value = obj.mono; }
         }
-        window.addEventListener("resize", fitScale);
-        fitScale();
+
+        // 从 localStorage 恢复
+        try {
+          var saved = JSON.parse(localStorage.getItem(KEY));
+          if (saved) applyFonts(saved);
+        } catch (_) {}
+
+        function persist() {
+          try {
+            localStorage.setItem(KEY, JSON.stringify({
+              display: fontDisplay ? fontDisplay.value : "",
+              body: fontBody ? fontBody.value : "",
+              mono: fontMono ? fontMono.value : ""
+            }));
+          } catch (_) {}
+        }
+
+        if (fontDisplay) fontDisplay.addEventListener("change", function () { root.style.setProperty("--display-font", fontDisplay.value); persist(); });
+        if (fontBody) fontBody.addEventListener("change", function () { root.style.setProperty("--body-font", fontBody.value); persist(); });
+        if (fontMono) fontMono.addEventListener("change", function () { root.style.setProperty("--mono-font", fontMono.value); persist(); });
 
         show(0);
       })();

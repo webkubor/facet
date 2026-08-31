@@ -45,13 +45,15 @@ await page.goto(url, { waitUntil: "networkidle" });
 
 const report = await page.evaluate(() => {
   const slides = [...document.querySelectorAll(".slide")];
-  const saved = slides.map((s) => s.className);
+  const saved = slides.map((s) => ({ className: s.className, animation: s.style.animation }));
   const vh = window.innerHeight;
   const rows = [];
 
   slides.forEach((s, i) => {
     // 逐个临时激活：talk 靠 .active 控制显示，不激活量不到真实高度
     slides.forEach((x) => x.classList.remove("active"));
+    // 量测的是稳态版心，不把刚翻页的入场位移当成真实裁切。
+    s.style.animation = "none";
     s.classList.add("active");
 
     const body = s.querySelector(".slide-body") || s.querySelector(".cover-inner") || s;
@@ -69,7 +71,10 @@ const report = await page.evaluate(() => {
     });
   });
 
-  slides.forEach((x, i) => (x.className = saved[i]));
+  slides.forEach((x, i) => {
+    x.className = saved[i].className;
+    x.style.animation = saved[i].animation;
+  });
   return { vh, rows };
 });
 

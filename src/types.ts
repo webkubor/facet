@@ -33,6 +33,8 @@ export interface DocumentMeta {
   closingTitle: string;
   /** talk 片尾副文案：一句话邀请继续交流。 */
   closingNote: string;
+  /** talk 封面短标题；空时沿用文档 title。 */
+  talkTitle: string;
   /** 发布 slug：有值才会被 build-site 收进 share 站，同时作为 URL 路径。
    *  没有 slug = 不发布（简历、草稿、私有内容靠这个天然排除，不用另维护一份清单）。 */
   slug: string;

@@ -1,5 +1,6 @@
 ---
 title: "我给自己的项目做了次 AI 可读性体检，第一刀砍在自己身上"
+talkTitle: "AI 可读性体检的翻车实录"
 subtitle: "AGENTS.md · llms.txt · robots.txt —— 一次翻车实录，和我还没想明白的几个问题"
 date: "2026-08-28"
 author: "webkubor"

@@ -11,10 +11,10 @@ import { projectRoot } from "./paths.js";
 import { escapeHtml, slugify } from "./html-utils.js";
 import { renderMarkdown } from "./markdown.js";
 import type { DocumentMeta, TocItem } from "./types.js";
-
 interface TalkSlide {
   id: string;
   kind: "cover" | "intro" | "chapter" | "closing";
+  layout?: "explain" | "thesis" | "data" | "evidence";
   title: string;
   html: string;
   /** 同一章节被拆成多屏时，第 2 屏起为 true：不重复渲染大标题。 */
@@ -23,7 +23,6 @@ interface TalkSlide {
   partIndex?: number;
   partCount?: number;
 }
-
 /** 生成完整演讲页 HTML。 */
 export async function buildTalkHTML(input: {
   meta: DocumentMeta;
@@ -35,7 +34,6 @@ export async function buildTalkHTML(input: {
     readFile(path.join(projectRoot, "templates/talk/template.html"), "utf8"),
     readFile(path.join(projectRoot, "templates/talk/talk.css"), "utf8")
   ]);
-
   const slides = planTalkSlides(input.bodySource);
   const slidesHtml = renderTalkSlides(slides, input.meta, input.toc);
 
@@ -44,7 +42,6 @@ export async function buildTalkHTML(input: {
     .replace("{{styles}}", `${css}\n${input.themeOverride}`)
     .replace("{{slides}}", slidesHtml);
 }
-
 /** 按 ## 把 Markdown 切成多个 chapter 块；cover 之前的 H1 段属于开场屏。 */
 function splitChapters(source: string): string[] {
   const blocks: string[] = [];
@@ -180,27 +177,32 @@ function splitTopLevelBlocks(source: string): string[] {
  * 收尾时把过空的末屏并回上一屏——宁可上一屏稍满，也别留一屏只有一句话。
  */
 function packIntoScreens(blocks: string[]): string[] {
-  const screens: { src: string[]; weight: number }[] = [];
+  const screens: { src: string[]; weight: number; focal: boolean }[] = [];
   let current: string[] = [];
   let weight = 0;
+  let hasFocalBlock = false;
 
   for (const block of blocks) {
-    const w = estimateBlockHeight(renderMarkdown(block));
-    if (current.length > 0 && weight + w > SLIDE_BODY_HEIGHT) {
-      screens.push({ src: current, weight });
+    const html = renderMarkdown(block);
+    const w = estimateBlockHeight(html);
+    const isFocalBlock = /<(?:table|pre|blockquote)\b/.test(html);
+    if (current.length > 0 && (hasFocalBlock || isFocalBlock || weight + w > SLIDE_BODY_HEIGHT)) {
+      screens.push({ src: current, weight, focal: hasFocalBlock });
       current = [];
       weight = 0;
+      hasFocalBlock = false;
     }
     current.push(block);
     weight += w;
+    hasFocalBlock = isFocalBlock;
   }
-  if (current.length) screens.push({ src: current, weight });
+  if (current.length) screens.push({ src: current, weight, focal: hasFocalBlock });
 
   // 末屏太空且并回去不至于爆掉（留 25% 余量）就合并
   if (screens.length >= 2) {
     const last = screens[screens.length - 1]!;
     const prev = screens[screens.length - 2]!;
-    if (last.weight < MIN_SLIDE_HEIGHT && prev.weight + last.weight <= SLIDE_BODY_HEIGHT * 1.2) {
+    if (!last.focal && !prev.focal && last.weight < MIN_SLIDE_HEIGHT && prev.weight + last.weight <= SLIDE_BODY_HEIGHT * 1.2) {
       prev.src.push(...last.src);
       prev.weight += last.weight;
       screens.pop();
@@ -209,6 +211,17 @@ function packIntoScreens(blocks: string[]): string[] {
 
   const out = screens.map((s) => s.src.join("\n\n"));
   return out.length ? out : [""];
+}
+
+/** 一屏只服务一个讲述动作：数据、证据、短论点与说明不要共用同一版式。 */
+function layoutFor(html: string): NonNullable<TalkSlide["layout"]> {
+  if (/<table\b/.test(html)) return "data";
+  if (/<(?:pre|blockquote)\b/.test(html)) return "evidence";
+
+  const text = html.replace(/<[^>]+>/g, "").replace(/\s+/g, "");
+  const paragraphs = (html.match(/<p\b/g) ?? []).length;
+  if (text.length <= 100 && paragraphs <= 1 && !/<(?:ul|ol|h3)\b/.test(html)) return "thesis";
+  return "explain";
 }
 
 function planTalkSlides(bodySource: string): TalkSlide[] {
@@ -224,11 +237,13 @@ function planTalkSlides(bodySource: string): TalkSlide[] {
       const base = slugify(title);
 
       screens.forEach((screen, i) => {
+        const html = renderMarkdown(screen);
         slides.push({
           id: i === 0 ? base : `${base}-${i + 1}`,
           kind: "chapter",
           title,
-          html: renderMarkdown(screen),
+          html,
+          layout: layoutFor(html),
           // 续屏不重复渲染大标题，只在页眉标出「章节名 · 续」
           continued: i > 0,
           partIndex: i + 1,
@@ -244,7 +259,8 @@ function planTalkSlides(bodySource: string): TalkSlide[] {
       id: "intro",
       kind: "intro",
       title: heading ? (heading[1] ?? "").trim() : "开场",
-      html: renderMarkdown(block)
+      html: renderMarkdown(block),
+      layout: "explain"
     });
   }
 
@@ -284,7 +300,7 @@ function renderTalkSlides(slides: TalkSlide[], meta: DocumentMeta, toc: TocItem[
         : `第 ${num} 章`;
       const railTag = chapterCursor === chapterCount ? "ENDING" : "CHAPTER";
       return [
-        `<section class="slide" data-index="${index}" aria-label="${escapeHtml(slide.title)}">`,
+        `<section class="slide layout-${slide.layout}" data-index="${index}" data-cue="${escapeHtml(slide.title)}" aria-label="${escapeHtml(slide.title)}">`,
         `<div class="slide-inner">`,
         `<aside class="slide-rail">`,
         `<span class="num">${num}</span>`,
@@ -306,7 +322,7 @@ function renderTalkSlides(slides: TalkSlide[], meta: DocumentMeta, toc: TocItem[
     // intro / 开场：左侧 00 号，右侧放导言
     const kicker = "PROLOGUE";
     return [
-      `<section class="slide" data-index="${index}" aria-label="${escapeHtml(slide.title)}">`,
+      `<section class="slide layout-explain" data-index="${index}" data-cue="${escapeHtml(slide.title)}" aria-label="${escapeHtml(slide.title)}">`,
       `<div class="slide-inner">`,
       `<aside class="slide-rail">`,
       `<span class="num">00</span>`,
@@ -340,12 +356,12 @@ function renderCoverSlide(slide: TalkSlide, meta: DocumentMeta, chapterToc: TocI
   ].join("")).join("\n");
 
   return [
-    `<section class="slide cover active" data-index="0" aria-label="封面">`,
+    `<section class="slide cover active" data-index="0" data-cue="目录" aria-label="封面">`,
     `<div class="cover-inner">`,
     `<div class="cover-left">`,
     `<span class="cover-eyebrow">A FACET PRESENTATION</span>`,
     `<span class="cover-brand">${escapeHtml(meta.shareHeader)}</span>`,
-    `<h1>${escapeHtml(meta.title)}</h1>`,
+    `<h1>${escapeHtml(meta.talkTitle || meta.title)}</h1>`,
     `<p class="cover-sub">${escapeHtml(meta.subtitle)}</p>`,
     `<p class="cover-meta"><span>${escapeHtml(meta.author)}</span><span>${escapeHtml(meta.date)}</span><span>${chapterIndexes.length} 个章节</span></p>`,
     `<p class="cover-hint">← → 翻页 · 数字键跳转 · F 全屏</p>`,
@@ -365,18 +381,18 @@ function renderCoverSlide(slide: TalkSlide, meta: DocumentMeta, chapterToc: TocI
  * 与全篇的交流姿态冲突；片尾要做的是把话头交出去，不是把场子收回来。
  */
 function renderClosingSlide(meta: DocumentMeta): string {
-  const rows = [
-    meta.series ? `<p class="closing-series">${escapeHtml(meta.series)}</p>` : "",
-    `<h2 class="closing-title">${escapeHtml(meta.closingTitle)}</h2>`,
-    meta.closingNote ? `<p class="closing-note">${escapeHtml(meta.closingNote)}</p>` : "",
-    `<p class="closing-by"><span>${escapeHtml(meta.author)}</span><span class="dot">·</span><span>${escapeHtml(meta.date)}</span></p>`,
-    meta.site ? `<p class="closing-site">讲稿与往期都在 <strong>${escapeHtml(meta.site)}</strong></p>` : ""
-  ].filter(Boolean);
-
   return [
-    `<section class="slide closing" data-index="closing" aria-label="片尾">`,
+    `<section class="slide closing" data-index="closing" data-cue="收束" aria-label="片尾">`,
     `<div class="slide-inner closing-inner">`,
-    ...rows,
+    `<div class="closing-context">`,
+    meta.series ? `<p class="closing-series">${escapeHtml(meta.series)}</p>` : "",
+    meta.closingNote ? `<p class="closing-note">${escapeHtml(meta.closingNote)}</p>` : "",
+    meta.site ? `<p class="closing-site">讲稿与往期都在 <strong>${escapeHtml(meta.site)}</strong></p>` : "",
+    `</div>`,
+    `<div class="closing-main">`,
+    `<h2 class="closing-title">${escapeHtml(meta.closingTitle)}</h2>`,
+    `<p class="closing-by"><span>${escapeHtml(meta.author)}</span><span class="dot">·</span><span>${escapeHtml(meta.date)}</span></p>`,
+    `</div>`,
     `</div>`,
     `</section>`
   ].join("\n");
