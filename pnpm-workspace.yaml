@@ -1,2 +1,8 @@
 allowBuilds:
   esbuild: true
+  # wrangler 的运行时，postinstall 负责下载对应平台的 workerd 二进制。
+  # 不放行的话 cloudflare/wrangler-action 在 CI 里装 wrangler 时会直接失败：
+  #   [ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: workerd@...
+  # 这跟 npm 12 的 allowScripts 是同一类机制——包管理器默认拦 install script 防供应链攻击，
+  # 而这类"壳包 + postinstall 拉二进制"的分发方式必须放行才能工作。
+  workerd: true
