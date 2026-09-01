@@ -38,6 +38,8 @@ export interface DocumentMeta {
   /** 发布 slug：有值才会被 build-site 收进 share 站，同时作为 URL 路径。
    *  没有 slug = 不发布（简历、草稿、私有内容靠这个天然排除，不用另维护一份清单）。 */
   slug: string;
+  /** 优化本稿的模型名称，如 "mimo-v2.5-pro"。片尾署名用。空则不渲染。 */
+  model: string;
 }
 
 /** 命令行参数。 */

@@ -134,4 +134,11 @@ body:fullscreen .font-panel { display: none; }
   .talk-cue { bottom: 18px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 1ms !important; scroll-behavior: auto !important; transition-duration: 1ms !important; } }
+/* 片尾：模型署名 */
+.closing-model {
+  font-size: 0.82em;
+  color: var(--muted);
+  opacity: 0.7;
+  letter-spacing: 0.02em;
+}
 @media print { .slide { display: block !important; height: auto; min-height: 100vh; page-break-after: always; } .talk-cue, .talk-bar, .font-panel { display: none; } }

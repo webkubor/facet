@@ -391,7 +391,7 @@ function renderClosingSlide(meta: DocumentMeta): string {
     `</div>`,
     `<div class="closing-main">`,
     `<h2 class="closing-title">${escapeHtml(meta.closingTitle)}</h2>`,
-    `<p class="closing-by"><span>${escapeHtml(meta.author)}</span><span class="dot">·</span><span>${escapeHtml(meta.date)}</span></p>`,
+    `<p class="closing-by"><span>${escapeHtml(meta.author)}</span><span class="dot">·</span><span>${escapeHtml(meta.date)}</span>${meta.model ? `<span class="dot">·</span><span class="closing-model">由 ${escapeHtml(meta.model)} 优化整理</span>` : ""}</p>`,
     `</div>`,
     `</div>`,
     `</section>`

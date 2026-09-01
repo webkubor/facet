@@ -135,6 +135,39 @@
         if (fontBody) fontBody.addEventListener("change", function () { root.style.setProperty("--body-font", fontBody.value); persist(); });
         if (fontMono) fontMono.addEventListener("change", function () { root.style.setProperty("--mono-font", fontMono.value); persist(); });
 
+        // 字体选择器
+        var fontDisplay = document.getElementById("fontDisplay");
+        var fontBody = document.getElementById("fontBody");
+        var fontMono = document.getElementById("fontMono");
+        var root = document.documentElement;
+        var KEY = "facet-talk-fonts";
+
+        function applyFonts(obj) {
+          if (obj.display) { root.style.setProperty("--display-font", obj.display); if (fontDisplay) fontDisplay.value = obj.display; }
+          if (obj.body) { root.style.setProperty("--body-font", obj.body); if (fontBody) fontBody.value = obj.body; }
+          if (obj.mono) { root.style.setProperty("--mono-font", obj.mono); if (fontMono) fontMono.value = obj.mono; }
+        }
+
+        // 从 localStorage 恢复
+        try {
+          var saved = JSON.parse(localStorage.getItem(KEY));
+          if (saved) applyFonts(saved);
+        } catch (_) {}
+
+        function persist() {
+          try {
+            localStorage.setItem(KEY, JSON.stringify({
+              display: fontDisplay ? fontDisplay.value : "",
+              body: fontBody ? fontBody.value : "",
+              mono: fontMono ? fontMono.value : ""
+            }));
+          } catch (_) {}
+        }
+
+        if (fontDisplay) fontDisplay.addEventListener("change", function () { root.style.setProperty("--display-font", fontDisplay.value); persist(); });
+        if (fontBody) fontBody.addEventListener("change", function () { root.style.setProperty("--body-font", fontBody.value); persist(); });
+        if (fontMono) fontMono.addEventListener("change", function () { root.style.setProperty("--mono-font", fontMono.value); persist(); });
+
         show(0);
       })();
     </script>

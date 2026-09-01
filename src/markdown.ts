@@ -52,7 +52,8 @@ export function parseMarkdownDocument(source: string): { meta: DocumentMeta; bod
       closingTitle: entries.closingTitle ?? "聊到这里",
       closingNote: entries.closingNote ?? "以上都是我自己的实践，欢迎随时来找我抬杠、补充或纠正。",
       talkTitle: entries.talkTitle ?? "",
-      slug: entries.slug ?? ""
+      slug: entries.slug ?? "",
+      model: entries.model ?? ""
     },
     body
   };
@@ -129,7 +130,8 @@ function parseFrontMatter(raw: string): Partial<Record<keyof DocumentMeta, strin
     "closingTitle",
     "closingNote",
     "talkTitle",
-    "slug"
+    "slug",
+    "model"
   ]);
 
   for (const line of raw.split("\n")) {
