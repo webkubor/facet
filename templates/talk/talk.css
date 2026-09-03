@@ -7,7 +7,7 @@
   --soft: #e9e2d7;
   --accent: #6f7d62;
   --accent-2: #7d9d8c;
-  --accent-warm: #b58a72;
+  --accent-warm: #8a5f45; /* 2.72:1→4.89:1 对纸色，投影可读；kicker/em/code 同治 */
   --danger: #9a5d50;
   --display-font: "Source Han Serif SC", "Songti SC", "STSong", Georgia, serif;
   --body-font: "Inter", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
