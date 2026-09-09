@@ -10,7 +10,7 @@ shareHeader: "一个「更新成功」的提示，牵出我机器上 12G 的僵�
 shareFooter: "四套 node 全局包 · 五个 LaunchAgent 硬编码 · 排查实录"
 slug: "node-multi-copy-cleanup"
 model: "claude-opus-5"
-series: "技术交流 · 第 2 期"
+series: "技术交流 · 第 3 期"
 site: "share.webkubor.online"
 closingTitle: "聊到这里"
 closingNote: "样本还是只有我这一台机器。你们的开发机上有几个 node？欢迎来对一下账。"

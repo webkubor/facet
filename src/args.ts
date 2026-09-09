@@ -39,7 +39,8 @@ export function parseArgs(args: string[]): BuildOptions {
     all: flags.has("--all"),
     share: !flags.has("--no-share"),
     talk: flags.has("--talk"),
-    read: flags.has("--read")
+    read: flags.has("--read"),
+    fromHtml: values.get("from-html")
   };
 }
 

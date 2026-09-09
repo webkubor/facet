@@ -53,6 +53,78 @@ function escapeHtml(v = "") {
   return String(v).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 }
 
+/**
+ * 把 output/ 里已经生成好的"独立 HTML 案例页"自动复制到 dist-share/。
+ * 这些页面不走 facet 的 markdown 构建流程，但属于站点内容的一部分。
+ * 同时通过 facet 的 --from-html + --talk 自动生成对应的演讲版（*.talk.html）。
+ * 增加新案例时：把 .html 放进 output/，再在 PAGES 数组里加一行即可。
+ */
+async function copyStandalonePages() {
+  const PAGES = [
+    {
+      src: "output/financial-ai-call-cost-case.html",
+      dest: "financial-ai-call-cost-case.html",
+      title: "金融行业 AI 外呼落地成本评估"
+    }
+    // { src: 'output/xxx.html', dest: 'xxx.html', title: 'xxx' },  // ← 未来加新案例在这里登记
+  ];
+  const { existsSync } = await import("node:fs");
+  for (const page of PAGES) {
+    const srcPath = join(projectRoot, page.src);
+    const destPath = join(distDir, page.dest);
+    if (!existsSync(srcPath)) {
+      console.log(`  ⚠️  ${page.src} 不存在，跳过`);
+      continue;
+    }
+    await copyFile(srcPath, destPath);
+    console.log(`  📄 ${page.dest}  ${page.title}`);
+
+    // 自动生成对应的 talk 演讲版（除非用户显式关闭）
+    const talkSrc = srcPath.replace(/\.html$/, ".talk.html");
+    const talkDest = page.dest.replace(/\.html$/, ".talk.html");
+    if (existsSync(talkSrc)) {
+      await run(
+        "npx",
+        ["tsx", "src/build.ts", "--from-html", page.src, "--talk", "--output", `dist-share/${talkDest}`],
+        { cwd: projectRoot }
+      );
+      console.log(`  🎤 ${talkDest}  ← 自动生成演讲版`);
+    } else {
+      console.log(`  ⚠️  ${talkSrc} 不存在，跳过演讲版生成（先跑一次 npx facet --from-html ${page.src} --talk）`);
+    }
+  }
+}
+
+/**
+ * 复制头像与 favicon 到 dist-share/。
+ * 优先复用预先生成的 docs/brand/favicon.ico，避免在 Linux CI runner 上依赖 sips。
+ */
+async function copyFavicon() {
+  const { existsSync } = await import("node:fs");
+  const avatarSrc = join(projectRoot, "docs", "brand", "webkubor-avatar.jpg");
+  const icoSrc = join(projectRoot, "docs", "brand", "favicon.ico");
+  const destIco = join(distDir, "favicon.ico");
+
+  if (existsSync(icoSrc)) {
+    await copyFile(icoSrc, destIco);
+    console.log("  🖼️  favicon.ico  ← docs/brand/favicon.ico");
+  } else if (existsSync(avatarSrc)) {
+    try {
+      await run("node", ["scripts/make-favicon.mjs", avatarSrc, destIco], { cwd: projectRoot });
+      console.log("  🖼️  favicon.ico  ← 动态生成");
+    } catch {
+      await copyFile(avatarSrc, destIco);
+      console.log("  🖼️  favicon.ico  ← 回退复制头像");
+    }
+  }
+
+  // 同时也把头像复制到根目录作为 apple-touch-icon 和 favicon.png
+  if (existsSync(avatarSrc)) {
+    await copyFile(avatarSrc, join(distDir, "apple-touch-icon.png"));
+    await copyFile(avatarSrc, join(distDir, "favicon.png"));
+  }
+}
+
 async function main() {
   const files = (await readdir(contentDir)).filter((f) => f.endsWith(".md"));
   const posts = [];
@@ -81,9 +153,31 @@ async function main() {
     await mkdir(outDir, { recursive: true });
     const input = `content/${post.file}`;
 
-    for (const [flag, out] of [["--read", `dist-share/${post.slug}/index.html`], ["--talk", `dist-share/${post.slug}/talk.html`]]) {
+    for (const [flag, out] of [
+      ["--read", `dist-share/${post.slug}/index.html`],
+      ["--talk", `dist-share/${post.slug}/talk.html`],
+    ]) {
       await run("npx", ["tsx", "src/build.ts", "--input", input, flag, "--theme", theme, "--output", out], { cwd: projectRoot });
     }
+
+    // PDF：走 facet 默认产物（warm-handbook 模板，A4 多页）
+    // 同时产出 share.png（小红书/公众号长图素材），存在同一目录方便下载
+    try {
+      await run(
+        "npx",
+        ["tsx", "src/build.ts", "--input", input, "--theme", theme, "--output", `dist-share/${post.slug}/share.pdf`],
+        { cwd: projectRoot }
+      );
+      await run(
+        "npx",
+        ["tsx", "src/build.ts", "--input", input, "--theme", theme, "--output", `dist-share/${post.slug}/share.png`],
+        { cwd: projectRoot }
+      );
+      console.log(`  📄 ${post.slug}/share.pdf  +  share.png  ← PDF + 长图素材`);
+    } catch (err) {
+      console.log(`  ⚠️  ${post.slug} PDF/长图生成失败（Playwright 可能未装）：${err.message?.slice(0, 80)}`);
+    }
+
     console.log(`  ✅ ${post.slug}  ${post.title ?? ""}`);
   }
 
@@ -92,6 +186,11 @@ async function main() {
   // 放行 AI 爬虫：这站讲的就是这件事，自己先做到
   await writeFile(join(distDir, "robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: https://${SITE.domain}/sitemap.xml\n`, "utf8");
   await writeFile(join(distDir, "sitemap.xml"), renderSitemap(posts), "utf8");
+
+  // 自动复制"案例研究"等独立 HTML 页面：这些是已生成的成品，不走 facet 构建，
+  // 但属于站点内容的一部分。每次 build 后自动覆盖同步，避免下次部署丢失。
+  await copyStandalonePages();
+  await copyFavicon();
 
   console.log(`\n共 ${posts.length} 期 → dist-share/`);
   console.log(`部署：CLOUDFLARE_ACCOUNT_ID=916ebb1b9f240bf4c8826021dd161692 npx wrangler pages deploy dist-share --project-name=facet-share --branch=main`);
@@ -109,8 +208,41 @@ function renderIndex(posts) {
           <span>${escapeHtml(p.date ?? "")}</span>
           <a href="/${escapeHtml(p.slug)}/">阅读版</a>
           <a href="/${escapeHtml(p.slug)}/talk">演讲版</a>
+          <a href="/${escapeHtml(p.slug)}/share.pdf">📄 PDF</a>
+          <a href="/${escapeHtml(p.slug)}/share.png">📷 长图</a>
         </p>
       </li>`).join("\n");
+
+  // 案例研究：独立 HTML 页面 + 自动生成的 talk 演讲版
+  const cases = [
+    {
+      href: "/financial-ai-call-cost-case.html",
+      talkHref: "/financial-ai-call-cost-case.talk.html",
+      series: "案例研究 · 003",
+      title: "金融行业 AI 外呼落地成本评估",
+      subtitle: "需求文档评估 · 技术选型 · 真实定价拆解 · 4 周落地路径"
+    }
+    // 未来加新案例在这里登记
+  ];
+  const caseItems = cases.map((c) => `
+      <li class="entry entry-case">
+        <a class="entry-main" href="${escapeHtml(c.href)}">
+          <span class="entry-series entry-series-case">${escapeHtml(c.series)}</span>
+          <h2>${escapeHtml(c.title)}</h2>
+          ${c.subtitle ? `<p class="entry-sub">${escapeHtml(c.subtitle)}</p>` : ""}
+        </a>
+        <p class="entry-meta">
+          <span class="case-tag">独立分析报告</span>
+          <a href="${escapeHtml(c.href)}">阅读版</a>
+          <a href="${escapeHtml(c.talkHref)}">🎤 演讲版</a>
+        </p>
+      </li>`).join("\n");
+
+  const casesBlock = caseItems ? `
+    <h3 class="cases-section-title">案例研究</h3>
+    <p class="cases-section-hint">基于真实项目复盘的成本 / 选型 / 合规评估，可作为给客户的技术提案参考。</p>
+    <ul class="cases-list">${caseItems}
+    </ul>` : "";
 
   return `<!doctype html>
 <html lang="zh-CN">
@@ -119,6 +251,25 @@ function renderIndex(posts) {
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>${escapeHtml(SITE.name)}</title>
 <meta name="description" content="${escapeHtml(SITE.intro)}" />
+<!-- 浏览器图标：优先高清头像原图，兼容 ICO 与 Apple 设备 -->
+<link rel="icon" type="image/jpeg" href="https://${SITE.domain}/assets/webkubor-avatar.jpg" />
+<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="https://${SITE.domain}/assets/webkubor-avatar.jpg" />
+
+<!-- 社交媒体链接分享卡片小图标（微信、飞书、Twitter、Telegram、Slack 等） -->
+<meta property="og:title" content="${escapeHtml(SITE.name)}" />
+<meta property="og:description" content="${escapeHtml(SITE.intro)}" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://${SITE.domain}/" />
+<meta property="og:image" content="https://${SITE.domain}/assets/webkubor-avatar.jpg" />
+<meta property="og:image:width" content="240" />
+<meta property="og:image:height" content="240" />
+<meta property="og:image:type" content="image/jpeg" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="${escapeHtml(SITE.name)}" />
+<meta name="twitter:description" content="${escapeHtml(SITE.intro)}" />
+<meta name="twitter:image" content="https://${SITE.domain}/assets/webkubor-avatar.jpg" />
 <style>
 :root{--paper:oklch(97% 0.01 115);--ink:oklch(25% 0.02 115);--muted:oklch(45% 0.02 45);--faint:color-mix(in oklch,oklch(25% 0.02 115),transparent 85%);--soft:oklch(92% 0.01 115);--accent:oklch(54% 0.11 115);--display-font:"Source Han Serif SC","Songti SC",serif;--body-font:"Inter","PingFang SC",sans-serif;--avatar-size:48px}
 *{box-sizing:border-box}
@@ -143,10 +294,18 @@ ul{list-style:none;padding:0;margin:0}
 .entry-meta a{color:var(--accent);text-decoration:none;margin-left:16px}
 .entry-meta a:hover{text-decoration:underline}
 footer{margin-top:56px;color:var(--muted);font-size:13.5px}
+
+/* ========== 案例研究区域 ========== */
+.cases-section-title{margin:64px 0 4px;font-family:var(--display-font);font-size:18px;letter-spacing:.08em;color:var(--accent)}
+.cases-section-hint{margin:0 0 22px;color:var(--muted);font-size:14px}
+.cases-list{list-style:none;padding:0;margin:0}
+.entry-case .entry-series-case{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.4);color:var(--accent-2)}
+.case-tag{display:inline-block;padding:2px 10px;border:1px solid var(--faint);border-radius:999px;color:var(--muted);font-size:12px}
 @media(max-width:600px){.shell{padding:52px 18px 72px}h1{font-size:30px}}
 </style>
 </head>
 <body>
+<div style="display:none;"><img src="https://${SITE.domain}/assets/webkubor-avatar.jpg" alt="${escapeHtml(SITE.name)}" /></div>
 <div class="shell">
   <h1>${escapeHtml(SITE.name)}</h1>
   <div class="author">
@@ -157,7 +316,8 @@ footer{margin-top:56px;color:var(--muted);font-size:13.5px}
   <p class="count">共 ${posts.length} 期</p>
   <ul>${items}
   </ul>
-  <footer>${escapeHtml(SITE.domain)} · 由 <a href="https://github.com/webkubor/facet" style="color:var(--accent)">facet</a> 生成</footer>
+  ${casesBlock}
+  <footer>${escapeHtml(SITE.domain)} · 由 <a href="https://github.com/webkubor/facet" style="color:var(--accent)">facet</a> 生成 · <a href="https://webkubor.online" style="color:var(--accent)">← webkubor.online 个人主页</a></footer>
 </div>
 </body>
 </html>

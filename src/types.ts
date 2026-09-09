@@ -56,6 +56,12 @@ export interface BuildOptions {
   talk: boolean;
   /** 只生成阅读页（read 导向）：连续排版的网页长文，不分页、不出 PDF。 */
   read: boolean;
+  /**
+   * 输入是已渲染好的 HTML 文件路径，与 `--talk` 配合使用。
+   * 走 src/html-talk.ts：从成品 HTML 抽取章节生成对应演讲版，
+   * 不经过 markdown 解析。适合案例研究、PDF 重制等"非 markdown"内容。
+   */
+  fromHtml: string | undefined;
 }
 
 /** 用户偏好主题配置。 */

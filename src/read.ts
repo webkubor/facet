@@ -48,7 +48,7 @@ export async function buildReadHTML(input: {
     meta.series ? `<p class="read-series">${escapeHtml(meta.series)}</p>` : "",
     `<h1 class="read-title">${escapeHtml(meta.title)}</h1>`,
     meta.subtitle ? `<p class="read-sub">${escapeHtml(meta.subtitle)}</p>` : "",
-    `<p class="read-meta"><span>${escapeHtml(meta.author)}</span><span class="dot">·</span><span>${escapeHtml(meta.date)}</span>${
+    `<p class="read-meta"><span class="read-author"><img class="read-author-avatar" src="/assets/webkubor-avatar.jpg" alt="${escapeHtml(meta.author)}" width="22" height="22" /><span>${escapeHtml(meta.author)}</span></span><span class="dot">·</span><span>${escapeHtml(meta.date)}</span>${
       input.talkHref ? `<a class="read-talk-link" href="${escapeHtml(input.talkHref)}">演讲版 →</a>` : ""
     }</p>`
   ].filter(Boolean).join("\n");
@@ -57,7 +57,7 @@ export async function buildReadHTML(input: {
     `<footer class="read-footer">`,
     `<p class="read-footer-title">${escapeHtml(meta.closingTitle)}</p>`,
     meta.closingNote ? `<p class="read-footer-note">${escapeHtml(meta.closingNote)}</p>` : "",
-    `<p class="read-footer-by">${escapeHtml(meta.author)}<span class="dot">·</span>${escapeHtml(meta.date)}</p>`,
+    `<p class="read-footer-by"><span class="read-author"><img class="read-author-avatar" src="/assets/webkubor-avatar.jpg" alt="${escapeHtml(meta.author)}" width="20" height="20" /><span>${escapeHtml(meta.author)}</span></span><span class="dot">·</span>${escapeHtml(meta.date)}</p>`,
     meta.site ? `<p class="read-footer-site">往期都在 <strong>${escapeHtml(meta.site)}</strong></p>` : "",
     `</footer>`
   ].filter(Boolean).join("\n");

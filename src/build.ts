@@ -9,6 +9,7 @@ import path from "node:path";
 import { parseArgs } from "./args.js";
 import { buildPdf } from "./build-one.js";
 import { buildTalkHTML } from "./talk.js";
+import { buildHtmlTalkHTML } from "./html-talk.js";
 import { buildReadHTML } from "./read.js";
 import { loadDotEnv } from "./env.js";
 import { measureResumeLayout } from "./browser-output.js";
@@ -35,10 +36,24 @@ async function main(): Promise<void> {
   // input / output 都相对 cwd 解析，方便 npx 模式与开发模式都直接落在用户当前目录
   // （templates / themes 由 projectRoot 解析，仍指向包内资源）。
   const cwd = process.cwd();
+  const themeOverride = await loadThemeOverride(options.themePath);
+
+  // --from-html + --talk：从已渲染好的 HTML 生成对应演讲版，
+  // 不走 markdown 解析路径。详见 src/html-talk.ts。
+  if (options.fromHtml && options.talk) {
+    const htmlPath = path.resolve(cwd, options.fromHtml);
+    const inputName = path.basename(htmlPath, path.extname(htmlPath));
+    const talkPath = path.resolve(cwd, options.outputProvided ? options.output : `output/${inputName}.talk.html`);
+    const talkHtml = await buildHtmlTalkHTML({ htmlPath, themeOverride });
+    await mkdir(path.dirname(talkPath), { recursive: true });
+    await writeFile(talkPath, talkHtml, "utf8");
+    console.log(`HTML Talk written: ${path.relative(cwd, talkPath)}`);
+    return;
+  }
+
   const inputPath = path.resolve(cwd, options.input);
   const source = await readFile(inputPath, "utf8");
   const parsed = parseMarkdownDocument(source);
-  const themeOverride = await loadThemeOverride(options.themePath);
   const toc = buildToc(parsed.body);
   // talk 只需要文档元数据、目录和 Markdown 原文。不要先规划文章分页，
   // 否则即使 --output 指向临时目录，page-plan 也会落回仓库 output/。

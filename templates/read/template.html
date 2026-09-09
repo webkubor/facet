@@ -5,14 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{title}}</title>
     <meta name="description" content="{{description}}" />
+    <!-- 浏览器图标：优先高清头像原图，兼容 ICO 与 Apple 设备 -->
+    <link rel="icon" type="image/jpeg" href="https://share.webkubor.online/assets/webkubor-avatar.jpg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="https://share.webkubor.online/assets/webkubor-avatar.jpg" />
+
+    <!-- 社交媒体链接分享卡片小图标（微信、飞书、Twitter、Telegram、Slack 等） -->
     <meta property="og:title" content="{{title}}" />
     <meta property="og:description" content="{{description}}" />
     <meta property="og:type" content="article" />
+    <meta property="og:image" content="https://share.webkubor.online/assets/webkubor-avatar.jpg" />
+    <meta property="og:image:width" content="240" />
+    <meta property="og:image:height" content="240" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="{{title}}" />
+    <meta name="twitter:description" content="{{description}}" />
+    <meta name="twitter:image" content="https://share.webkubor.online/assets/webkubor-avatar.jpg" />
     <style>
       {{styles}}
     </style>
   </head>
   <body class="read">
+    <!-- 微信等移动端链接分享抓取首图兼容 -->
+    <div style="display:none;"><img src="https://share.webkubor.online/assets/webkubor-avatar.jpg" alt="{{title}}" /></div>
     <article class="read-shell">
       <header class="read-header">{{header}}</header>
       {{toc}}

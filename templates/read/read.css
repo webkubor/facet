@@ -56,11 +56,33 @@ body.read {
   margin: 0;
 }
 .read-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   margin: 22px 0 0;
   padding-bottom: 26px;
   border-bottom: 1px solid var(--faint);
   font-size: 14.5px;
   color: var(--muted);
+}
+.read-author {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--ink);
+  font-weight: 550;
+}
+.read-author-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--faint);
+  display: block;
+}
+.read-footer-by .read-author-avatar {
+  width: 20px;
+  height: 20px;
 }
 .read-meta .dot { margin: 0 8px; color: var(--faint); }
 .read-talk-link {
