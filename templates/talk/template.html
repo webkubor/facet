@@ -29,10 +29,23 @@
     <div style="display:none;"><img src="https://share.webkubor.online/assets/webkubor-avatar.jpg" alt="{{title}}" /></div>
     <main class="talk-stage">{{slides}}</main>
 
+    <!-- 目录按钮 + 浮窗（默认半透明，hover/聚焦显示全部） -->
+    <button class="talk-toc-toggle" id="tocToggle" aria-label="打开/关闭章节目录" title="章节目录（g 或 → 键切换）">☰</button>
+    <aside class="talk-toc" id="talkToc" aria-label="章节目录">
+      <div class="talk-toc-head">
+        <h4>目录 · TOC</h4>
+        <button class="pin" id="tocPin" aria-label="固定目录（不自动隐藏）" title="固定">📌</button>
+      </div>
+      <ul id="tocList"><!-- JS 自动从 .slide 元素抽取 --></ul>
+    </aside>
+
+    <!-- 进度条 + 已访问章节小圆点（让"整体进度"一目了然） -->
+    <div class="talk-bar"><i id="talk-bar-fill"></i></div>
+    <div class="talk-bar-dots" id="talkBarDots" aria-hidden="true"><!-- JS 自动生成 --></div>
+
     <div class="talk-cue" id="talkCue" aria-live="polite">
       <span id="talk-pos">1</span><span class="sep">/</span><span id="talk-total">1</span><span id="talk-cue-title"></span>
     </div>
-    <div class="talk-bar"><i id="talk-bar-fill"></i></div>
 
     <!-- 字体配置面板：本地可用，发布后默认收起 -->
     <details class="font-panel" id="fontPanel">
@@ -81,7 +94,67 @@
         var fillEl = document.getElementById("talk-bar-fill");
         var cueEl = document.getElementById("talkCue");
         var cueTitleEl = document.getElementById("talk-cue-title");
+        var tocEl = document.getElementById("talkToc");
+        var tocToggleEl = document.getElementById("tocToggle");
+        var tocPinEl = document.getElementById("tocPin");
+        var tocListEl = document.getElementById("tocList");
+        var dotsEl = document.getElementById("talkBarDots");
         var cueTimer;
+
+        /* 启动时：生成 TOC 列表 + 进度小圆点 */
+        slides.forEach(function (s, i) {
+          var kicker = s.querySelector(".slide-kicker");
+          var h1 = s.querySelector("h1");
+          var h2 = s.querySelector("h2");
+          var titleEl = h2 || h1 || kicker;
+          var label = (titleEl && titleEl.textContent ? titleEl.textContent : "幻灯片 " + (i + 1)).trim().slice(0, 28);
+          /* TOC 项 */
+          var li = document.createElement("li");
+          var a = document.createElement("a");
+          a.href = "#";
+          a.dataset.slide = String(i);
+          a.innerHTML = '<span class="n">' + String(i + 1).padStart(2, "0") + '</span><span class="t"></span>';
+          a.querySelector(".t").textContent = label;
+          a.addEventListener("click", function (e) { e.preventDefault(); show(i); if (window.innerWidth <= 760) tocEl.classList.remove("is-open"); });
+          li.appendChild(a);
+          tocListEl.appendChild(li);
+          /* 进度小圆点 */
+          var dot = document.createElement("div");
+          dot.className = "talk-bar-dot";
+          dot.dataset.slide = String(i);
+          dot.addEventListener("click", function () { show(i); });
+          dotsEl.appendChild(dot);
+        });
+
+        /* TOC 切换：按钮点击 */
+        function toggleToc() {
+          if (window.innerWidth <= 760) {
+            tocEl.classList.toggle("is-open");
+          } else {
+            tocEl.classList.toggle("is-pinned");
+            tocPinEl.classList.toggle("is-pinned");
+          }
+        }
+        tocToggleEl.addEventListener("click", toggleToc);
+        tocPinEl.addEventListener("click", function () { tocEl.classList.toggle("is-pinned"); tocPinEl.classList.toggle("is-pinned"); });
+
+        /* 更新 TOC 高亮 + 小圆点状态 */
+        function updateProgressUi(idx) {
+          tocListEl.querySelectorAll("a").forEach(function (a, i) {
+            a.classList.remove("active", "passed");
+            if (i === idx) a.classList.add("active");
+            else if (i < idx) a.classList.add("passed");
+          });
+          dotsEl.querySelectorAll(".talk-bar-dot").forEach(function (d, i) {
+            d.classList.remove("current", "passed");
+            if (i === idx) d.classList.add("current");
+            else if (i < idx) d.classList.add("passed");
+          });
+          var activeA = tocListEl.querySelector("a.active");
+          if (activeA && tocEl.classList.contains("is-pinned")) {
+            activeA.scrollIntoView({ block: "nearest" });
+          }
+        }
 
         function show(next) {
           if (!slides.length) return;
@@ -93,6 +166,7 @@
           if (totalEl) totalEl.textContent = String(slides.length);
           if (fillEl) fillEl.style.width = ((pos + 1) / slides.length * 100) + "%";
           if (cueTitleEl) cueTitleEl.textContent = slides[pos].getAttribute("data-cue") || "";
+          updateProgressUi(pos);
           if (cueEl) {
             cueEl.classList.add("is-visible");
             window.clearTimeout(cueTimer);
@@ -107,6 +181,7 @@
           else if (e.key === "Home") { show(0); }
           else if (e.key === "End") { show(slides.length - 1); }
           else if (/^[0-9]$/.test(e.key)) { show(Number(e.key) - 1); }
+          else if (e.key === "g" || e.key === "G") { e.preventDefault(); toggleToc(); }
           else if (e.key === "f" || e.key === "F") {
             if (document.fullscreenElement) document.exitFullscreen();
             else document.documentElement.requestFullscreen();

@@ -105,12 +105,37 @@ body.talk { background: var(--paper); color: var(--ink); font-family: var(--body
 .closing-by { color: var(--muted); font-size: 14px; }
 .closing-by .dot { color: var(--accent-warm); margin: 0 8px; }
 
-.talk-cue { align-items: baseline; bottom: 26px; color: var(--muted); display: flex; font-size: 12px; gap: 6px; left: var(--stage-pad-x); opacity: 0; pointer-events: none; position: fixed; transform: translateY(12px); transition: opacity 180ms ease, transform 180ms ease; z-index: 10; }
+.talk-cue { align-items: baseline; bottom: 28px; color: var(--muted); display: flex; font-size: 12px; gap: 6px; left: var(--stage-pad-x); opacity: 0; pointer-events: none; position: fixed; transform: translateY(12px); transition: opacity 180ms ease, transform 180ms ease; z-index: 10; }
 .talk-cue.is-visible { opacity: 0.9; transform: translateY(0); }
 .talk-cue #talk-pos { color: var(--accent-warm); font-variant-numeric: tabular-nums; font-weight: 700; }
 .talk-cue #talk-cue-title { border-left: 1px solid var(--faint); margin-left: 5px; max-width: 30ch; overflow: hidden; padding-left: 10px; text-overflow: ellipsis; white-space: nowrap; }
-.talk-bar { background: var(--faint); bottom: 0; height: 2px; left: 0; opacity: 0.7; position: fixed; width: 100%; z-index: 10; }
+/* 进度条：4px 高 + 已访问章节小圆点（让"整体进度"一目了然） */
+.talk-bar { background: var(--faint); bottom: 0; height: 4px; left: 0; opacity: 0.85; position: fixed; width: 100%; z-index: 10; }
 .talk-bar i { background: var(--accent-warm); display: block; height: 100%; transition: width 220ms ease; width: 0; }
+.talk-bar-dots { bottom: 4px; display: flex; left: 0; padding: 0 0.5px; pointer-events: none; position: fixed; width: 100%; z-index: 9; }
+.talk-bar-dot { background: transparent; flex: 1; height: 4px; margin: 0 1px; position: relative; transition: background 0.2s; }
+.talk-bar-dot.passed { background: var(--accent); opacity: 0.7; }
+.talk-bar-dot.current { background: var(--accent-warm); }
+.talk-bar-dot.current::after { background: var(--accent-warm); border-radius: 50%; bottom: -4px; content: ""; height: 10px; left: 50%; position: absolute; transform: translateX(-50%); width: 10px; box-shadow: 0 0 0 2px var(--paper); }
+
+/* TOC 浮窗：默认半透明，hover/聚焦显示全部，点击跳转 */
+.talk-toc-toggle { align-items: center; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); background: rgba(244, 241, 234, 0.85); border: 1px solid var(--faint); border-radius: 50%; box-shadow: 0 2px 8px rgba(40, 49, 43, 0.08); color: var(--ink); cursor: pointer; display: flex; font-family: var(--display-font); font-size: 18px; font-weight: 700; height: 40px; justify-content: center; position: fixed; right: 24px; top: 24px; transition: background 0.15s, transform 0.15s; width: 40px; z-index: 21; }
+.talk-toc-toggle:hover { background: rgba(244, 241, 234, 1); transform: scale(1.05); }
+.talk-toc { backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); background: rgba(244, 241, 234, 0.92); border: 1px solid var(--faint); border-radius: 10px; box-shadow: 0 4px 16px rgba(40, 49, 43, 0.08); box-sizing: border-box; max-height: 70vh; opacity: 0.25; overflow: hidden; padding: 14px 14px 12px; position: fixed; right: 24px; top: 76px; transition: opacity 0.25s; width: 260px; z-index: 20; }
+.talk-toc:hover, .talk-toc:focus-within, .talk-toc.is-pinned { opacity: 1; }
+.talk-toc-head { align-items: center; border-bottom: 1px solid var(--faint); display: flex; justify-content: space-between; margin-bottom: 8px; padding-bottom: 6px; }
+.talk-toc-head h4 { color: var(--muted); font-size: 10.5px; font-weight: 700; letter-spacing: 0.16em; margin: 0; text-transform: uppercase; }
+.talk-toc-head .pin { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 14px; padding: 0; }
+.talk-toc-head .pin.is-pinned { color: var(--accent-warm); }
+.talk-toc ul { list-style: none; margin: 0; max-height: calc(70vh - 60px); overflow-y: auto; padding: 0; }
+.talk-toc li { margin: 0; }
+.talk-toc a { align-items: baseline; border-left: 2px solid transparent; border-radius: 0 4px 4px 0; color: var(--muted); display: grid; font-size: 12.5px; gap: 8px; grid-template-columns: 26px 1fr; line-height: 1.4; padding: 5px 8px; text-decoration: none; transition: all 0.15s; }
+.talk-toc a:hover { background: rgba(125, 157, 140, 0.1); color: var(--ink); }
+.talk-toc a.active { background: rgba(138, 95, 69, 0.1); border-left-color: var(--accent-warm); color: var(--accent-warm); font-weight: 600; }
+.talk-toc a.passed { opacity: 0.55; }
+.talk-toc a .n { color: var(--accent); font-family: var(--display-font); font-variant-numeric: tabular-nums; }
+.talk-toc a.active .n { color: var(--accent-warm); }
+.talk-toc a .t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .font-panel { position: fixed; right: 22px; top: 18px; z-index: 20; }
 .font-panel-toggle { color: var(--muted); cursor: pointer; list-style: none; padding: 8px; }
@@ -122,16 +147,43 @@ body.talk { background: var(--paper); color: var(--ink); font-family: var(--body
 body:fullscreen .font-panel { display: none; }
 
 @keyframes slide-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+/* 移动端：封面/片尾/正文都改单列，进度条浮在 TOC 按钮上方 */
 @media (max-width: 760px) {
-  .slide-inner, .cover-inner, .closing-inner { display: block; }
-  .slide-rail, .closing-context { border-bottom: 1px solid var(--faint); border-right: 0; flex-direction: row; gap: 14px; min-height: auto; padding: 0 0 16px; }
-  .slide-rail .num { font-size: 48px; }
+  :root {
+    --stage-pad-x: 18px;
+    --stage-pad-y: 24px;
+  }
+  /* 正文单列 */
+  .slide-inner { display: block; gap: 18px; }
+  .slide-rail { align-items: baseline; border-bottom: 1px solid var(--faint); border-right: 0; flex-direction: row; gap: 14px; min-height: auto; padding: 0 0 14px; }
+  .slide-rail .num { font-size: 44px; }
   .slide-rail .of { margin: 0; }
-  .slide-rail .rail-tag { margin: 0 0 0 auto; }
-  .cover-right { padding-top: 32px; }
-  .closing-context { margin-bottom: 34px; padding-right: 0; }
-  .closing-main { padding-left: 0; }
-  .talk-cue { bottom: 18px; }
+  .slide-rail .rail-tag { margin: 0 0 0 auto; font-size: 10px; }
+  .slide h1, .slide h2 { font-size: 32px; line-height: 1.18; }
+  .slide p, .slide ul, .slide ol { font-size: 17px; }
+  .slide blockquote { font-size: 22px; padding: 18px; }
+  /* 封面单列 */
+  .cover-inner { display: block; gap: 24px; padding: 24px 0 80px; }
+  .cover-left h1 { font-size: 40px; line-height: 1.12; }
+  .cover-left h1::after { width: 44px; }
+  .cover-sub { font-size: 16px; }
+  .cover-right { padding-top: 0; }
+  .cover-right-head h3 { font-size: 17px; }
+  .cover-nav a { font-size: 14px; padding: 12px 0; }
+  /* 片尾单列 */
+  .closing-inner { display: block; gap: 20px; }
+  .closing-context { border-bottom: 1px solid var(--faint); border-right: 0; flex-direction: row; flex-wrap: wrap; gap: 12px 18px; justify-content: flex-start; margin-bottom: 0; padding: 0 0 18px; }
+  .closing-title { font-size: 36px; }
+  /* TOC 在移动端改为底部抽屉 */
+  .talk-toc { bottom: 16px; max-height: 60vh; opacity: 1; padding: 12px; right: 12px; top: auto; transform: translateY(calc(100% + 16px)); transition: transform 0.25s; width: calc(100vw - 24px); }
+  .talk-toc.is-open { transform: translateY(0); }
+  .talk-toc-toggle { bottom: 16px; right: 16px; top: auto; }
+  .talk-toc ul { max-height: calc(60vh - 50px); }
+  /* 进度 cue 上移给 TOC 留位置 */
+  .talk-cue { bottom: 18px; font-size: 11px; left: 18px; }
+  .talk-bar { height: 3px; }
+  .talk-bar-dot { height: 3px; margin: 0 0.5px; }
+  .talk-bar-dot.current::after { height: 8px; width: 8px; bottom: -3px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 1ms !important; scroll-behavior: auto !important; transition-duration: 1ms !important; } }
 /* 片尾：模型署名 */
@@ -141,4 +193,4 @@ body:fullscreen .font-panel { display: none; }
   opacity: 0.7;
   letter-spacing: 0.02em;
 }
-@media print { .slide { display: block !important; height: auto; min-height: 100vh; page-break-after: always; } .talk-cue, .talk-bar, .font-panel { display: none; } }
+@media print { .slide { display: block !important; height: auto; min-height: 100vh; page-break-after: always; } .talk-cue, .talk-bar, .talk-toc, .talk-toc-toggle, .font-panel { display: none; } }
