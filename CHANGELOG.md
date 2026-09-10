@@ -3,6 +3,25 @@
 本文件记录 Facet 的版本变更。
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.4.1] - 2026-09-09
+
+### 修复
+
+- **深色主题完整适配**（`prefers-color-scheme: dark`）：read 与 talk 双形态都能跟随系统主题
+  - 背景：米色 `#f7f5f0` → 暖深棕 `#221d18`（保持莫兰迪色调）
+  - 正文：深灰 `#24303a` → 暖白 `#e6dfd2`（避免刺眼纯白）
+  - 棕色 accent `#9a5d3e` → `#d08868`（深色下提亮防止消失）
+  - 绿色 accent `#7d9d8c` → `#a8b9a4`（同上）
+  - 行内代码：背景透明度 0.08 → 0.12 + 边框（深色下更醒目）
+  - blockquote 渐变：透明度 0.05 → 0.08（深色下保留视觉重点）
+  - TOC 浮窗毛玻璃：`backdrop-filter` 在暗色背景下叠加深色背景，改用更不透明
+  - 进度条：背景色 `--faint` 在暗色下更深，滑块外圈用 `box-shadow` 保持可见
+
+### 关键修复
+
+- **`@media` 内 `:root` 变量覆盖失效**：Chrome 浏览器在 `@media (prefers-color-scheme: dark) { :root { --paper: ... } }` 内
+  覆盖变量**不生效**（即使媒体查询匹配）。用 `:root:root`（双冒号）提高选择器优先级解决。
+
 ## [0.4.0] - 2026-09-09
 
 ### 新增
