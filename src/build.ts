@@ -11,6 +11,7 @@ import { buildPdf } from "./build-one.js";
 import { buildTalkHTML } from "./talk.js";
 import { buildHtmlTalkHTML } from "./html-talk.js";
 import { buildReadHTML } from "./read.js";
+import { runSplit, splitFile } from "./split.js";
 import { loadDotEnv } from "./env.js";
 import { measureResumeLayout } from "./browser-output.js";
 import { planArticlePages, writePagePlan } from "./content-flow.js";
@@ -37,6 +38,29 @@ async function main(): Promise<void> {
   // （templates / themes 由 projectRoot 解析，仍指向包内资源）。
   const cwd = process.cwd();
   const themeOverride = await loadThemeOverride(options.themePath);
+
+  // split 子命令：分析 markdown 自动插 `<!-- break -->`，输出新文件。
+  // 早于 markdown 解析——split 不依赖 front matter / 模板 / 主题。
+  if (options.split) {
+    const inputPath = path.resolve(cwd, options.input);
+    const inputName = path.basename(inputPath, path.extname(inputPath));
+    const outputPath = path.resolve(
+      cwd,
+      options.outputProvided ? options.output : `output/${inputName}.split.md`
+    );
+    const result = await splitFile({
+      inputPath,
+      outputPath,
+      target: options.splitTarget,
+      max: options.splitMax,
+    });
+    console.log(`Split: ${result.breakCount} breaks inserted (target=${options.splitTarget}, max=${options.splitMax})`);
+    console.log(`Written: ${path.relative(cwd, outputPath)}`);
+    if (result.breakLines.length) {
+      console.log(`Break lines: ${result.breakLines.join(", ")}`);
+    }
+    return;
+  }
 
   // --from-html + --talk：从已渲染好的 HTML 生成对应演讲版，
   // 不走 markdown 解析路径。详见 src/html-talk.ts。

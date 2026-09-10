@@ -62,6 +62,15 @@ export interface BuildOptions {
    * 不经过 markdown 解析。适合案例研究、PDF 重制等"非 markdown"内容。
    */
   fromHtml: string | undefined;
+  /**
+   * split 子命令：分析 markdown 并自动插入 `<!-- break -->` 标记。
+   * 输出新文件，原文件不动。
+   */
+  split: boolean;
+  /** split 模式：每屏目标字符数。 */
+  splitTarget: number;
+  /** split 模式：每屏字符上限（超过则强制分屏）。 */
+  splitMax: number;
 }
 
 /** 用户偏好主题配置。 */

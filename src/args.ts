@@ -40,7 +40,10 @@ export function parseArgs(args: string[]): BuildOptions {
     share: !flags.has("--no-share"),
     talk: flags.has("--talk"),
     read: flags.has("--read"),
-    fromHtml: values.get("from-html")
+    fromHtml: values.get("from-html"),
+    split: flags.has("--split"),
+    splitTarget: parseInt(values.get("split-target") ?? "250", 10),
+    splitMax: parseInt(values.get("split-max") ?? "380", 10)
   };
 }
 

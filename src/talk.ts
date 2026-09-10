@@ -132,8 +132,11 @@ function estimateBlockHeight(html: string): number {
 }
 
 /**
- * 把一个章节的 markdown 源按顶层块切开（段落 / 表格 / 代码块 / 列表 / 引用 / 小标题），
+ * 把一个章节的 markdown 源按顶层块切开（段落 / 表格 / 代码块 / 列表 / 引用 / 小标题 / 分屏标记），
  * 代码块整体不可分——从中间切开会产生两个都不合法的片段。
+ *
+ * `<!-- break -->` 是作者显式的分屏标记：单独成块，让 packIntoScreens
+ * 识别为"立即分屏"。标记本身不进任何屏。
  */
 function splitTopLevelBlocks(source: string): string[] {
   const blocks: string[] = [];
@@ -158,6 +161,13 @@ function splitTopLevelBlocks(source: string): string[] {
       current.push(line);
       continue;
     }
+    // 作者显式分屏标记：单独成块，前后强制 flush
+    if (/^\s*<!--\s*(?:break|slide|page-break)\s*-->\s*$/i.test(line)) {
+      flush();
+      current.push(line);
+      flush();
+      continue;
+    }
     // 空行是块的天然边界；小标题另起一块
     if (line.trim() === "") {
       flush();
@@ -174,7 +184,18 @@ function splitTopLevelBlocks(source: string): string[] {
 
 /**
  * 按权重把块装进若干屏，单块超限就自己独占一屏（表格/长代码块属于这类）。
- * 收尾时把过空的末屏并回上一屏——宁可上一屏稍满，也别留一屏只有一句话。
+ *
+ * 分屏由两类信号触发：
+ * 1. 内容侧显式标记 `<!-- break -->`（作者或上游 AI 决定在哪里停）
+ * 2. 算法侧硬焦点（table / pre —— 跨屏会丢内容）+ 屏满
+ *
+ * 为什么不用软焦点（blockquote）触发硬分屏：blockquote 是常见元素，
+ * 如果硬编码为独占屏，会把"引子 + 引用 + 短结论"拆成 3 屏太空（实测
+ * 2026-09-09 末章 53/51/124 字 → 旧版 3 屏）。让作者用 `<!-- break -->`
+ * 显式声明分页意图，比算法揣测更稳。
+ *
+ * 末段再做一次「太空屏回收」：从后往前扫描，每屏 < MIN_SLIDE_HEIGHT 且
+ * 与前一屏合并不爆屏就合并。一屏只有一句话比溢出还难看——宁可稍满。
  */
 function packIntoScreens(blocks: string[]): string[] {
   const screens: { src: string[]; weight: number; focal: boolean }[] = [];
@@ -183,9 +204,21 @@ function packIntoScreens(blocks: string[]): string[] {
   let hasFocalBlock = false;
 
   for (const block of blocks) {
+    // 作者/上游 AI 显式分屏标记：`<!-- break -->` 或 `<!-- slide -->`
+    // 标记本身不进任何屏，只触发分页。
+    if (/^\s*<!--\s*(?:break|slide|page-break)\s*-->\s*$/i.test(block.trim())) {
+      if (current.length > 0) {
+        screens.push({ src: current, weight, focal: hasFocalBlock });
+        current = [];
+        weight = 0;
+        hasFocalBlock = false;
+      }
+      continue;
+    }
+
     const html = renderMarkdown(block);
     const w = estimateBlockHeight(html);
-    const isFocalBlock = /<(?:table|pre|blockquote)\b/.test(html);
+    const isFocalBlock = /<(?:table|pre)\b/.test(html);
     if (current.length > 0 && (hasFocalBlock || isFocalBlock || weight + w > SLIDE_BODY_HEIGHT)) {
       screens.push({ src: current, weight, focal: hasFocalBlock });
       current = [];
@@ -198,15 +231,17 @@ function packIntoScreens(blocks: string[]): string[] {
   }
   if (current.length) screens.push({ src: current, weight, focal: hasFocalBlock });
 
-  // 末屏太空且并回去不至于爆掉（留 25% 余量）就合并
-  if (screens.length >= 2) {
+  // 太空屏循环回收：从最后往前扫，每屏太空且能与前一屏合并就并回去。
+  // 合并上限 SLIDE_BODY_HEIGHT × 1.2；硬焦点屏阻断回收（避免表格跨屏）。
+  while (screens.length >= 2) {
     const last = screens[screens.length - 1]!;
+    if (last.focal || last.weight >= MIN_SLIDE_HEIGHT) break;
     const prev = screens[screens.length - 2]!;
-    if (!last.focal && !prev.focal && last.weight < MIN_SLIDE_HEIGHT && prev.weight + last.weight <= SLIDE_BODY_HEIGHT * 1.2) {
-      prev.src.push(...last.src);
-      prev.weight += last.weight;
-      screens.pop();
-    }
+    if (prev.focal) break;
+    if (prev.weight + last.weight > SLIDE_BODY_HEIGHT * 1.2) break;
+    prev.src.push(...last.src);
+    prev.weight += last.weight;
+    screens.pop();
   }
 
   const out = screens.map((s) => s.src.join("\n\n"));

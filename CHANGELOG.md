@@ -3,6 +3,38 @@
 本文件记录 Facet 的版本变更。
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.4.0] - 2026-09-09
+
+### 新增
+
+- **`pnpm facet split`** 子命令（`src/split.ts`）：分析 markdown 自动插入 `<!-- break -->`
+  分屏标记。MVP版按字数启发式（target=250 / max=380），未来可接 LLM 升级。
+  解决"算法揣测分屏节奏不准"的根问题——把分屏决策从代码里挪到内容侧。
+- **`--from-html + --talk`**（`src/html-talk.ts`）：从已渲染好的成品 HTML 生成对应的
+  演讲版。复用 talk.css / template.html（视觉同源），但跳过 markdown 解析。
+  适用于案例研究、PDF 重制等"非 markdown"内容。
+- **`scripts/make-favicon.mjs`**：把 JPEG/PNG 转成真正的多尺寸 ICO 文件（16+32+48 打包）。
+  解决"文件名是 .ico 但内容是 JPEG"的假 ICO 问题——Chrome / Safari 严格校验后拒显示。
+- **`scripts/build-site.mjs` 自动化**：
+  - `copyFavicon()`：构建时自动复制头像为 favicon
+  - `copyStandalonePages()`：独立 HTML 案例页自动复制 + 自动生成对应 talk 版
+  - 每篇文章额外产出 PDF + 长图（`share.pdf` + `share.png`），首页 entry-meta 增加对应入口
+
+### 变更
+
+- **talk 算法重写**：撤回对 `blockquote` 的硬编码 focal 判定（导致末章 3 屏太空）。
+  改为「作者/上游 AI 用 `<!-- break -->` 显式声明分屏意图，算法兜底」。
+  太空屏回收从单次末屏合并改成循环回收，处理"末尾连续多屏太空"场景。
+- **`splitTopLevelBlocks`** 识别 `<!-- break -->` 为独立块：标记前后强制 flush，
+  让 packIntoScreens 准确捕获分屏信号。
+
+### 修复
+
+- HTML `<link rel="icon">` 的 MIME 全部改为 `image/vnd.microsoft.icon`：
+  之前根页面写 `image/jpeg`，模板写 `image/x-icon`，都导致 Chrome / Safari 因 MIME 不
+  匹配而拒显示 favicon（HTML 标签正确但浏览器拒绝加载）。
+- read / talk 模板都加上 `<link rel="shortcut icon">` 兼容 IE / 老 Safari。
+
 ## [0.3.0] - 2026-08-28
 
 项目改名 `knowledge-pdf-kit` → `facet`，并补上第三个刻面：talk（演讲）与 read（阅读）。
