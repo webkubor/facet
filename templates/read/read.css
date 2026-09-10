@@ -427,3 +427,110 @@ body.read {
   .read-body blockquote { padding: 22px 18px 18px 42px; font-size: 16.5px; }
   .read-body blockquote::before { font-size: 60px; top: 4px; }
 }
+
+/* ========== 深色主题（auto-switch） ========== */
+/* 设计原则：
+ * - 保持莫兰迪暖色调（深棕灰背景 + 暖白正文）
+ * - 所有 accent 颜色要提亮（深色背景下饱和度降低会消失）
+ * - 边框和阴影相应增强
+ * - 行内代码边框要更明显（深色下浅背景容易糊）
+ * - blockquote 大引号装饰需要更亮
+ */
+@media (prefers-color-scheme: dark) {
+  /* :root:root 提高选择器优先级，确保在 @media 内的变量覆盖生效 */
+  :root:root {
+    --paper: #221d18;        /* 暖深棕，替代米色 */
+    --ink: #e6dfd2;          /* 暖白，替代深灰 */
+    --muted: #98907f;        /* 柔和灰，对比度足够但不过刺 */
+    --faint: #3a342d;        /* 暗色边框，比 paper 稍亮 */
+    --soft: #2c2722;         /* 卡片背景，比 paper 稍亮 */
+    --accent: #a8b9a4;       /* 浅绿（深色下要提亮才看得见）*/
+    --accent-2: #8fae9e;     /* 稍亮的绿 */
+    --accent-warm: #d08868;  /* 暖橙棕（深色下要提亮）*/
+    --danger: #d08868;
+    --code-bg: #1a1612;       /* 比 paper 更深的代码块背景 */
+    --code-ink: #d4cebe;      /* 代码块正文 */
+    --code-string: #e6b88a;   /* 字符串色（提亮）*/
+    --code-comment: #75715f;  /* 注释灰（不要全黑）*/
+    --code-keyword: #b09fc4;  /* 关键字紫（提亮）*/
+  }
+  
+  /* 全局：滚动条颜色适配深色 */
+  body.read { background: var(--paper); color: var(--ink); }
+  
+  /* 主标题装饰线保持暖色，但在暗背景上更突出 */
+  .read-title::after { background: var(--accent-warm); }
+  
+  /* TOC 在深色下需要更明显的卡片背景（不能用 var(--soft) 太弱）*/
+  .read-toc { background: var(--soft); border-left-color: var(--accent-warm); }
+  .read-toc-title { color: var(--accent-warm); }
+  .read-toc a { color: var(--ink); }
+  .read-toc a:hover { color: var(--accent-warm); }
+  
+  /* 章节标题：暗背景下左侧边条和装饰线要更亮 */
+  .read-body h2 { border-top-color: var(--faint); border-left-color: var(--accent-warm); }
+  .read-body h2::before { color: var(--accent-warm); }
+  .read-body h2::after { background: var(--accent-warm); }
+  .read-body h3 { border-left-color: var(--accent-2); }
+  
+  /* 首字下沉：暗背景下颜色用亮一点的 accent-warm */
+  .read-body h2 + p::first-letter,
+  .read-body h3 + p::first-letter { color: var(--accent-warm); }
+  
+  /* blockquote：暗背景下引号要更明显 */
+  .read-body blockquote {
+    background: linear-gradient(180deg, rgba(208, 136, 104, 0.08) 0%, rgba(208, 136, 104, 0.03) 100%);
+    border-left-color: var(--accent-warm);
+    color: var(--ink);
+  }
+  .read-body blockquote::before { color: var(--accent-warm); opacity: 0.25; }
+  
+  /* 行内代码：暗背景下背景要更暗一点 + 边框更明显 */
+  .read-body p code, .read-body li code, .read-body td code {
+    background: rgba(208, 136, 104, 0.12);
+    border: 1px solid rgba(208, 136, 104, 0.25);
+    color: #e8a583;
+  }
+  
+  /* 代码块 */
+  .read-body pre {
+    background: var(--code-bg);
+    border-color: var(--faint);
+    border-left-color: var(--accent-warm);
+    color: var(--code-ink);
+  }
+  
+  /* 表格 */
+  .read-body th { background: var(--soft); color: var(--accent); }
+  
+  /* 链接 */
+  .read-body a { color: var(--accent-warm); }
+  
+  /* 强调 */
+  .read-body em { color: var(--accent-warm); }
+  
+  /* 列表 marker */
+  .read-body ul li::before { background: var(--accent-warm); }
+  .read-body ol li::marker { color: var(--accent-warm); }
+  
+  /* 分割线 */
+  .read-body hr::before { color: var(--accent-warm); background: var(--paper); }
+  .read-body hr::after { background: var(--faint); }
+  
+  /* 图片阴影：暗背景下阴影要更深 */
+  .read-body img { box-shadow: 0 2px 16px rgba(0, 0, 0, 0.4); }
+  
+  /* 页脚 */
+  .read-footer::before { background: var(--accent-warm); }
+  .read-footer { border-top-color: var(--faint); }
+  .read-footer-site strong { color: var(--accent); }
+  
+  /* 分隔线（meta 下） */
+  .read-meta { border-bottom-color: var(--faint); }
+  
+  /* series 标签 */
+  .read-series { border-color: var(--faint); color: var(--muted); }
+  
+  /* read-author avatar 边框 */
+  .read-author-avatar { border-color: var(--faint); }
+}

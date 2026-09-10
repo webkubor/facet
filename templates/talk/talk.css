@@ -186,6 +186,51 @@ body:fullscreen .font-panel { display: none; }
   .talk-bar-dot.current::after { height: 8px; width: 8px; bottom: -3px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 1ms !important; scroll-behavior: auto !important; transition-duration: 1ms !important; } }
+
+/* ========== 深色主题（auto-switch）========== */
+/* 设计原则同 read：暖深棕背景 + 暖白正文 + accent 提亮
+ * talk 的封面/片尾双列布局在窄屏没问题；进度条/TOC 在暗背景下要调 */
+@media (prefers-color-scheme: dark) {
+  /* :root:root 提高选择器优先级，确保 @media 内变量覆盖生效 */
+  :root:root {
+    --paper: #221d18;
+    --ink: #e6dfd2;
+    --muted: #98907f;
+    --faint: #3a342d;
+    --soft: #2c2722;
+    --accent: #a8b9a4;
+    --accent-2: #8fae9e;
+    --accent-warm: #d08868;
+    --danger: #d08868;
+  }
+  
+  body.talk { background: var(--paper); color: var(--ink); }
+  
+  /* 进度条：暗背景下背景色要更深 */
+  .talk-bar { background: var(--faint); }
+  .talk-bar-dot.current::after { box-shadow: 0 0 0 2px var(--paper); }
+  
+  /* TOC 浮窗：暗背景下 backdrop-filter 效果会变（叠加深色）。
+   * 改用稍亮的背景色 + 不透明 */
+  .talk-toc-toggle { background: rgba(34, 29, 24, 0.85); color: var(--ink); }
+  .talk-toc-toggle:hover { background: rgba(34, 29, 24, 1); }
+  .talk-toc { background: rgba(34, 29, 24, 0.92); border-color: var(--faint); }
+  .talk-toc-head h4 { color: var(--muted); }
+  .talk-toc-head .pin { color: var(--muted); }
+  .talk-toc-head .pin.is-pinned { color: var(--accent-warm); }
+  .talk-toc a { color: var(--muted); }
+  .talk-toc a:hover { background: rgba(168, 185, 164, 0.12); color: var(--ink); }
+  .talk-toc a.active { background: rgba(208, 136, 104, 0.15); color: var(--accent-warm); }
+  .talk-toc a.active .n { color: var(--accent-warm); }
+  .talk-toc a.passed { opacity: 0.45; }
+  
+  /* Cover 右侧章节目录 */
+  .cover-nav a { color: var(--ink); border-bottom-color: var(--faint); }
+  .cover-nav a:hover { color: var(--accent); }
+  
+  /* Closing 区 */
+  .closing-context { border-right-color: var(--faint); }
+}
 /* 片尾：模型署名 */
 .closing-model {
   font-size: 0.82em;
