@@ -1,5 +1,10 @@
 # Launch Brief — Facet
 
+> 本文件只记**这一次发布的具体决策**（受众、承诺、语气、CTA、约束）。
+> 「文案该怎么写」的方法不在这里定义 —— 结论先行、SCQA、MECE、语气姿态那套走
+> [talk-skills](https://github.com/webkubor/talk-skills)，本仓不重复一份。
+> 分工：talk-skills 管说什么，facet 管长什么样（排版规范见 `docs/design-spec.md`）。
+
 ## 项目一句话
 
 把 Markdown 知识教程一条命令变成排版可控的 A4 PDF + 小红书/公众号长图。
