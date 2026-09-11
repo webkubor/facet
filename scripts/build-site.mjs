@@ -96,6 +96,70 @@ async function copyStandalonePages() {
 }
 
 /**
+ * 加密交付：把 output/ 里的商业敏感文档（产品方案 / 客户 FAQ 等）构建到
+ * 受保护路径下，走 /proposal/ 和 /faq/ 前缀——middleware 会拦截并要密码。
+ *
+ * 每个条目产出 3 个文件：
+ *   dist-share/<slug>/index.html     阅读版（受保护）
+ *   dist-share/<slug>/talk.html      演讲版（受保护）
+ *   dist-share/<slug>/share.pdf      PDF（受保护）
+ *
+ * 配置受保护前缀见 wrangler.toml 的 PROTECTED_PATHS。
+ */
+async function buildProtectedDocs() {
+  const PROTECTED = [
+    {
+      src: "output/loan-ai-proposal-v1.md",
+      slug: "proposal",
+      title: "AI 智能外呼系统 · 产品方案"
+    },
+    {
+      src: "output/ai-call-faq.md",
+      slug: "faq",
+      title: "AI 智能外呼 · 客户常见问题"
+    }
+    // { src: 'output/xxx.md', slug: 'xxx', title: 'xxx' },  // ← 未来加受保护文档在这里登记
+  ];
+
+  const { existsSync } = await import("node:fs");
+  const { mkdir } = await import("node:fs/promises");
+  for (const doc of PROTECTED) {
+    const srcPath = join(projectRoot, doc.src);
+    if (!existsSync(srcPath)) {
+      console.log(`  ⚠️  ${doc.src} 不存在，跳过`);
+      continue;
+    }
+    const outDir = join(distDir, doc.slug);
+    await mkdir(outDir, { recursive: true });
+
+    // 阅读版
+    await run(
+      "npx",
+      ["tsx", "src/build.ts", "--read", "--input", doc.src, "--theme", theme, "--output", `dist-share/${doc.slug}/index.html`],
+      { cwd: projectRoot }
+    );
+    // 演讲版
+    await run(
+      "npx",
+      ["tsx", "src/build.ts", "--talk", "--input", doc.src, "--theme", theme, "--output", `dist-share/${doc.slug}/talk.html`],
+      { cwd: projectRoot }
+    );
+    // PDF（可选，失败不阻断）
+    try {
+      await run(
+        "npx",
+        ["tsx", "src/build.ts", "--input", doc.src, "--theme", theme, "--output", `dist-share/${doc.slug}/share.pdf`],
+        { cwd: projectRoot }
+      );
+    } catch (err) {
+      console.log(`  ⚠️  ${doc.slug} PDF 生成失败：${String(err.message).slice(0, 60)}`);
+    }
+
+    console.log(`  🔒 ${doc.slug}/  ${doc.title}  ← 加密交付（阅读版 + 演讲版 + PDF）`);
+  }
+}
+
+/**
  * 复制头像与 favicon 到 dist-share/。
  * 优先复用预先生成的 docs/brand/favicon.ico，避免在 Linux CI runner 上依赖 sips。
  */
@@ -190,6 +254,7 @@ async function main() {
   // 自动复制"案例研究"等独立 HTML 页面：这些是已生成的成品，不走 facet 构建，
   // 但属于站点内容的一部分。每次 build 后自动覆盖同步，避免下次部署丢失。
   await copyStandalonePages();
+  await buildProtectedDocs();
   await copyFavicon();
 
   console.log(`\n共 ${posts.length} 期 → dist-share/`);

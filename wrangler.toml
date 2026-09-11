@@ -8,3 +8,30 @@ pages_build_output_dir = "./dist-share"
 # Cloudflare Pages 项目 facet-share 已在控制台创建好并绑了 share.webkubor.online
 # 自定义域。GitHub Actions 用 API Token + Account ID 部署，Token 权限只需
 # "Cloudflare Pages: Edit"，不要给全账号 Admin 权限。
+
+# ============================================================
+# 加密交付（Functions + KV）
+# ============================================================
+# 受保护路径：逗号分隔的前缀。例如 "/proposal,/faq"
+# 这些路径下的页面需要密码才能访问，且所有访问会被记录。
+[vars]
+PROTECTED_PATHS = "/proposal,/faq,/case"
+
+# ⚠️ DEFAULT_PASSWORD 和 ADMIN_TOKEN 必须用 secret 设置，不要写进 vars：
+#   npx wrangler pages secret put DEFAULT_PASSWORD --project-name=facet-share
+#   npx wrangler pages secret put ADMIN_TOKEN --project-name=facet-share
+
+# 访问日志 KV（存 session + 访问记录）
+[[kv_namespaces]]
+binding = "ACCESS_KV"
+id = "5c6a371238af4176936ca4778e45738a"
+
+# ============================================================
+# 部署后必须设置的两个 Secret（不要写进本文件）
+# ============================================================
+# 用 wrangler 设置：
+#   npx wrangler pages secret put ADMIN_TOKEN --project-name=facet-share
+#   npx wrangler pages secret put DEFAULT_PASSWORD --project-name=facet-share
+#
+# ADMIN_TOKEN   → 访问 /admin/access-log?token=xxx 查看访问日志
+# DEFAULT_PASSWORD → 受保护页面的默认密码（也可用 KV 单独覆盖每个路径）
