@@ -13,3 +13,6 @@ dist/
 
 # share 站构建产物（node scripts/build-site.mjs 生成）
 dist-share/
+
+# 本地运行产物
+output/
