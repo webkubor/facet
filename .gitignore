@@ -16,3 +16,4 @@ dist-share/
 
 # 本地运行产物
 output/
+.wrangler/
