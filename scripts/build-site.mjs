@@ -15,7 +15,7 @@
  * 用法：node scripts/build-site.mjs [--theme themes/bloom-sage.json]
  */
 import { execFile } from "node:child_process";
-import { copyFile, mkdir, readdir, readFile, writeFile, rm } from "node:fs/promises";
+import { copyFile, mkdir, readdir, readFile, rename, writeFile, rm } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { join, dirname } from "node:path";
 import { promisify } from "node:util";
@@ -96,13 +96,29 @@ async function copyStandalonePages() {
 }
 
 /**
+ * 长图改名：CLI 约定名 share.share.png → 站点用的 share.png。
+ *
+ * buildPdf 产出的长图叫 `<名字>.share.png`（README / CHANGELOG / launch-kit 都按这个引用，
+ * 不能为了站点去改它）。站点侧要的是 share.png，所以构建完顺手改个名。
+ * 长图没产出时（例如 Playwright 未装）静默跳过——PDF 本身可能已经成功，不该因此报错。
+ */
+async function renameShareImage(slug) {
+  try {
+    await rename(join(distDir, slug, "share.share.png"), join(distDir, slug, "share.png"));
+  } catch {
+    // 长图不存在，忽略
+  }
+}
+
+/**
  * 加密交付：把 output/ 里的商业敏感文档（产品方案 / 客户 FAQ 等）构建到
  * 受保护路径下，走 /proposal/ 和 /faq/ 前缀——middleware 会拦截并要密码。
  *
- * 每个条目产出 3 个文件：
+ * 每个条目产出 4 个文件：
  *   dist-share/<slug>/index.html     阅读版（受保护）
  *   dist-share/<slug>/talk.html      演讲版（受保护）
  *   dist-share/<slug>/share.pdf      PDF（受保护）
+ *   dist-share/<slug>/share.png      长图素材（受保护）
  *
  * 配置受保护前缀见 wrangler.toml 的 PROTECTED_PATHS。
  */
@@ -144,18 +160,19 @@ async function buildProtectedDocs() {
       ["tsx", "src/build.ts", "--talk", "--input", doc.src, "--theme", theme, "--output", `dist-share/${doc.slug}/talk.html`],
       { cwd: projectRoot }
     );
-    // PDF（可选，失败不阻断）
+    // PDF（可选，失败不阻断）+ 长图改名
     try {
       await run(
         "npx",
         ["tsx", "src/build.ts", "--input", doc.src, "--theme", theme, "--output", `dist-share/${doc.slug}/share.pdf`],
         { cwd: projectRoot }
       );
+      await renameShareImage(doc.slug);
     } catch (err) {
       console.log(`  ⚠️  ${doc.slug} PDF 生成失败：${String(err.message).slice(0, 60)}`);
     }
 
-    console.log(`  🔒 ${doc.slug}/  ${doc.title}  ← 加密交付（阅读版 + 演讲版 + PDF）`);
+    console.log(`  🔒 ${doc.slug}/  ${doc.title}  ← 加密交付（阅读版 + 演讲版 + PDF + 长图）`);
   }
 }
 
@@ -236,20 +253,25 @@ async function main() {
       await run("npx", ["tsx", "src/build.ts", "--input", input, flag, "--theme", theme, "--output", out], { cwd: projectRoot });
     }
 
-    // PDF：走 facet 默认产物（warm-handbook 模板，A4 多页）
-    // 同时产出 share.png（小红书/公众号长图素材），存在同一目录方便下载
+    // PDF + 长图：buildPdf 里 share 默认开启（args.ts: share: !flags.has("--no-share")），
+    // 所以跑一遍 share.pdf 就同时产出 share.html / share.pdf / share.share.png。
+    //
+    // 长图的名字是 CLI 的公开约定（output/x.pdf → output/x.share.png，README / CHANGELOG /
+    // launch-kit 素材清单都按这个引用），不能为了站点改它；站点要的是 share.png，
+    // 所以在这里构建完顺手改名。
+    //
+    // 早先这里跑了两遍（再来一遍 --output share.png），产出的是一份字节完全相同、
+    // 且没有任何地方引用的 share.share.png —— 每篇白传约 1.5 MB。
+    const pdfPath = `dist-share/${post.slug}/share.pdf`;
     try {
       await run(
         "npx",
-        ["tsx", "src/build.ts", "--input", input, "--theme", theme, "--output", `dist-share/${post.slug}/share.pdf`],
+        ["tsx", "src/build.ts", "--input", input, "--theme", theme, "--output", pdfPath],
         { cwd: projectRoot }
       );
-      await run(
-        "npx",
-        ["tsx", "src/build.ts", "--input", input, "--theme", theme, "--output", `dist-share/${post.slug}/share.png`],
-        { cwd: projectRoot }
-      );
-      console.log(`  📄 ${post.slug}/share.pdf  +  share.png  ← PDF + 长图素材`);
+      // CLI 约定名 → 站点名
+      await renameShareImage(post.slug);
+      console.log(`  📄 ${post.slug}/share.pdf + share.html + share.png  ← PDF + 长图素材`);
     } catch (err) {
       console.log(`  ⚠️  ${post.slug} PDF/长图生成失败（Playwright 可能未装）：${err.message?.slice(0, 80)}`);
     }

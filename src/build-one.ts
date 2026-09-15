@@ -20,6 +20,9 @@ export async function buildPdf(input: {
   themeOverride: string;
 }): Promise<void> {
   const htmlPath = input.outputPath.replace(/\.pdf$/i, ".html");
+  // 长图沿用 CLI 的公开约定 output/x.pdf → output/x.share.png（README / CHANGELOG /
+  // launch-kit 素材清单都按这个名字引用）。站点侧想要的是 share.png，由
+  // scripts/build-site.mjs 构建后重命名，不改这里的约定。
   const sharePath = input.outputPath.replace(/\.pdf$/i, ".share.png");
   const html = await renderTemplate(input.meta, input.bodyHtml, input.toc, input.templateName, input.themeOverride);
 
