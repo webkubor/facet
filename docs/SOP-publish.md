@@ -5,14 +5,21 @@
 ## TL;DR
 
 ```bash
-# 发一篇文章（普通文章）
+# 发一篇文章（普通文章）—— 构建部署 + 推飞书，两条命令
+pnpm deploy:site
 pnpm notify:publish --slug your-slug-name
+
+# 或者一条命令搞定（deploy:protected 实际是「构建 + 部署 + 推送」三合一，
+# 名字是历史遗留，普通文章一样能用）
+pnpm deploy:protected --slug your-slug-name
 
 # 发一个加密文档（带密码）
 pnpm deploy:protected --slug proposal
 ```
 
-**文章上线 + 部署 + 推送飞书群 = 1 步**。
+> ⚠️ **`notify:publish` 只推飞书，不构建也不部署。**
+> 早先这份 SOP 写的是「notify:publish = 构建 + 部署 + 推送」，与实际不符，
+> 结果出现过「文章推了卡片但线上还是旧版」。2026-09-15 已按 `package.json` 实际定义修正。
 
 ---
 
@@ -20,9 +27,30 @@ pnpm deploy:protected --slug proposal
 
 | 步骤 | 操作 | 说明 |
 |------|------|------|
-| 1 | 写 markdown 到 `content/xxx.md` | 用 front matter 声明 slug/title/date |
-| 2 | 跑 `pnpm notify:publish --slug xxx` | 自动：构建 + 部署 + 推送飞书 |
-| 3 | 飞书群里点卡片查看 | 自动跳到分享站 |
+| 1 | 写 markdown 到 `content/xxx.md` | 用 front matter 声明 slug/title/date/series |
+| 2 | `pnpm deploy:site` | 构建 + 部署到 Cloudflare Pages |
+| 3 | `pnpm notify:publish --slug xxx` | 推送飞书卡片（**不含构建部署**） |
+| 4 | 飞书群里点卡片查看 | 自动跳到分享站 |
+
+> 想一步到位就 `pnpm deploy:protected --slug xxx`（构建 + 部署 + 推送）。
+> 加密文档必须用这条，因为它还要读密码环境变量。
+
+---
+
+## 命令速查（以 `package.json` 为准）
+
+| 命令 | 实际做的事 |
+|------|-----------|
+| `pnpm build:site` | 只构建到 `dist-share/`，不部署不推送 |
+| `pnpm deploy:site` | 构建 + 部署 |
+| `pnpm notify:publish --slug x` | **只推送**飞书/企微 |
+| `pnpm notify:dry --slug x` | 只预览推送内容，不发 |
+| `pnpm deploy:protected --slug x` | 构建 + 部署 + 推送（三合一） |
+
+**这三件事（构建 / 部署 / 推送）是分开的，别把它们当成一件事。**
+最容易踩的坑：跑了 `notify:publish` 看到「✅ 飞书：已送达」就以为上线了，
+其实线上还是旧版。**顺序永远是：先 `deploy:site`，再 `notify:publish`**——
+反过来会让卡片里的链接指向尚未部署的内容。
 
 ---
 
@@ -113,7 +141,10 @@ PROTECTED_PATHS = "/proposal,/faq,/mysecret"  # ← 加这里
 # 预览（不发送）
 pnpm notify:dry --slug your-slug
 
-# 实际推送（自动构建 + 部署 + 推飞书）
+# 构建 + 部署
+pnpm deploy:site
+
+# 推送飞书（不含构建部署）
 pnpm notify:publish --slug your-slug
 
 # 最新一篇（自动找日期最大的）
@@ -123,7 +154,7 @@ pnpm notify:publish --latest
 #### 加密文档
 
 ```bash
-# 构建 + 部署 + 推送
+# 构建 + 部署 + 推送，一步到位
 pnpm deploy:protected --slug proposal
 ```
 
@@ -157,20 +188,26 @@ cat > content/my-thoughts.md << 'EOF'
 title: "今天想到的一个事"
 date: "2026-09-12"
 slug: "my-thoughts"
+series: "技术交流 · 第 N 期"
 ---
 # 标题
 
 正文...
 EOF
 
-# 2. 预览
+# 2. 预览推送内容
 pnpm notify:dry --slug my-thoughts
 
-# 3. 推送
+# 3. 构建 + 部署（必须先做，否则线上还是旧版）
+pnpm deploy:site
+
+# 4. 推送飞书
 pnpm notify:publish --slug my-thoughts
 
-# 4. 完成！飞书群已收到推送
+# 5. 完成！飞书群已收到推送
 ```
+
+> 第 3、4 步也可以合成一条：`pnpm deploy:protected --slug my-thoughts`。
 
 ---
 
@@ -235,21 +272,62 @@ pnpm notify:publish --slug my-thoughts
 
 ```bash
 # 1. 编辑 content/xxx.md
-# 2. 跑同一个命令
+# 2. 构建 + 部署（让线上生效）
+pnpm deploy:site
+# 3. 需要的话再推一次飞书
 pnpm notify:publish --slug xxx
 ```
+
+### Q：期号（`series`）是自动生成的吗？
+
+**不是。** `src/markdown.ts` 只把 front matter 里的 `series` 字符串原样读出来渲染，
+`scripts/build-site.mjs` 也不会去分配号段。**期号完全靠手写**。
+
+所以每次发新文都要自己做两件事：
+
+1. 打开 `content/` 看一遍已有期号，确认新的号没被占用
+2. 期号要和 `date` 的先后一致（列表按 `date` 倒序排，期号也应当递减）
+
+> 2026-09-15 踩过：`qwen3-tts-pytorch-to-mlx`（09-14）和
+> `good-product-less-interaction`（09-12）都被写成「第 6 期」，两篇同时在线上。
+> 已按发布时间重排为第 7、8 期。
+>
+> 列表排序已补「同日期按期号倒序」的次序（`build-site.mjs`），
+> 但**这只保证顺序稳定，不保证期号唯一**——唯一性仍然靠人。
 
 ### Q：怎么删除已发布的文章？
 
 1. 删除 `content/xxx.md`
-2. 跑 `node scripts/build-site.mjs && npx wrangler pages deploy ...`
-3. 手动从 Cloudflare 控制台删文件
+2. 跑 `pnpm deploy:site`（重建站点，该 slug 的目录会一起消失）
+
+> 旧版本这里写的是手敲 `node scripts/build-site.mjs && npx wrangler pages deploy ...`，
+> 已经改成直接用 `deploy:site`，避免参数抄错。
 
 ### Q：怎么不发飞书，只部署？
 
 ```bash
 pnpm deploy:site    # 只构建 + 部署，不推飞书
 ```
+
+### Q：文章发布了，但源码没提交，怎么办？
+
+这是**流程漏洞，不是操作失误**——发布链路（`notify-publish.mjs`）里**完全没有 git 操作**，
+它不会替你 commit。所以「线上有了、仓库里没有」会反复发生。
+
+2026-09-15 就漏过一次：`content/qwen3-tts-pytorch-to-mlx.md` 09-14 已上线，
+但源文件直到 09-15 才补提交。
+
+**当前约定：发布完必须手动补一步**
+
+```bash
+git add content/xxx.md
+git commit -m "docs(content): 第 N 期 —— 标题"
+git push origin main
+```
+
+> 待办：把这一步并进发布链路（在 `notify-publish.mjs` 末尾加提交，
+> 或加一条 `publish` 脚本串起 deploy + notify + commit）。
+> 加之前，**每次发布后自查 `git status` 是否干净**。
 
 ### Q：飞书推失败了怎么办？
 
