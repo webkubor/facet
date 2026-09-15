@@ -205,7 +205,19 @@ async function main() {
     return;
   }
 
-  posts.sort((a, b) => String(b.date ?? "").localeCompare(String(a.date ?? "")));
+  // 主序：日期倒序。次序：期号倒序。
+  // 期号不是自动生成的（markdown.ts 只读 frontmatter 里的 series 字符串），同一天发两篇时
+  // 日期相等，若没有第二关键字，顺序会随 readdir 结果漂移 —— 列表里就会出现「…第 6 期、第 4 期、
+  // 第 5 期…」这种看着像编号错乱的样子。加一条确定性的次序把同日期的排稳。
+  const seriesNo = (post) => {
+    const m = String(post.series ?? "").match(/(\d+)/);
+    return m ? Number(m[1]) : -1;
+  };
+  posts.sort((a, b) => {
+    const byDate = String(b.date ?? "").localeCompare(String(a.date ?? ""));
+    if (byDate !== 0) return byDate;
+    return seriesNo(b) - seriesNo(a);
+  });
 
   await rm(distDir, { recursive: true, force: true });
   await mkdir(distDir, { recursive: true });
