@@ -38,10 +38,12 @@ function splitChapters(lines: string[]): Chapter[] {
   const chapters: Chapter[] = [];
   let i = 0;
   while (i < lines.length) {
-    if (/^##\s+/.test(lines[i])) {
+    // `?? ""`：tsconfig 开了 noUncheckedIndexedAccess，而循环条件已保证 i 在界内。
+    // 兜底成空串同时满足类型与语义（undefined 本来也匹配不到 ## 开头）。
+    if (/^##\s+/.test(lines[i] ?? "")) {
       const start = i;
       i++;
-      while (i < lines.length && !/^##\s+/.test(lines[i])) i++;
+      while (i < lines.length && !/^##\s+/.test(lines[i] ?? "")) i++;
       chapters.push({ start, end: i });
     } else {
       i++;
@@ -59,7 +61,7 @@ function splitParagraphs(chapterLines: string[], baseLine: number): Paragraph[] 
   let fenceWasOpened = false;
 
   for (let i = 0; i < chapterLines.length; i++) {
-    const line = chapterLines[i];
+    const line = chapterLines[i] ?? "";
 
     if (/^\s*(```|~~~)/.test(line)) {
       if (inFence) {
@@ -207,7 +209,12 @@ export async function splitFile(input: {
   max?: number;
 }): Promise<SplitResult> {
   const source = await readFile(input.inputPath, "utf8");
-  const result = runSplit({ markdown: source, target: input.target, max: input.max });
+  // exactOptionalPropertyTypes 下不能显式传 undefined，按需展开（不传 = 用默认值）
+  const result = runSplit({
+    markdown: source,
+    ...(input.target === undefined ? {} : { target: input.target }),
+    ...(input.max === undefined ? {} : { max: input.max }),
+  });
   await writeFile(input.outputPath, result.markdown, "utf8");
   return result;
 }
