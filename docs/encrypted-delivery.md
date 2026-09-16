@@ -2,6 +2,50 @@
 
 > Facet 加密交付：给敏感文档加**访问密码** + **IP 访问审计**。
 
+## 现有加密文档清单（链接在这里查）
+
+> 加密文档**不在**站点的公开列表里，所以「有哪些、链接是什么」只能靠这张表。
+> 新增一篇后**必须回来加一行**，否则过几天谁都不知道链接是什么（等于白做）。
+
+| slug | 标题 | 访问链接 | 源码（**仅本机，未入 git**） |
+|------|------|----------|------------------------------|
+| `proposal` | AI 智能外呼系统 · 产品方案 | https://share.webkubor.online/proposal/ | `output/loan-ai-proposal-v1.md` |
+| `faq` | AI 智能外呼 · 客户常见问题 | https://share.webkubor.online/faq/ | `output/ai-call-faq.md` |
+| `eastern-aesthetic-ai-guide` | 山鬼映画 · museav.top 入门手册 | https://share.webkubor.online/eastern-aesthetic-ai-guide/ | `output/eastern-aesthetic-ai-guide.md` |
+| `case` | 客户案例 | https://share.webkubor.online/case/ | ⚠️ 构建里没有源码登记，待确认 |
+
+- **密码**：统一用 `DEFAULT_PASSWORD`（`.env` / CF secret）。要给某个路径单独设密码，见下面「每路径独立密码」。
+- **访问日志**：https://share.webkubor.online/admin/access-log?token=\<ADMIN_TOKEN\>
+- 演讲版 / PDF / 长图：`https://share.webkubor.online/<slug>/talk`、`/share.pdf`、`/share.png`
+
+### ⚠️ 两个已经踩过的坑
+
+1. **漏配 `PROTECTED_PATHS` = 文档直接公开**。
+   2026-09-16 实测：`eastern-aesthetic-ai-guide` 只做了「构建 + 推送登记」，漏了第 3 步，
+   结果是 **200 免密码公开**（`proposal` / `faq` / `case` 都是 401）。已补上，现在四个都是 401。
+2. **源码在 `output/`，而 `output/` 被 `.gitignore` 忽略** —— 加密文档的 markdown **不在 git 里**，
+   只存在于本机。机器挂了 / 文件误删 = 内容真的没了（构建产物 `dist-share/` 同样不入库）。
+   → 至少保持 `output/*.md` 有备份（私有仓库 / 网盘 / 定期拷贝任选），别只留一份在本机。
+
+### 新增一篇：4 步 + 1 条验证（照着做，别跳第 3 步）
+
+| 步骤 | 做什么 | 漏了会怎样 |
+|------|--------|-----------|
+| 1 | 写 markdown 到 `output/<name>.md` | 没内容 |
+| 2 | `scripts/build-site.mjs` 的 `PROTECTED` + `scripts/notify-publish.mjs` 的 `PROTECTED_DOCS` 各登记一条 | 构建不出来 / 推不出卡片 |
+| 3 | **`wrangler.toml` 的 `PROTECTED_PATHS` 加上 `/<slug>`** | **文档公开，谁都能看** |
+| 4 | `pnpm deploy:site` | 线上还是旧版 |
+| ✅ | 部署后跑一次下面这条，四个都应是 401 | —— |
+
+```bash
+for s in proposal faq case <新slug>; do
+  printf "%-32s " "$s"; curl -s -o /dev/null -w "%{http_code}\n" "https://share.webkubor.online/$s/"
+done
+# 期望：全部 401（要密码）。出现 200 就是没保护上，回第 3 步。
+```
+
+---
+
 ## 什么场景用
 
 | 场景 | 例子 |
