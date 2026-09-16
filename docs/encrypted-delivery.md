@@ -12,11 +12,16 @@
 | `proposal` | AI 智能外呼系统 · 产品方案 | https://share.webkubor.online/proposal/ | `output/loan-ai-proposal-v1.md` |
 | `faq` | AI 智能外呼 · 客户常见问题 | https://share.webkubor.online/faq/ | `output/ai-call-faq.md` |
 | `eastern-aesthetic-ai-guide` | 山鬼映画 · museav.top 入门手册 | https://share.webkubor.online/eastern-aesthetic-ai-guide/ | `output/eastern-aesthetic-ai-guide.md` |
-| `case` | 客户案例 | https://share.webkubor.online/case/ | ⚠️ 构建里没有源码登记，待确认 |
 
 - **密码**：统一用 `DEFAULT_PASSWORD`（`.env` / CF secret）。要给某个路径单独设密码，见下面「每路径独立密码」。
 - **访问日志**：https://share.webkubor.online/admin/access-log?token=\<ADMIN_TOKEN\>
 - 演讲版 / PDF / 长图：`https://share.webkubor.online/<slug>/talk`、`/share.pdf`、`/share.png`
+
+### 死登记的教训（`case` 已删）
+
+`/case` 曾经同时出现在 `PROTECTED_PATHS` 和 notify 的清单里，但**从来没有源文件、也从来没构建过** ——
+它是从本文档的示例里被抄进去的。死登记会让人以为"有这篇文档"，所以已从三处清掉（含本文档示例）。
+**判断标准**：`PROTECTED_PATHS` 里只该有 build-site 里真登记过的 slug；用 `pnpm verify:protected` 对齐。
 
 ### ⚠️ 两个已经踩过的坑
 
@@ -111,7 +116,7 @@ https://share.webkubor.online/mydoc/share.pdf → PDF（要密码）
 
 | Var | 说明 | 示例 |
 |-----|------|------|
-| `PROTECTED_PATHS` | 逗号分隔的受保护前缀 | `/proposal,/faq,/case` |
+| `PROTECTED_PATHS` | 逗号分隔的受保护前缀 | `/proposal,/faq` |
 
 ### KV 绑定
 
@@ -162,7 +167,7 @@ https://share.webkubor.online/admin/diagnose?token=<ADMIN_TOKEN>
 
 ```json
 {
-  "PROTECTED_PATHS": "/proposal,/faq,/case",
+  "PROTECTED_PATHS": "/proposal,/faq",
   "ACCESS_KV 绑定": "✅ 已绑定",
   "DEFAULT_PASSWORD": "✅ 已设置",
   "ADMIN_TOKEN": "✅ 已设置"

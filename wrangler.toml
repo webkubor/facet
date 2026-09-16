@@ -15,7 +15,7 @@ pages_build_output_dir = "./dist-share"
 # 受保护路径：逗号分隔的前缀。例如 "/proposal,/faq"
 # 这些路径下的页面需要密码才能访问，且所有访问会被记录。
 [vars]
-PROTECTED_PATHS = "/proposal,/faq,/case,/eastern-aesthetic-ai-guide"
+PROTECTED_PATHS = "/proposal,/faq,/eastern-aesthetic-ai-guide"
 
 # ⚠️ DEFAULT_PASSWORD 和 ADMIN_TOKEN 必须用 secret 设置，不要写进 vars：
 #   npx wrangler pages secret put DEFAULT_PASSWORD --project-name=facet-share

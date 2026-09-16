@@ -61,11 +61,12 @@
     "check:pagination": "node scripts/check-talk-pagination.mjs",
     "build:site": "node scripts/build-site.mjs",
     "deploy:site": "pnpm build:site && npx --yes wrangler pages deploy dist-share --project-name=facet-share --branch=main",
-    "deploy:protected": "pnpm build:site && npx --yes wrangler pages deploy dist-share --project-name=facet-share --branch=main && node scripts/notify-publish.mjs",
+    "deploy:protected": "pnpm build:site && npx --yes wrangler pages deploy dist-share --project-name=facet-share --branch=main && pnpm verify:protected && node scripts/notify-publish.mjs",
     "dev:site": "pnpm build:site && npx --yes wrangler pages dev dist-share",
     "check:slides": "node scripts/check-slide-overflow.mjs",
     "notify:publish": "node scripts/notify-publish.mjs",
-    "notify:dry": "node scripts/notify-publish.mjs --dry-run"
+    "notify:dry": "node scripts/notify-publish.mjs --dry-run",
+    "verify:protected": "node scripts/verify-protected.mjs"
   },
   "dependencies": {
     "highlight.js": "^11.11.1",
