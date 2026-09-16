@@ -32,7 +32,12 @@ Facet 面向小红书、公众号、社群课程、知识付费资料和项目�
 
 ## 在线示例
 
-[share.webkubor.online](https://share.webkubor.online/) 是 facet 渲出来的真实站点——每期内容都有阅读版（连续长文）和演讲版（一屏一章节）两个刻面，颜色由主题驱动。改完内容 `pnpm deploy:site` 几分钟内同步上去。
+[share.webkubor.online](https://share.webkubor.online/) 是 facet 渲出来的真实站点——每期内容都有阅读版（连续长文）和演讲版（一屏一章节）两个刻面，颜色由主题驱动。
+
+> **内容与站点不在本仓**（2026-09-16 拆分）：本仓是**纯工具**（CLI + 模板 + 主题）。
+> 文章、加密交付、站点构建与部署都在**私有仓** `~/dev/gitlab/webkubor/blog` 的 `share/` 下，
+> 那边通过 git 依赖消费本仓（`facet@github:webkubor/facet`），部署命令是那边的 `pnpm pages:deploy`。
+> 这样分开的理由：内容里含客户加密文档（不该进公开仓），而工具本身是 MIT 开源作品。
 
 ## 标签
 

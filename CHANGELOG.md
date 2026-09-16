@@ -3,6 +3,20 @@
 本文件记录 Facet 的版本变更。
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## 未发布（2026-09-16）— 拆分为纯工具仓
+
+按域名把项目拆成两半：**本仓只留工具**（CLI + 模板 + 主题），文章/分享站/部署搬到私有博客仓。
+
+- **移出本仓**：`content/` 的 10 篇文章、`functions/`（分享站的密码保护中间件）、`wrangler.toml`、
+  `.github/workflows/deploy.yml`、站点脚本（`build-site` / `notify-publish` / `verify-protected`）、
+  站点文档（`SOP-publish` / `encrypted-delivery` / `publish-notify`）、`.env.example`。
+  这些现在都在 `~/dev/gitlab/webkubor/blog` 的 `share/` 下（私有仓，客户加密文档因此能进版本控制）。
+- **本仓保留**：`src/`、`templates/`、`themes/`、工具脚本与文档、`launch-kit/`、
+  `content/example.md` 与 `content/resume-example.md`（`files` 声明的示例）。
+- **消费方式**：内容层以 git 依赖装本仓（`facet@github:webkubor/facet`），安装时由 `prepare`（tsc）构建 CLI。
+- **顺带修的**：`src/split.ts` 的 8 个类型错误（TS 7 严格性下 CI 与安装方 prepare 都会失败）；
+  补 `prepare` 脚本。发布 npm 仍未做（npm 上的 `facet` 是别人的包，需要另选包名）。
+
 ## [0.4.1] - 2026-09-09
 
 ### 修复
