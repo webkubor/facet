@@ -60,7 +60,8 @@
     "verify:resume": "node scripts/verify-resume.mjs",
     "check:pagination": "node scripts/check-talk-pagination.mjs",
     "check:slides": "node scripts/check-slide-overflow.mjs",
-    "prepare": "tsc"
+    "prepare": "tsc",
+    "release": "npm publish --access public"
   },
   "dependencies": {
     "highlight.js": "^11.11.1",
