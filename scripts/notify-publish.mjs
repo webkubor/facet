@@ -59,6 +59,7 @@ const PROTECTED_DOCS = {
   proposal: { title: "AI 智能外呼系统 · 产品方案", desc: "客户视角的算账版方案" },
   faq: { title: "AI 智能外呼 · 客户常见问题", desc: "10 个客户最关心的问题" },
   case: { title: "客户案例", desc: "实施记录与数据" },
+  "eastern-aesthetic-ai-guide": { title: "山鬼映画 · museav.top 入门手册", desc: "¥19.9 · 账户+50积分+189式+共创 · 付完激活出第一张" },
 };
 
 // ============ 读普通文章的 front matter ============

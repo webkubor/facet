@@ -133,6 +133,11 @@ async function buildProtectedDocs() {
       src: "output/ai-call-faq.md",
       slug: "faq",
       title: "AI 智能外呼 · 客户常见问题"
+    },
+    {
+      src: "output/eastern-aesthetic-ai-guide.md",
+      slug: "eastern-aesthetic-ai-guide",
+      title: "山鬼映画 · museav.top 入门手册"
     }
     // { src: 'output/xxx.md', slug: 'xxx', title: 'xxx' },  // ← 未来加受保护文档在这里登记
   ];
