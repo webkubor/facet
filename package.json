@@ -1,5 +1,5 @@
 {
-  "name": "@kubor/facet",
+  "name": "@webkubor/facet",
   "version": "0.4.1",
   "description": "One Markdown source, multiple facets: talk slides for presenting, PDF and long images for sharing.",
   "private": false,
