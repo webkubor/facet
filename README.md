@@ -11,7 +11,7 @@
 <p align="center">
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-0f766e.svg" /></a>
   <a href="CHANGELOG.md"><img alt="Changelog" src="https://img.shields.io/badge/changelog-keep%20a%20changelog-2f6f4e.svg" /></a>
-  <img alt="Version" src="https://img.shields.io/badge/version-0.2.0-111827.svg" />
+  <img alt="Version" src="https://img.shields.io/badge/version-0.4.1-111827.svg" />
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-strict-3178c6.svg?logo=typescript&logoColor=white" />
   <img alt="Playwright" src="https://img.shields.io/badge/Playwright-PDF-2eAD33.svg?logo=playwright&logoColor=white" />
   <img alt="pnpm" src="https://img.shields.io/badge/pnpm-11-f69220.svg?logo=pnpm&logoColor=white" />
@@ -362,7 +362,7 @@ output/                  # 构建产物
 
 ## 版本
 
-当前 `0.2.0`。变更历史见 [CHANGELOG.md](CHANGELOG.md)，版本号遵循语义化版本，每个版本对应一个 git tag。
+当前 `0.4.1`。变更历史见 [CHANGELOG.md](CHANGELOG.md)，版本号遵循语义化版本，每个版本对应一个 git tag。
 
 ## 开发命令
 
