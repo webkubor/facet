@@ -9,7 +9,7 @@
 `launch-kit/`，以及 `content/example.md`、`content/resume-example.md` 两个示例（`package.json` 的 `files` 声明了它们）。
 
 **不要往这里加文章、客户文档或站点代码**：文章与分享站（share.webkubor.online）都在**私有仓**
-`~/dev/gitlab/webkubor/blog` 的 `share/` 下，那边以 git 依赖消费本仓。
+`~/dev/ip/blog` 的 `share/` 下，那边以 git 依赖消费本仓。
 放错地方的后果很实在：本仓是公开仓，客户加密文档进来就等于泄露。
 
 ## 改完必跑
