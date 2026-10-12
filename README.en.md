@@ -34,7 +34,7 @@ Facet targets Xiaohongshu (Little Red Book), WeChat Official Accounts, community
 
 [share.webkubor.online](https://share.webkubor.online/) is rendered by facet for real — each piece of content has both a **read** view (continuous long-form) and a **talk** view (one section per screen); colors are theme-driven.
 
-> **Content and site are not in this repo** (split on 2026-09-16): this repo is a **pure tool** (CLI + templates + themes). Articles, encrypted delivery, and site build/deploy all live in the **private repo** at `~/dev/gitlab/webkubor/blog` under `share/`, which consumes this repo via a git dependency (`facet@github:webkubor/facet`) and deploys from there with `pnpm pages:deploy`. The split is deliberate: the content can include encrypted customer documents (which should never enter a public repo), while the tool itself is MIT-licensed open source.
+> **Content and site are not in this repo** (split on 2026-09-16): this repo is a **pure tool** (CLI + templates + themes). Articles, encrypted delivery, and site build/deploy all live in the **private repo** at `~/dev/ip/blog` under `share/`, which consumes this repo via a git dependency (`facet@github:webkubor/facet`) and deploys from there with `pnpm pages:deploy`. The split is deliberate: the content can include encrypted customer documents (which should never enter a public repo), while the tool itself is MIT-licensed open source.
 
 ## Tags
 

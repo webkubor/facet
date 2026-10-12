@@ -10,7 +10,7 @@
 - **移出本仓**：`content/` 的 10 篇文章、`functions/`（分享站的密码保护中间件）、`wrangler.toml`、
   `.github/workflows/deploy.yml`、站点脚本（`build-site` / `notify-publish` / `verify-protected`）、
   站点文档（`SOP-publish` / `encrypted-delivery` / `publish-notify`）、`.env.example`。
-  这些现在都在 `~/dev/gitlab/webkubor/blog` 的 `share/` 下（私有仓，客户加密文档因此能进版本控制）。
+  这些现在都在 `~/dev/ip/blog` 的 `share/` 下（私有仓，客户加密文档因此能进版本控制）。
 - **本仓保留**：`src/`、`templates/`、`themes/`、工具脚本与文档、`launch-kit/`、
   `content/example.md` 与 `content/resume-example.md`（`files` 声明的示例）。
 - **消费方式**：内容层以 git 依赖装本仓（`facet@github:webkubor/facet`），安装时由 `prepare`（tsc）构建 CLI。
