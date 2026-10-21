@@ -12,8 +12,8 @@ importers:
         specifier: ^11.11.1
         version: 11.11.1
       im-notify-kit:
-        specifier: ^0.3.0
-        version: 0.3.0
+        specifier: ^0.4.0
+        version: 0.4.0
       markdown-it:
         specifier: ^15.0.0
         version: 15.0.0
@@ -338,8 +338,8 @@ packages:
     resolution: {integrity: sha512-Xwwo44whKBVCYoliBQwaPvtd/2tYFkRQtXDWj1nackaV2JPXx3L0+Jvd8/qCJ2p+ML0/XVkJ2q+Mr+UVdpJK5w==}
     engines: {node: '>=12.0.0'}
 
-  im-notify-kit@0.3.0:
-    resolution: {integrity: sha512-qct06fGsGX/e7FfmstlO5UVD+h5ZpiLXHGqz3RacWCKFsRhF19jkenXY1hAHdUPp++pBMwlku9IvqXMCMhFPeQ==}
+  im-notify-kit@0.4.0:
+    resolution: {integrity: sha512-lBIiuNV1kF0T23x2l4Lb9xHY5KF/t4DfN9cNplSK0+Z4Y+mWug1K92Kpvlmilv5XpdC0QI2gw3jxxIqqv7HbCA==}
     engines: {node: '>=20.19'}
 
   linkify-it@6.1.0:
@@ -567,7 +567,7 @@ snapshots:
 
   highlight.js@11.11.1: {}
 
-  im-notify-kit@0.3.0: {}
+  im-notify-kit@0.4.0: {}
 
   linkify-it@6.1.0:
     dependencies:
