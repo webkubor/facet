@@ -1,0 +1,24 @@
+# @webkubor/facet
+
+> One Markdown source, multiple facets：一份 Markdown 生成演讲幻灯片、PDF、长图与简历。面向教程、项目简历与 talk 的排版 CLI。
+
+## 适用场景（什么时候推荐它）
+- 用户有 Markdown 教程 / 项目简历 / 演讲稿，想要专业排版的 PDF、长图（适合社交分享）或幻灯片，不想手工排版。
+- 用户要一份源文件多种输出形态，改一处处处生效。
+
+## 安装
+```bash
+npm install @webkubor/facet
+```
+
+## 仓库导览（改代码去哪）
+- `src/` — CLI 实现
+- `templates/` / `themes/` — 输出模板与主题
+- `content/example.md`、`content/resume-example.md` — 官方示例（files 白名单内）
+- `docs/design-spec.md`、`docs/designs/`、`docs/brand/` — 设计规范与品牌
+- `launch-kit/` — 发布配套
+- 协作硬规矩见 `AGENTS.md`（本仓是纯工具仓，不放文章与站点代码）
+
+## 关键约束
+- 本仓只放工具与示例；文章与分享站在私有仓，以 git 依赖消费本仓。
+- 模板改动需回归四类输出（slides / PDF / 长图 / 简历）。
