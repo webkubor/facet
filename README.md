@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://cdn.jsdelivr.net/gh/webkubor/free-imgbed@main/facet/icon.svg" width="96" height="96" alt="Facet icon" />
+  <picture><source media="(prefers-color-scheme: dark)" srcset="https://cdn.jsdelivr.net/gh/webkubor/free-imgbed@main/facet/mark-v3-dark.svg"><img src="https://cdn.jsdelivr.net/gh/webkubor/free-imgbed@main/facet/mark-v3.svg" width="96" height="96" alt="Facet icon" /></picture>
 </p>
 
 <h1 align="center">Facet</h1>
