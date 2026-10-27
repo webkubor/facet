@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/brand/icon.svg" width="96" height="96" alt="Facet icon" />
+  <img src="https://cdn.jsdelivr.net/gh/webkubor/free-imgbed@main/facet/icon.svg" width="96" height="96" alt="Facet icon" />
 </p>
 
 <h1 align="center">Facet</h1>
@@ -146,19 +146,19 @@ These are cover previews of the 8 tutorial templates, to help you quickly gauge 
 
 | Warm Handbook | WeChat Magazine |
 | --- | --- |
-| ![Warm Handbook](docs/designs/warm-handbook.png) | ![WeChat Magazine](docs/designs/wechat-magazine.png) |
+| ![Warm Handbook](https://cdn.jsdelivr.net/gh/webkubor/free-imgbed@main/facet/warm-handbook.webp) | ![WeChat Magazine](https://cdn.jsdelivr.net/gh/webkubor/free-imgbed@main/facet/wechat-magazine.webp) |
 
 | Creator Notebook | Course Workbook |
 | --- | --- |
-| ![Creator Notebook](docs/designs/creator-notebook.png) | ![Course Workbook](docs/designs/course-workbook.png) |
+| ![Creator Notebook](https://cdn.jsdelivr.net/gh/webkubor/free-imgbed@main/facet/creator-notebook.webp) | ![Course Workbook](https://cdn.jsdelivr.net/gh/webkubor/free-imgbed@main/facet/course-workbook.webp) |
 
 | Editorial Poster | Research Dossier |
 | --- | --- |
-| ![Editorial Poster](docs/designs/editorial-poster.png) | ![Research Dossier](docs/designs/research-dossier.png) |
+| ![Editorial Poster](https://cdn.jsdelivr.net/gh/webkubor/free-imgbed@main/facet/editorial-poster.webp) | ![Research Dossier](https://cdn.jsdelivr.net/gh/webkubor/free-imgbed@main/facet/research-dossier.webp) |
 
 | Gallery Catalog | Strategy Brief |
 | --- | --- |
-| ![Gallery Catalog](docs/designs/gallery-catalog.png) | ![Strategy Brief](docs/designs/strategy-brief.png) |
+| ![Gallery Catalog](https://cdn.jsdelivr.net/gh/webkubor/free-imgbed@main/facet/gallery-catalog.webp) | ![Strategy Brief](https://cdn.jsdelivr.net/gh/webkubor/free-imgbed@main/facet/strategy-brief.webp) |
 
 ## Resume template previews
 
@@ -174,15 +174,15 @@ The example content uses this repo maintainer **Lunove**'s agent resume — same
 
 | Payment Lead | Global Checkout |
 | --- | --- |
-| ![Payment Lead](docs/designs/resume-payment-lead.png) | ![Global Checkout](docs/designs/resume-global-checkout.png) |
+| ![Payment Lead](https://cdn.jsdelivr.net/gh/webkubor/free-imgbed@main/facet/resume-payment-lead.webp) | ![Global Checkout](https://cdn.jsdelivr.net/gh/webkubor/free-imgbed@main/facet/resume-global-checkout.webp) |
 
 | AI Platform | Infra Builder |
 | --- | --- |
-| ![AI Platform](docs/designs/resume-ai-platform.png) | ![Infra Builder](docs/designs/resume-infra-builder.png) |
+| ![AI Platform](https://cdn.jsdelivr.net/gh/webkubor/free-imgbed@main/facet/resume-ai-platform.webp) | ![Infra Builder](https://cdn.jsdelivr.net/gh/webkubor/free-imgbed@main/facet/resume-infra-builder.webp) |
 
 | Growth Ops | Design Folio |
 | --- | --- |
-| ![Growth Ops](docs/designs/resume-growth-ops.png) | ![Design Folio](docs/designs/resume-design-folio.png) |
+| ![Growth Ops](https://cdn.jsdelivr.net/gh/webkubor/free-imgbed@main/facet/resume-growth-ops.webp) | ![Design Folio](https://cdn.jsdelivr.net/gh/webkubor/free-imgbed@main/facet/resume-design-folio.webp) |
 
 ## Available templates
 
@@ -376,7 +376,7 @@ pnpm build:resume:all
 <table>
   <tr>
     <td width="130" align="center">
-      <img src="docs/brand/lunove.png" width="104" alt="Lunove" />
+      <img src="https://cdn.jsdelivr.net/gh/webkubor/free-imgbed@main/facet/lunove.webp" width="104" alt="Lunove" />
     </td>
     <td>
       <b>Lunove</b> — Agent Maintainer<br/>
