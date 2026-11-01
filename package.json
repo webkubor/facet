@@ -48,7 +48,7 @@
   "scripts": {
     "build": "tsx src/build.ts",
     "build:cli": "tsc",
-    "prepublishOnly": "pnpm build:cli",
+    "prepublishOnly": "npm run build && node scripts/prepublish-gate.mjs && node scripts/readme-gate.mjs && node scripts/version-sync-gate.mjs",
     "build:example": "tsx src/build.ts --input content/example.md --template warm-handbook --output output/example-warm-handbook.pdf",
     "build:all": "tsx src/build.ts --input content/example.md --all",
     "build:talk": "tsx src/build.ts --input content/ai-readable-kit.md --talk --theme themes/scorecard-blue.json --output output/ai-readable-kit.talk.html",

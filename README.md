@@ -9,26 +9,40 @@
 </p>
 
 <p align="center">
-  <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-0f766e.svg" /></a>
-  <a href="CHANGELOG.md"><img alt="Changelog" src="https://img.shields.io/badge/changelog-keep%20a%20changelog-2f6f4e.svg" /></a>
-  <img alt="Version" src="https://img.shields.io/badge/version-0.4.1-111827.svg" />
-  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-strict-3178c6.svg?logo=typescript&logoColor=white" />
-  <img alt="Playwright" src="https://img.shields.io/badge/Playwright-PDF-2eAD33.svg?logo=playwright&logoColor=white" />
-  <img alt="pnpm" src="https://img.shields.io/badge/pnpm-11-f69220.svg?logo=pnpm&logoColor=white" />
-  <img alt="Output" src="https://img.shields.io/badge/output-PDF%20%2B%20long%20image-f59e0b.svg" />
+  <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-0f766e.svg?style=for-the-badge" /></a>
+  <a href="CHANGELOG.md"><img alt="Changelog" src="https://img.shields.io/badge/changelog-keep%20a%20changelog-2f6f4e.svg?style=for-the-badge" /></a>
+  <img alt="Version" src="https://img.shields.io/badge/version-0.4.1-111827.svg?style=for-the-badge" />
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-strict-3178c6.svg?logo=typescript&logoColor=white&style=for-the-badge" />
+  <img alt="Playwright" src="https://img.shields.io/badge/Playwright-PDF-2eAD33.svg?logo=playwright&logoColor=white&style=for-the-badge" />
+  <img alt="pnpm" src="https://img.shields.io/badge/pnpm-11-f69220.svg?logo=pnpm&logoColor=white&style=for-the-badge" />
+  <img alt="Output" src="https://img.shields.io/badge/output-PDF%20%2B%20long%20image-f59e0b.svg?style=for-the-badge" />
   <a href="https://github.com/webkubor/facet/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/webkubor/facet/actions/workflows/ci.yml/badge.svg" /></a>
-  <a href="https://share.webkubor.online/"><img alt="Live Demo" src="https://img.shields.io/badge/demo-share.webkubor.online-0f766e.svg?logo=cloudflarepages&logoColor=white" /></a>
+  <a href="https://share.webkubor.online/"><img alt="Live Demo" src="https://img.shields.io/badge/demo-share.webkubor.online-0f766e.svg?logo=cloudflarepages&logoColor=white&style=for-the-badge" /></a>
 </p>
 
 <p align="center">
-  <img alt="Codex" src="https://img.shields.io/badge/Codex-ready-111827.svg?logo=openai&logoColor=white" />
-  <img alt="Claude Code" src="https://img.shields.io/badge/Claude%20Code-ready-d97706.svg" />
-  <img alt="Cursor" src="https://img.shields.io/badge/Cursor-ready-000000.svg" />
-  <img alt="Gemini CLI" src="https://img.shields.io/badge/Gemini%20CLI-ready-4285f4.svg?logo=googlegemini&logoColor=white" />
-  <img alt="OpenCode" src="https://img.shields.io/badge/OpenCode-ready-0f766e.svg" />
+  <img alt="Codex" src="https://img.shields.io/badge/Codex-ready-111827.svg?logo=openai&logoColor=white&style=for-the-badge" />
+  <img alt="Claude Code" src="https://img.shields.io/badge/Claude%20Code-ready-d97706.svg?style=for-the-badge" />
+  <img alt="Cursor" src="https://img.shields.io/badge/Cursor-ready-000000.svg?style=for-the-badge" />
+  <img alt="Gemini CLI" src="https://img.shields.io/badge/Gemini%20CLI-ready-4285f4.svg?logo=googlegemini&logoColor=white&style=for-the-badge" />
+  <img alt="OpenCode" src="https://img.shields.io/badge/OpenCode-ready-0f766e.svg?style=for-the-badge" />
 </p>
 
 Facet 面向小红书、公众号、社群课程、知识付费资料和项目型技术简历。它不是简单把网页打印成 PDF，而是先做模板无关的 `content flow`，再套用视觉主题，保证每一页的知识密度、页眉页脚、背景铺满和分享图效果都可控。
+
+## 为什么是 Facet
+
+| | **Facet** | Pandoc | md-to-pdf | Typora 导出 |
+|---|:---:|:---:|:---:|:---:|
+| 中文教程排版（讲义 / 章节节奏） | ✅ | 需自写模板 | ❌ | 手动调 |
+| 项目型简历模板（按职业族切密度） | ✅ 六套 | ❌ | ❌ | 手动调 |
+| 长图分享产物（小红书 / 公众号） | ✅ 自动出 | ❌ | ❌ | ❌ |
+| 内容 flow 规划（防短内容独占整页） | ✅ | ❌ | ❌ | ❌ |
+| 演讲页（一屏一章节、键盘翻页） | ✅ `--talk` | ❌ | ❌ | ❌ |
+| 本地生成、不出网 | ✅ | ✅ | ✅ | ✅ |
+| 零配置直接跑 | ✅ | ❌ 要模板 | ✅ | ✅ 图形界面 |
+
+> 只列**能力有无**，不比排版审美 —— 那件事得你自己看在线示例。
 
 ## 在线示例
 
@@ -137,11 +151,11 @@ Facet 对 Agent 的要求很低：能编辑 Markdown、运行 shell 命令、查
 
 | Agent | 支持状态 | 推荐用法 |
 | --- | --- | --- |
-| <img src="https://img.shields.io/badge/Codex-ready-111827.svg?logo=openai&logoColor=white" alt="Codex" /> | 完整支持 | 生成教程内容、调整模板、渲染并检查 PDF。 |
-| <img src="https://img.shields.io/badge/Claude%20Code-ready-d97706.svg" alt="Claude Code" /> | 完整支持 | 编写长文教程、维护 README、批量调整样式。 |
-| <img src="https://img.shields.io/badge/Cursor-ready-000000.svg" alt="Cursor" /> | 完整支持 | 本地编辑 Markdown 和 CSS，快速预览输出。 |
-| <img src="https://img.shields.io/badge/Gemini%20CLI-ready-4285f4.svg?logo=googlegemini&logoColor=white" alt="Gemini CLI" /> | 完整支持 | 长上下文内容规划、批量教程整理。 |
-| <img src="https://img.shields.io/badge/OpenCode-ready-0f766e.svg" alt="OpenCode" /> | 完整支持 | CLI 工作流生成 PDF 和分享长图。 |
+| <img src="https://img.shields.io/badge/Codex-ready-111827.svg?logo=openai&logoColor=white&style=for-the-badge" alt="Codex" /> | 完整支持 | 生成教程内容、调整模板、渲染并检查 PDF。 |
+| <img src="https://img.shields.io/badge/Claude%20Code-ready-d97706.svg?style=for-the-badge" alt="Claude Code" /> | 完整支持 | 编写长文教程、维护 README、批量调整样式。 |
+| <img src="https://img.shields.io/badge/Cursor-ready-000000.svg?style=for-the-badge" alt="Cursor" /> | 完整支持 | 本地编辑 Markdown 和 CSS，快速预览输出。 |
+| <img src="https://img.shields.io/badge/Gemini%20CLI-ready-4285f4.svg?logo=googlegemini&logoColor=white&style=for-the-badge" alt="Gemini CLI" /> | 完整支持 | 长上下文内容规划、批量教程整理。 |
+| <img src="https://img.shields.io/badge/OpenCode-ready-0f766e.svg?style=for-the-badge" alt="OpenCode" /> | 完整支持 | CLI 工作流生成 PDF 和分享长图。 |
 
 ## 模板封面预览
 
