@@ -54,8 +54,8 @@ export function helpText(): string {
   PDF / 长图靠 Playwright 的 Chromium 渲染，第一次需要下载浏览器：
     npx playwright install chromium
 
-  npm 上不带 scope 的 \`facet\` 是另一个无关的包；临时运行请写全名：
-    npx @webkubor/facet --input post.md
+  本工具走 git 分发（不发布 npm），安装 / 升级：
+    npm i -g github:webkubor/facet
 `;
 }
 

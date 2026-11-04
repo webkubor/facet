@@ -7,8 +7,7 @@
 
 ### 修复
 
-- **文档里的 `npx facet` 在干净机器上是坏的**：npm 上不带 scope 的 `facet` 是无关的别人的包（无可执行文件）。
-  README / README.en / llms.txt 全部改为 `npx @webkubor/facet`，并写明全局安装方式 `npm i -g @webkubor/facet`。
+- **安装方式写错**：文档教的 `npx facet` 在干净机器上会拉到 npm 上无关的同名包（无可执行文件）。
 - **新增 `--help` / `-h`、`--version` / `-v`**；不带参数（且当前目录无 `content/example.md`）时打印用法而不是崩栈。
 - **报错可读**：缺文件、缺 Playwright 浏览器给出一行提示和下一步命令；`FACET_DEBUG=1` 保留完整栈。
 - 输出路径打印改为相对当前目录（原先相对包目录，npm 安装后显示成 `../../../out/x.pdf`）。
@@ -16,7 +15,12 @@
 ### 变更
 
 - README 补首次使用必需的 `npx playwright install chromium`。
-- 新增 `.github/workflows/publish.yml`（npm Trusted Publishing + provenance）。
+- CI：`build:talk` 指向 2026-09-16 拆仓时删除的示例文件，改用 `content/example.md`。
+
+### 分发方式
+
+- **不再向 npm 发布**（2026-11-04 owner 定：本工具不是为 npm 做的）。npm 上的 0.4.1 为历史快照，停更。
+  安装改走 git：`npm i -g github:webkubor/facet`（`prepare: tsc` 安装时现场编译）；README / llms.txt / `--help` 同步改写。
 
 ## 已应用（2026-09-16）— 拆分为纯工具仓
 

@@ -2,7 +2,7 @@
   "name": "@webkubor/facet",
   "version": "0.4.2",
   "description": "One Markdown source, multiple facets: talk slides for presenting, PDF and long images for sharing.",
-  "private": false,
+  "private": true,
   "license": "MIT",
   "type": "module",
   "keywords": [
@@ -60,8 +60,7 @@
     "verify:resume": "node scripts/verify-resume.mjs",
     "check:pagination": "node scripts/check-talk-pagination.mjs",
     "check:slides": "node scripts/check-slide-overflow.mjs",
-    "prepare": "tsc",
-    "release": "npm publish --access public"
+    "prepare": "tsc"
   },
   "dependencies": {
     "highlight.js": "^11.11.1",

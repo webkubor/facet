@@ -50,7 +50,7 @@ Facet 面向小红书、公众号、社群课程、知识付费资料和项目�
 
 > **内容与站点不在本仓**（2026-09-16 拆分）：本仓是**纯工具**（CLI + 模板 + 主题）。
 > 文章、加密交付、站点构建与部署都在**私有仓** `~/dev/ip/blog` 的 `share/` 下，
-> 那边以 npm 包消费本仓（`@webkubor/facet`，精确版本锁定），部署命令是那边的 `pnpm pages:deploy`。
+> 本工具**不发布 npm**，走 git 分发；消费方是 cs-mcp 的 MCP 工具（`facet_build` / `facet_templates`）与本地 CLI。
 > 这样分开的理由：内容里含客户加密文档（不该进公开仓），而工具本身是 MIT 开源作品。
 
 ## 标签
@@ -59,19 +59,18 @@ Facet 面向小红书、公众号、社群课程、知识付费资料和项目�
 
 ## 一行命令（不用 clone 仓库）
 
-已发布到 npm：[`@webkubor/facet`](https://www.npmjs.com/package/@webkubor/facet)。
+本工具**不发布到 npm**，直接从 GitHub 装（安装时 `prepare` 会现场编译）：
 
 ```bash
 npx playwright install chromium                         # 首次一次：PDF/长图靠 Chromium 渲染（~150MB，之后缓存）
-npx @webkubor/facet --input mypost.md --template wechat-magazine --output mypost.pdf
-npx @webkubor/facet --input mypost.md --all             # 一次性出全部 8 套教程模板
-npx @webkubor/facet --input resume.md --template resume-payment-lead --output resume.pdf
-npx @webkubor/facet --help                              # 全部参数与模板清单
+npm i -g github:webkubor/facet                          # 装一次，之后直接用 facet 命令
+facet --input mypost.md --template wechat-magazine --output mypost.pdf
+facet --input mypost.md --all                           # 一次性出全部 8 套教程模板
+facet --input resume.md --template resume-payment-lead --output resume.pdf
+facet --help                                            # 全部参数与模板清单
 ```
 
-> ⚠️ **必须写带 scope 的全名。** npm 上不带 scope 的 `facet` 是另一个无关的包
-> （「Configuration mixin for constructors」，没有可执行文件），`npx facet` 在干净机器上会拉到它。
-> 常用的话全局装一次，之后就能直接用 `facet` 命令：`npm i -g @webkubor/facet`。
+> npm 上的 `@webkubor/facet@0.4.1` 是历史快照，已停更。不带 scope 的 `facet` 是别人的无关包，别装。
 
 不传 `--output` 时，PDF/HTML/长图/分页计划都落在**当前目录**（`./` 和 `./output/`），不会污染包目录。
 
