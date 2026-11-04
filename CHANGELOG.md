@@ -3,6 +3,21 @@
 本文件记录 Facet 的版本变更。
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.4.2] - 2026-11-04
+
+### 修复
+
+- **文档里的 `npx facet` 在干净机器上是坏的**：npm 上不带 scope 的 `facet` 是无关的别人的包（无可执行文件）。
+  README / README.en / llms.txt 全部改为 `npx @webkubor/facet`，并写明全局安装方式 `npm i -g @webkubor/facet`。
+- **新增 `--help` / `-h`、`--version` / `-v`**；不带参数（且当前目录无 `content/example.md`）时打印用法而不是崩栈。
+- **报错可读**：缺文件、缺 Playwright 浏览器给出一行提示和下一步命令；`FACET_DEBUG=1` 保留完整栈。
+- 输出路径打印改为相对当前目录（原先相对包目录，npm 安装后显示成 `../../../out/x.pdf`）。
+
+### 变更
+
+- README 补首次使用必需的 `npx playwright install chromium`。
+- 新增 `.github/workflows/publish.yml`（npm Trusted Publishing + provenance）。
+
 ## 已应用（2026-09-16）— 拆分为纯工具仓
 
 按域名把项目拆成两半：**本仓只留工具**（CLI + 模板 + 主题），文章/分享站/部署搬到私有博客仓。

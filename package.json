@@ -1,6 +1,6 @@
 {
   "name": "@webkubor/facet",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "One Markdown source, multiple facets: talk slides for presenting, PDF and long images for sharing.",
   "private": false,
   "license": "MIT",
@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/webkubor/facet#readme",
   "bin": {
-    "facet": "./dist/build.js"
+    "facet": "dist/build.js"
   },
   "files": [
     "dist",
