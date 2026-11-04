@@ -7,6 +7,7 @@
 import { readFile, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { parseArgs } from "./args.js";
+import { formatFatal, helpText, readVersion, shouldShowUsage } from "./cli-help.js";
 import { buildPdf } from "./build-one.js";
 import { buildTalkHTML } from "./talk.js";
 import { buildHtmlTalkHTML } from "./html-talk.js";
@@ -175,7 +176,24 @@ async function main(): Promise<void> {
   await buildPdf({ meta: parsed.meta, bodyHtml, toc, outputPath, templateName, share: options.share, themeOverride });
 }
 
-await main();
+// 入口分流：--help / --version / 无参数（且无默认示例）先于 main 处理，
+// 用户输入错误统一走 formatFatal —— 新用户第一条命令不该看到 Node 异常栈。
+const argv = process.argv.slice(2);
+if (argv.includes("--help") || argv.includes("-h")) {
+  console.log(helpText());
+} else if (argv.includes("--version") || argv.includes("-v")) {
+  console.log(readVersion());
+} else if (shouldShowUsage(argv, process.cwd())) {
+  console.error(helpText());
+  process.exitCode = 1;
+} else {
+  try {
+    await main();
+  } catch (error) {
+    console.error(formatFatal(error));
+    process.exitCode = 1;
+  }
+}
 
 function createDefaultOutput(inputPath: string, templateName: string): string {
   const inputName = path.basename(inputPath, path.extname(inputPath));

@@ -34,7 +34,7 @@ Facet targets Xiaohongshu (Little Red Book), WeChat Official Accounts, community
 
 [share.webkubor.online](https://share.webkubor.online/) is rendered by facet for real — each piece of content has both a **read** view (continuous long-form) and a **talk** view (one section per screen); colors are theme-driven.
 
-> **Content and site are not in this repo** (split on 2026-09-16): this repo is a **pure tool** (CLI + templates + themes). Articles, encrypted delivery, and site build/deploy all live in the **private repo** at `~/dev/ip/blog` under `share/`, which consumes this repo via a git dependency (`facet@github:webkubor/facet`) and deploys from there with `pnpm pages:deploy`. The split is deliberate: the content can include encrypted customer documents (which should never enter a public repo), while the tool itself is MIT-licensed open source.
+> **Content and site are not in this repo** (split on 2026-09-16): this repo is a **pure tool** (CLI + templates + themes). Articles, encrypted delivery, and site build/deploy all live in the **private repo** at `~/dev/ip/blog` under `share/`, which consumes this repo as an npm package (`@webkubor/facet`, pinned version) and deploys from there with `pnpm pages:deploy`. The split is deliberate: the content can include encrypted customer documents (which should never enter a public repo), while the tool itself is MIT-licensed open source.
 
 ## Tags
 
@@ -42,17 +42,21 @@ Facet targets Xiaohongshu (Little Red Book), WeChat Official Accounts, community
 
 ## One-liner (no clone needed)
 
-Run straight from the npm registry (next step — once `npm publish` lands; the CLI entry and `files` whitelist are already in place, publish-only):
+Published on npm as [`@webkubor/facet`](https://www.npmjs.com/package/@webkubor/facet).
 
 ```bash
-npx facet --input mypost.md --template wechat-magazine --output mypost.pdf
-npx facet --input mypost.md --all                       # generate all 8 tutorial templates at once
-npx facet --input resume.md --template resume-payment-lead --output resume.pdf
+npx playwright install chromium                         # once: PDF/long images render via Chromium (~150 MB, cached)
+npx @webkubor/facet --input mypost.md --template wechat-magazine --output mypost.pdf
+npx @webkubor/facet --input mypost.md --all             # generate all 8 tutorial templates at once
+npx @webkubor/facet --input resume.md --template resume-payment-lead --output resume.pdf
+npx @webkubor/facet --help                              # all flags and the template list
 ```
 
-The first run downloads ~150 MB of browser binaries, then caches. Without `--output`, the PDF/HTML/long-image/page-plan all land in **the current directory** (`./` and `./output/`), never polluting the package directory.
+> ⚠️ **Always use the scoped name.** The unscoped `facet` on npm is an unrelated package
+> ("Configuration mixin for constructors", no executable); `npx facet` on a clean machine pulls that one.
+> For regular use, install globally once and then call `facet` directly: `npm i -g @webkubor/facet`.
 
-> Until npm publish is done, use the developer path below; the CLI entry and asset files are already wired up — publish is just `pnpm publish`.
+Without `--output`, the PDF/HTML/long-image/page-plan all land in **the current directory** (`./` and `./output/`), never polluting the package directory.
 
 ## 30-second start (developer path)
 

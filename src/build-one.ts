@@ -4,7 +4,6 @@
  */
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { projectRoot } from "./paths.js";
 import type { DocumentMeta, TemplateName, TocItem } from "./types.js";
 import { renderPdf, renderShareImage } from "./browser-output.js";
 import { renderTemplate } from "./template-renderer.js";
@@ -34,10 +33,13 @@ export async function buildPdf(input: {
     await renderShareImage(html, sharePath);
   }
 
+  // 路径相对 cwd 打印，与 build.ts / content-flow.ts 同口径。原先相对 projectRoot（包目录），
+  // npm 安装后打出 `../../../out/b.pdf` 这种指向 node_modules 外的相对路径，用户看不懂落在哪。
+  const cwd = process.cwd();
   console.log(`Template: ${input.templateName}`);
-  console.log(`HTML written: ${path.relative(projectRoot, htmlPath)}`);
-  console.log(`PDF written: ${path.relative(projectRoot, input.outputPath)}`);
+  console.log(`HTML written: ${path.relative(cwd, htmlPath)}`);
+  console.log(`PDF written: ${path.relative(cwd, input.outputPath)}`);
   if (input.share) {
-    console.log(`Share image written: ${path.relative(projectRoot, sharePath)}`);
+    console.log(`Share image written: ${path.relative(cwd, sharePath)}`);
   }
 }

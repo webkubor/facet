@@ -50,7 +50,7 @@ Facet 面向小红书、公众号、社群课程、知识付费资料和项目�
 
 > **内容与站点不在本仓**（2026-09-16 拆分）：本仓是**纯工具**（CLI + 模板 + 主题）。
 > 文章、加密交付、站点构建与部署都在**私有仓** `~/dev/ip/blog` 的 `share/` 下，
-> 那边通过 git 依赖消费本仓（`facet@github:webkubor/facet`），部署命令是那边的 `pnpm pages:deploy`。
+> 那边以 npm 包消费本仓（`@webkubor/facet`，精确版本锁定），部署命令是那边的 `pnpm pages:deploy`。
 > 这样分开的理由：内容里含客户加密文档（不该进公开仓），而工具本身是 MIT 开源作品。
 
 ## 标签
@@ -59,17 +59,21 @@ Facet 面向小红书、公众号、社群课程、知识付费资料和项目�
 
 ## 一行命令（不用 clone 仓库）
 
-从 npm registry 直接跑（**下一步**——`npm publish` 之后再启用；本期已加好 `bin` 字段和 `files` 白名单，发布即可用）：
+已发布到 npm：[`@webkubor/facet`](https://www.npmjs.com/package/@webkubor/facet)。
 
 ```bash
-npx facet --input mypost.md --template wechat-magazine --output mypost.pdf
-npx facet --input mypost.md --all                       # 一次性出全部 8 套教程模板
-npx facet --input resume.md --template resume-payment-lead --output resume.pdf
+npx playwright install chromium                         # 首次一次：PDF/长图靠 Chromium 渲染（~150MB，之后缓存）
+npx @webkubor/facet --input mypost.md --template wechat-magazine --output mypost.pdf
+npx @webkubor/facet --input mypost.md --all             # 一次性出全部 8 套教程模板
+npx @webkubor/facet --input resume.md --template resume-payment-lead --output resume.pdf
+npx @webkubor/facet --help                              # 全部参数与模板清单
 ```
 
-首次会下载 ~150MB 浏览器内核，跑完就缓存。不传 `--output` 时，PDF/HTML/长图/分页计划都落在**当前目录**（`./` 和 `./output/`），不会污染包目录。
+> ⚠️ **必须写带 scope 的全名。** npm 上不带 scope 的 `facet` 是另一个无关的包
+> （「Configuration mixin for constructors」，没有可执行文件），`npx facet` 在干净机器上会拉到它。
+> 常用的话全局装一次，之后就能直接用 `facet` 命令：`npm i -g @webkubor/facet`。
 
-> 在 npm publish 之前，先用下面的开发者路径；本期已经把 CLI 入口和资源文件准备好，发布只是 `pnpm publish` 的事。
+不传 `--output` 时，PDF/HTML/长图/分页计划都落在**当前目录**（`./` 和 `./output/`），不会污染包目录。
 
 ## 30 秒上手（开发者路径）
 

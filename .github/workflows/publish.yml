@@ -1,0 +1,39 @@
+name: Publish to npm
+
+# 渲染回归（字体 / 浏览器 / 视觉门禁）由 ci.yml 在每次 push 上跑；
+# 发布只要求类型通过，build:cli 与三道门禁交给 prepublishOnly，不重复。
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # 不写 version：action 读取 package.json 的 packageManager（pnpm@11.1.2）。
+      - uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          # Trusted Publishing 要求 npm >= 11.5.1；node 20/22 自带 npm 10.x 会走 token
+          # 路径 → ENEEDAUTH。与 ai-sse-kit / device-passport 等已有发布链路对齐到 24。
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm tsc --noEmit
+
+      # 不能设 NODE_AUTH_TOKEN（哪怕空串，npm 也会改走 token 认证、不换 OIDC 凭据）。
+      - name: Publish to npm (Provenance & Trusted Publishing)
+        run: |
+          echo "npm $(npm --version) / node $(node --version)"
+          npm publish --access public --provenance

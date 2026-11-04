@@ -6,9 +6,17 @@
 - 用户有 Markdown 教程 / 项目简历 / 演讲稿，想要专业排版的 PDF、长图（适合社交分享）或幻灯片，不想手工排版。
 - 用户要一份源文件多种输出形态，改一处处处生效。
 
-## 安装
+## 定位
+命令行工具（bin 名 `facet`），不是库也不是 skill：没有可 import 的 API，只通过 CLI 调用。
+Agent 侧另有 cs-mcp 把它包成 MCP 工具（`facet_build` / `facet_templates`），底层仍调这个 CLI。
+
+## 安装与运行
 ```bash
-npm install @webkubor/facet
+npm i -g @webkubor/facet          # 之后直接用 facet 命令
+npx playwright install chromium   # 首次一次，PDF/长图渲染需要
+facet --help                      # 参数与模板清单
+# 临时运行必须写全名：npx @webkubor/facet ...
+# ⚠️ 不要写 `npx facet` —— npm 上不带 scope 的 facet 是无关的别人的包（无可执行文件）
 ```
 
 ## 仓库导览（改代码去哪）
@@ -20,5 +28,5 @@ npm install @webkubor/facet
 - 协作硬规矩见 `AGENTS.md`（本仓是纯工具仓，不放文章与站点代码）
 
 ## 关键约束
-- 本仓只放工具与示例；文章与分享站在私有仓，以 git 依赖消费本仓。
+- 本仓只放工具与示例；文章与分享站在私有仓，以 npm 包 `@webkubor/facet` 消费本仓。
 - 模板改动需回归四类输出（slides / PDF / 长图 / 简历）。
