@@ -13,6 +13,7 @@ import { buildTalkHTML } from "./talk.js";
 import { buildHtmlTalkHTML } from "./html-talk.js";
 import { buildReadHTML } from "./read.js";
 import { runSplit, splitFile } from "./split.js";
+import { buildWechatPreview } from "./wechat.js";
 import { loadDotEnv } from "./env.js";
 import { measureResumeLayout } from "./browser-output.js";
 import { planArticlePages, writePagePlan } from "./content-flow.js";
@@ -33,8 +34,20 @@ import type { TemplateName } from "./types.js";
 import { isResumeTemplate, resumeTemplateNames, tutorialTemplateNames } from "./types.js";
 
 async function main(): Promise<void> {
+  const argv = process.argv.slice(2);
+  const options = parseArgs(argv);
+  if (options.wechatPreview) {
+    if (!argv.includes("--input") || options.read || options.talk || options.all || options.split ||
+        options.fromHtml || options.themePath || options.templateProvided) {
+      throw new Error("--wechat-preview 需要 --input，不能与其它排版模式、主题或模板混用");
+    }
+    const input = path.resolve(options.input);
+    const target = options.outputProvided ? options.output : `output/${path.parse(input).name}.wechat`;
+    await buildWechatPreview(input, path.resolve(target));
+    console.log(`公众号本地预览：${path.join(target, "preview.html")}（未在微信验收）`);
+    return;
+  }
   loadDotEnv();
-  const options = parseArgs(process.argv.slice(2));
   // input / output 都相对 cwd 解析，方便 npx 模式与开发模式都直接落在用户当前目录
   // （templates / themes 由 projectRoot 解析，仍指向包内资源）。
   const cwd = process.cwd();

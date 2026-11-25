@@ -56,6 +56,8 @@ export interface BuildOptions {
   talk: boolean;
   /** 只生成阅读页（read 导向）：连续排版的网页长文，不分页、不出 PDF。 */
   read: boolean;
+  /** 公众号本地预览与交付包，不调用微信接口。 */
+  wechatPreview: boolean;
   /**
    * 输入是已渲染好的 HTML 文件路径，与 `--talk` 配合使用。
    * 走 src/html-talk.ts：从成品 HTML 抽取章节生成对应演讲版，

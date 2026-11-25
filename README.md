@@ -135,6 +135,8 @@ pnpm build:talk
 
 讲解时打开 `talk.html`（审美与 PDF 同源，`--theme` 覆写同一套颜色），讲完发 PDF 和长图——内容只写一份。
 
+公众号图文可用 `--wechat-preview` 生成手机正文与订阅卡片的本地预览，并导出同稿排版与素材。见[使用与验收约定](docs/wechat-preview.md)。现有公众号 PDF／长图模板不变。
+
 ## 核心能力
 
 - Markdown -> HTML/CSS -> Playwright PDF，全链路本地生成。

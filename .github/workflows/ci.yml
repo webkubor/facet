@@ -88,6 +88,9 @@ jobs:
         # 守住 2026-08-28 那次 inFence 丢失导致的章节分裂。
         run: node scripts/check-talk-pagination.mjs
 
+      - name: WeChat preview — one body and asset manifest
+        run: FACET_WECHAT_VISUAL=1 node scripts/check-wechat-preview.mjs
+
       - name: Upload build artifacts
         if: always()
         uses: actions/upload-artifact@v4

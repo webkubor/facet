@@ -40,6 +40,7 @@ export function parseArgs(args: string[]): BuildOptions {
     share: !flags.has("--no-share"),
     talk: flags.has("--talk"),
     read: flags.has("--read"),
+    wechatPreview: flags.has("--wechat-preview"),
     fromHtml: values.get("from-html"),
     split: flags.has("--split"),
     splitTarget: parseInt(values.get("split-target") ?? "250", 10),
