@@ -60,7 +60,7 @@ async function main() {
   await writeFile(input, FIXTURE, "utf8");
 
   try {
-    await run("npx", ["tsx", "src/build.ts", "--input", input, "--talk", "--output", output], { cwd: projectRoot });
+    await run(process.execPath, ["--import", "tsx", "src/build.ts", "--input", input, "--talk", "--output", output], { cwd: projectRoot });
     const html = await readFile(output, "utf8");
     const labels = [...html.matchAll(/aria-label="([^"]*)"/g)].map((m) => m[1]);
 

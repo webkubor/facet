@@ -118,6 +118,8 @@ The same Markdown produces two orientations, each with its own concern:
 
 While presenting, open `talk.html` (aesthetic shares a source with PDF; `--theme` overrides the same color set). After the talk, ship the PDF and long image — write the content once.
 
+Use `--wechat-preview` to produce a local mobile article and subscription-card preview, plus a matching body and asset export. See the [WeChat preview contract](docs/wechat-preview.md). The existing PDF and share-image templates are unchanged.
+
 ## Core capabilities
 
 - Markdown → HTML/CSS → Playwright PDF, fully local.

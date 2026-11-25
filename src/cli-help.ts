@@ -32,6 +32,7 @@ export function helpText(): string {
   facet --input post.md --template wechat-magazine --output post.pdf
   facet --input post.md --all                             一次出全部教程模板
   facet --input talk.md --talk --output talk.html         讲稿页（一屏一页）
+  facet --input post.md --wechat-preview --output wechat  公众号本地预览与交付包
   facet --input post.md --split                           按字数自动插分页标记
 
 选项
@@ -41,6 +42,7 @@ export function helpText(): string {
   --theme <path>        自定义主题 JSON
   --all                 用全部教程模板各出一份
   --talk                讲稿页模式        --read     阅读页模式
+  --wechat-preview      公众号本地模式，--output 为新的输出目录
   --no-share            不生成分享长图
   --split               自动分页；配 --split-target <n>（默认 250）/ --split-max <n>（默认 380）
   --from-html <path>    从已有 HTML 生成讲稿页

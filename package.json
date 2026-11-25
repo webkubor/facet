@@ -42,6 +42,7 @@
     "content/example.md",
     "content/resume-example.md",
     "README.md",
+    "docs/wechat-preview.md",
     "LICENSE",
     "CHANGELOG.md"
   ],
@@ -56,7 +57,7 @@
     "build:resume": "tsx src/build.ts --input content/resume-example.md --template resume-payment-lead --output output/resume-example.pdf",
     "build:resume:all": "tsx src/build.ts --input content/resume-example.md --all",
     "setup:browsers": "playwright install chromium",
-    "check": "tsc --noEmit && node scripts/check-talk-pagination.mjs",
+    "check": "tsc --noEmit && node scripts/check-talk-pagination.mjs && node scripts/check-wechat-preview.mjs",
     "verify:resume": "node scripts/verify-resume.mjs",
     "check:pagination": "node scripts/check-talk-pagination.mjs",
     "check:slides": "node scripts/check-slide-overflow.mjs",
